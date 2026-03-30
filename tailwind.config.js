@@ -8,14 +8,25 @@ export default {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
     ],
-
     theme: {
         extend: {
+            colors: {
+                brand: {
+                    black: '#000000',
+                    white: '#FFFFFF',
+                    brown: '#3C2415',
+                    gray: '#F5F5F5',
+                    'gray-dark': '#333333',
+                    'gray-medium': '#666666',
+                    'gray-light': '#999999',
+                    'gray-border': '#E5E5E5',
+                },
+            },
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['IBM Plex Sans Thai', ...defaultTheme.fontFamily.sans],
+                serif: ['Playfair Display', ...defaultTheme.fontFamily.serif],
             },
         },
     },
-
     plugins: [forms],
 };
