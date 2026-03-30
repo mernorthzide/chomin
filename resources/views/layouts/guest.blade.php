@@ -21,9 +21,7 @@
 
             <!-- Brand content -->
             <div class="relative z-10 text-center px-12">
-                <h1 class="font-serif text-5xl lg:text-6xl font-normal text-white tracking-[0.2em] mb-4">
-                    CHOMIN
-                </h1>
+                <x-brand-logo variant="white" class="h-16 lg:h-20 mx-auto mb-4" />
                 <p class="text-sm text-white/60 tracking-[0.15em] uppercase">
                     Thai Premium Fashion
                 </p>

@@ -5,9 +5,8 @@
 
             <!-- Left: Logo -->
             <div class="flex-shrink-0">
-                <a href="{{ route('home') }}"
-                   class="text-xl font-bold tracking-[0.2em] text-brand-black hover:text-brand-brown transition-colors duration-200">
-                    CHOMIN
+                <a href="{{ route('home') }}" class="inline-block hover:opacity-80 transition-opacity duration-200">
+                    <x-brand-logo variant="dark" class="h-7" />
                 </a>
             </div>
 

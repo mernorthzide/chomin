@@ -2,7 +2,7 @@
     <!-- Logo -->
     <div class="text-center mb-8">
         <a href="/" class="inline-block">
-            <span class="font-serif text-3xl font-normal tracking-[0.2em] text-brand-black">CHOMIN</span>
+            <x-brand-logo variant="dark" class="h-10" />
         </a>
     </div>
 

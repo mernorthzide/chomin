@@ -33,9 +33,7 @@
                 </div>
             @else
                 <div class="text-center py-10">
-                    <h2 class="font-serif text-3xl md:text-4xl font-normal text-brand-black tracking-widest mb-6">
-                        CHOMIN
-                    </h2>
+                    <x-brand-logo variant="dark" class="h-12 mx-auto mb-6" />
                     <div class="w-12 h-px bg-brand-gray-border mx-auto mb-6"></div>
                     <p class="text-brand-gray-medium text-base leading-relaxed max-w-xl mx-auto">
                         CHOMIN คือแบรนด์แฟชั่นพรีเมียมไทย ที่ออกแบบเสื้อผ้าด้วยความใส่ใจในทุกรายละเอียด

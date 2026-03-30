@@ -4,7 +4,7 @@
 
             <!-- Column 1: Brand Info -->
             <div>
-                <h3 class="text-xl font-bold tracking-[0.2em] mb-4">CHOMIN</h3>
+                <x-brand-logo variant="white" class="h-8 mb-4" />
                 <p class="text-sm text-brand-gray-light leading-relaxed">
                     {{ \App\Models\SiteSetting::get('tagline', 'Thai Premium Fashion — เสื้อผ้าพรีเมียมไทย สไตล์มินิมอลหรูหรา') }}
                 </p>

@@ -23,8 +23,8 @@ export default {
                 },
             },
             fontFamily: {
-                sans: ['IBM Plex Sans Thai', ...defaultTheme.fontFamily.sans],
-                serif: ['Playfair Display', ...defaultTheme.fontFamily.serif],
+                sans: ['PK Maehongson', ...defaultTheme.fontFamily.sans],
+                serif: ['Agatho Light CAPS', ...defaultTheme.fontFamily.serif],
             },
         },
     },

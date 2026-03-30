@@ -53,7 +53,7 @@
         {{-- Fallback hero when no banners --}}
         <section class="relative w-full aspect-[16/9] md:aspect-[21/9] bg-brand-black flex items-center justify-center overflow-hidden">
             <div class="text-center px-6">
-                <h1 class="font-serif text-5xl md:text-7xl font-normal text-white tracking-widest uppercase mb-4">CHOMIN</h1>
+                <x-brand-logo variant="white" class="h-16 md:h-24 mx-auto mb-4" />
                 <p class="text-sm md:text-base text-white/70 tracking-[0.15em] mb-8">Thai Premium Fashion</p>
                 <a href="{{ route('shop.index') }}"
                    class="inline-block px-8 py-3 border border-white text-white text-xs font-medium tracking-[0.2em] uppercase hover:bg-white hover:text-brand-black transition-all duration-300">
