@@ -1,8 +1,11 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Mail\NewSlipNotification;
 use App\Models\Order;
+use App\Models\SiteSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentSlipController extends Controller
 {
@@ -27,6 +30,14 @@ class PaymentSlipController extends Controller
         );
 
         $order->update(['status' => 'awaiting_payment']);
+
+        // Notify admin
+        $adminEmail = SiteSetting::get('site_email');
+        if ($adminEmail) {
+            $order->load('user', 'paymentSlip');
+            Mail::to($adminEmail)->send(new NewSlipNotification($order));
+        }
+
         return back()->with('success', 'อัปโหลดสลิปเรียบร้อย รอตรวจสอบ');
     }
 }

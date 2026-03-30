@@ -1,11 +1,14 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Mail\NewOrderNotification;
+use App\Mail\OrderCreated;
 use App\Models\Coupon;
 use App\Models\SiteSetting;
 use App\Services\CartService;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class CheckoutController extends Controller
 {
@@ -51,6 +54,14 @@ class CheckoutController extends Controller
             $request->only(['shipping_name', 'shipping_phone', 'shipping_address', 'shipping_district', 'shipping_province', 'shipping_postal_code', 'note']),
             $cart, $coupon, $pointsUsed,
         );
+
+        // Dispatch email notifications
+        $order->load('user', 'items.product', 'items.variant');
+        Mail::to($order->user->email)->send(new OrderCreated($order));
+        $adminEmail = SiteSetting::get('site_email');
+        if ($adminEmail) {
+            Mail::to($adminEmail)->send(new NewOrderNotification($order));
+        }
 
         return redirect()->route('checkout.success', $order)->with('success', 'สั่งซื้อสำเร็จ');
     }

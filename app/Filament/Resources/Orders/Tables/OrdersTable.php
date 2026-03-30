@@ -2,6 +2,10 @@
 
 namespace App\Filament\Resources\Orders\Tables;
 
+use App\Mail\OrderCompleted;
+use App\Mail\OrderShipped;
+use App\Mail\PaymentConfirmed;
+use App\Mail\PaymentRejected;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
@@ -12,6 +16,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class OrdersTable
 {
@@ -84,6 +89,8 @@ class OrdersTable
                                 'confirmed_by' => Auth::id(),
                             ]);
                         }
+                        $record->load('user', 'items.product');
+                        Mail::to($record->user->email)->send(new PaymentConfirmed($record));
                     }),
                 Action::make('reject')
                     ->label('ปฏิเสธ')
@@ -102,6 +109,8 @@ class OrdersTable
                                 'rejection_reason' => $data['rejection_reason'],
                             ]);
                         }
+                        $record->load('user', 'paymentSlip');
+                        Mail::to($record->user->email)->send(new PaymentRejected($record));
                     }),
                 Action::make('ship')
                     ->label('จัดส่ง')
@@ -123,6 +132,8 @@ class OrdersTable
                             'carrier_name' => $data['carrier_name'],
                             'shipped_at' => now(),
                         ]);
+                        $record->load('user');
+                        Mail::to($record->user->email)->send(new OrderShipped($record));
                     }),
                 Action::make('complete')
                     ->label('เสร็จสิ้น')
@@ -135,6 +146,8 @@ class OrdersTable
                             'status' => 'completed',
                             'completed_at' => now(),
                         ]);
+                        $record->load('user');
+                        Mail::to($record->user->email)->send(new OrderCompleted($record));
                     }),
             ])
             ->toolbarActions([
