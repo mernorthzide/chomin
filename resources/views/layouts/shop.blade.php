@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'CHOMIN') }}</title>
+    <x-meta
+        :title="$title ?? config('app.name', 'CHOMIN')"
+        :description="$description ?? ''"
+        :image="$image ?? ''"
+    />
 
     <!-- Scripts & Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
