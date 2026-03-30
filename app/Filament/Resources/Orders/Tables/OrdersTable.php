@@ -148,6 +148,7 @@ class OrdersTable
                         ]);
                         $record->load('user');
                         Mail::to($record->user->email)->send(new OrderCompleted($record));
+                        app(\App\Services\PointsService::class)->earnPoints($record);
                     }),
             ])
             ->toolbarActions([
