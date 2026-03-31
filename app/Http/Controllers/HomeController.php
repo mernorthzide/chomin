@@ -2,20 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Banner;
 use App\Models\Collection;
 use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
     public function __invoke(Request $request)
     {
-        $banners = Banner::active()->ordered()->get();
-
         $collections = Collection::active()
             ->ordered()
             ->with(['products' => function ($query) {
@@ -28,6 +22,6 @@ class HomeController extends Controller
 
         $quote = SiteSetting::get('homepage_quote', '"ความงามที่แท้จริงอยู่ในความเรียบง่าย"');
 
-        return view('pages.home', compact('banners', 'collections', 'quote'));
+        return view('pages.home', compact('collections', 'quote'));
     }
 }

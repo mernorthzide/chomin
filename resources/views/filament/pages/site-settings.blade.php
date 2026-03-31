@@ -1,14 +1,11 @@
 <x-filament-panels::page>
-    <x-filament-panels::form wire:submit="save">
+    <form wire:submit="save">
         {{ $this->form }}
 
-        <x-filament-panels::form.actions
-            :actions="[
-                \Filament\Actions\Action::make('save')
-                    ->label('บันทึกการตั้งค่า')
-                    ->submit('save')
-                    ->color('primary'),
-            ]"
-        />
-    </x-filament-panels::form>
+        <div class="mt-6 flex justify-start">
+            <x-filament::button type="submit" color="primary">
+                บันทึกการตั้งค่า
+            </x-filament::button>
+        </div>
+    </form>
 </x-filament-panels::page>

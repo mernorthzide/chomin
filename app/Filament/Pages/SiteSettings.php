@@ -5,15 +5,15 @@ namespace App\Filament\Pages;
 use App\Models\ShippingSetting;
 use App\Models\SiteSetting;
 use BackedEnum;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Schema;
 
 class SiteSettings extends Page implements HasForms
 {
@@ -48,10 +48,11 @@ class SiteSettings extends Page implements HasForms
             'baht_per_point' => SiteSetting::get('baht_per_point', '1'),
             'footer_text' => SiteSetting::get('footer_text'),
             'announcement_text' => SiteSetting::get('announcement_text'),
+            'homepage_quote' => SiteSetting::get('homepage_quote', '"ความงามที่แท้จริงอยู่ในความเรียบง่าย"'),
         ]);
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $form): Schema
     {
         return $form
             ->schema([
@@ -105,6 +106,10 @@ class SiteSettings extends Page implements HasForms
                     ->columns(2),
                 Section::make('เนื้อหา')
                     ->schema([
+                        Textarea::make('homepage_quote')
+                            ->label('คำคมหน้าแรก')
+                            ->helperText('ข้อความ quote ที่แสดงด้านล่างสุดของหน้าแรก')
+                            ->columnSpanFull(),
                         Textarea::make('announcement_text')
                             ->label('ข้อความประกาศ (แถบด้านบน)')
                             ->columnSpanFull(),
@@ -123,7 +128,7 @@ class SiteSettings extends Page implements HasForms
         // Save site settings
         $siteKeys = ['site_name', 'site_description', 'site_phone', 'site_email',
             'promptpay_number', 'promptpay_name', 'points_per_baht', 'baht_per_point',
-            'footer_text', 'announcement_text'];
+            'footer_text', 'announcement_text', 'homepage_quote'];
 
         foreach ($siteKeys as $key) {
             SiteSetting::set($key, $data[$key] ?? null);

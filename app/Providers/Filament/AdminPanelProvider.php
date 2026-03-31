@@ -29,6 +29,12 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->brandName('CHOMIN')
+            ->brandLogo(asset('images/brand/chomin-logo-dark.png'))
+            ->darkModeBrandLogo(asset('images/brand/chomin-logo-white.png'))
+            ->brandLogoHeight('2rem')
+            ->favicon(asset('images/brand/chomin-logo-dark.png'))
+            ->breadcrumbs(false)
             ->colors([
                 'primary' => Color::Amber,
             ])

@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Collections\Schemas;
 
+use App\Models\Collection;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
@@ -33,11 +35,22 @@ class CollectionForm
                 FileUpload::make('image')
                     ->label('รูปภาพ')
                     ->image()
-                    ->directory('collections'),
+                    ->directory('collections')
+                    ->disk('public')
+                    ->visibility('public')
+                    ->imagePreviewHeight('150'),
                 FileUpload::make('banner_image')
-                    ->label('รูปแบนเนอร์')
+                    ->label('รูปแบนเนอร์ (หน้าแรก)')
                     ->image()
-                    ->directory('collections/banners'),
+                    ->directory('collections/banners')
+                    ->disk('public')
+                    ->visibility('public')
+                    ->imagePreviewHeight('150'),
+                Select::make('layout_type')
+                    ->label('รูปแบบ Layout หน้าแรก')
+                    ->options(Collection::LAYOUT_TYPES)
+                    ->placeholder('อัตโนมัติ (ตามลำดับ)')
+                    ->helperText('เลือกรูปแบบการแสดงผลบนหน้าแรก หรือปล่อยว่างให้ระบบเลือกให้อัตโนมัติ'),
                 Toggle::make('is_active')
                     ->label('เปิดใช้งาน')
                     ->default(true),
