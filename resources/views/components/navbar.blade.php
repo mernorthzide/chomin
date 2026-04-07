@@ -1,34 +1,32 @@
 <nav class="sticky top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-brand-gray-border/50"
      x-data="{ mobileMenu: false }">
-    <div class="flex justify-between items-center px-6 md:px-12 py-5">
+    <div class="flex justify-between items-center px-6 md:px-12 py-4">
 
-        <!-- Left: Logo + Desktop Nav -->
-        <div class="flex items-center gap-10">
-            <a href="{{ route('home') }}" class="block hover:opacity-80 transition-opacity duration-200">
-                <x-brand-logo variant="dark" class="h-8 md:h-12" />
+        <!-- Left: Desktop Nav Links -->
+        <div class="hidden md:flex items-center gap-7 flex-1">
+            <a href="{{ route('shop.index') }}"
+               class="text-[11px] uppercase tracking-[0.15em] font-semibold hover:text-brand-gray-medium transition-colors duration-200 {{ request()->routeIs('shop.*') ? 'text-brand-brown' : '' }}">
+                ร้าน
             </a>
-            <div class="hidden md:flex gap-8 text-[12px] uppercase tracking-[0.2em] font-semibold">
-                <a href="{{ route('home') }}"
-                   class="hover:text-brand-gray-medium transition-colors duration-200 {{ request()->routeIs('home') ? 'text-brand-brown' : '' }}">
-                    หน้าแรก
-                </a>
-                <a href="{{ route('collections.index') }}"
-                   class="hover:text-brand-gray-medium transition-colors duration-200 {{ request()->routeIs('collections.*') ? 'text-brand-brown' : '' }}">
-                    คอลเล็คชัน
-                </a>
-                <a href="{{ route('shop.index') }}"
-                   class="hover:text-brand-gray-medium transition-colors duration-200 {{ request()->routeIs('shop.*') ? 'text-brand-brown' : '' }}">
-                    ร้าน
-                </a>
-                <a href="{{ route('about') }}"
-                   class="hover:text-brand-gray-medium transition-colors duration-200 {{ request()->routeIs('about') ? 'text-brand-brown' : '' }}">
-                    เกี่ยวกับเรา
-                </a>
-            </div>
+            <a href="{{ route('collections.index') }}"
+               class="text-[11px] uppercase tracking-[0.15em] font-semibold hover:text-brand-gray-medium transition-colors duration-200 {{ request()->routeIs('collections.*') ? 'text-brand-brown' : '' }}">
+                คอลเล็คชัน
+            </a>
+            <a href="{{ route('about') }}"
+               class="text-[11px] uppercase tracking-[0.15em] font-semibold hover:text-brand-gray-medium transition-colors duration-200 {{ request()->routeIs('about') ? 'text-brand-brown' : '' }}">
+                เกี่ยวกับเรา
+            </a>
+        </div>
+
+        <!-- Center: Logo -->
+        <div class="flex-shrink-0 md:absolute md:left-1/2 md:-translate-x-1/2">
+            <a href="{{ route('home') }}" class="block hover:opacity-80 transition-opacity duration-200">
+                <x-brand-logo variant="dark" class="h-7 md:h-10" />
+            </a>
         </div>
 
         <!-- Right: Icons -->
-        <div class="flex items-center gap-5">
+        <div class="flex items-center gap-5 flex-1 justify-end">
             <!-- User Icon -->
             @auth
                 <a href="{{ route('profile.edit') }}"
@@ -40,13 +38,27 @@
                 </a>
             @else
                 <a href="{{ route('login') }}"
-                   class="hover:opacity-60 transition-opacity duration-200"
+                   class="hidden md:block text-[11px] uppercase tracking-[0.15em] font-semibold hover:text-brand-gray-medium transition-colors duration-200"
+                   title="เข้าสู่ระบบ">
+                    เข้าสู่ระบบ
+                </a>
+                <a href="{{ route('login') }}"
+                   class="md:hidden hover:opacity-60 transition-opacity duration-200"
                    title="เข้าสู่ระบบ">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                     </svg>
                 </a>
             @endauth
+
+            <!-- Search Icon -->
+            <a href="{{ route('shop.index') }}"
+               class="hover:opacity-60 transition-opacity duration-200"
+               title="ค้นหา">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+            </a>
 
             <!-- Cart Icon -->
             <a href="{{ route('cart.index') }}"
