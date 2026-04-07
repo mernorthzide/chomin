@@ -1,0 +1,27 @@
+name: Deploy to Hostinger
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: 153.92.223.88
+          username: uaboromkham
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 65002
+          timeout: 30s
+          script: |
+            cd domains/moccasin-dogfish-924842.hostingersite.com
+            git pull origin main
+            php artisan optimize:clear
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            echo "Deploy complete: $(date)"
