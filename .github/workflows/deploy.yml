@@ -12,13 +12,13 @@ jobs:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1
         with:
-          host: 153.92.223.88
-          username: uaboromkham
+          host: 151.106.116.52
+          username: u700921586
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 65002
           timeout: 30s
           script: |
-            cd domains/moccasin-dogfish-924842.hostingersite.com
+            cd domains/moccasin-dogfish-924842.hostingersite.com/chomin
             git pull origin main
             php artisan optimize:clear
             php artisan config:cache
