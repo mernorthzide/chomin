@@ -103,32 +103,6 @@
     @endif
 
     {{-- ============================================================
-         SECTION 3: MARQUEE TEXT BANNER
-    ============================================================ --}}
-    <section class="py-10 md:py-14 border-y border-brand-gray-border overflow-hidden">
-        <div class="marquee-track flex whitespace-nowrap items-center">
-            @for($i = 0; $i < 4; $i++)
-                <span class="marquee-item flex items-center gap-6 px-6 md:px-10">
-                    <svg class="w-8 h-8 md:w-10 md:h-10 flex-shrink-0 text-brand-black" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/>
-                    </svg>
-                    <span class="text-4xl md:text-6xl lg:text-7xl font-serif uppercase editorial-title font-normal">
-                        ความงามที่แท้จริง
-                    </span>
-                </span>
-                <span class="marquee-item flex items-center gap-6 px-6 md:px-10">
-                    <svg class="w-8 h-8 md:w-10 md:h-10 flex-shrink-0 text-brand-black opacity-40" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/>
-                    </svg>
-                    <span class="text-4xl md:text-6xl lg:text-7xl font-serif uppercase editorial-title italic font-normal" style="color: transparent; -webkit-text-stroke: 1.5px #000;">
-                        อยู่ในความเรียบง่าย
-                    </span>
-                </span>
-            @endfor
-        </div>
-    </section>
-
-    {{-- ============================================================
          SECTION 4: TWO-COLUMN COLLECTION CARDS with hover effects
     ============================================================ --}}
     @if($featuredCollections->isNotEmpty())

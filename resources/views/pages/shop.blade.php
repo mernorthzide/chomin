@@ -120,7 +120,7 @@
             <!-- Pagination -->
             @if($products->hasPages())
                 <div class="mt-12 flex justify-center">
-                    {{ $products->links('vendor.pagination.tailwind') }}
+                    {{ $products->links() }}
                 </div>
             @endif
         </div>
