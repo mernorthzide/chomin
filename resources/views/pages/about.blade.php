@@ -35,9 +35,15 @@
                 <div class="text-center py-10">
                     <x-brand-logo variant="dark" class="h-12 mx-auto mb-6" />
                     <div class="w-12 h-px bg-brand-gray-border mx-auto mb-6"></div>
+                    <p class="text-brand-gray-medium text-base leading-relaxed max-w-xl mx-auto mb-4">
+                        CHO.MIN คือแบรนด์ที่เชื่อว่า สไตล์ ไม่ควรถูกจำกัด เราออกแบบเชิ้ตให้คุณเป็นคนกำหนดเอง
+                    </p>
+                    <p class="text-brand-gray-medium text-base leading-relaxed max-w-xl mx-auto mb-4">
+                        เลือกได้มากถึง 50 สี ตั้งแต่โทนมินิมอล คลาสสิก ไปจนถึงเฉดจัดจ้านสายแฟชั่น
+                        โครงสร้างทรงสวยที่ออกแบบให้ใส่ได้ทั้งหญิงและชาย เนื้อผ้าคุณภาพสัมผัสนุ่ม ใส่สบายและดูแพงอย่างเป็นธรรมชาติ
+                    </p>
                     <p class="text-brand-gray-medium text-base leading-relaxed max-w-xl mx-auto">
-                        CHOMIN คือแบรนด์แฟชั่นพรีเมียมไทย ที่ออกแบบเสื้อผ้าด้วยความใส่ใจในทุกรายละเอียด
-                        ด้วยแนวคิด Minimal Luxury — ความหรูหราในความเรียบง่าย
+                        ดีไซน์เรียบ แต่ซ่อนรายละเอียดที่ทำให้แตกต่างอย่างมีชั้นเชิง
                     </p>
                 </div>
             @endif
@@ -49,24 +55,24 @@
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16 text-center">
                 <div>
-                    <div class="w-10 h-px bg-brand-brown mx-auto mb-6"></div>
-                    <h3 class="font-serif text-lg font-normal text-brand-black tracking-wider mb-3">คุณภาพ</h3>
+                    <div class="w-10 h-px bg-brand-black mx-auto mb-6"></div>
+                    <h3 class="font-serif text-lg font-normal text-brand-black tracking-wider mb-3">50+ สี</h3>
                     <p class="text-sm text-brand-gray-medium leading-relaxed">
-                        วัสดุคัดสรรคุณภาพสูง ตัดเย็บอย่างพิถีพิถันในทุกชิ้น
+                        เลือกได้มากถึง 50 สี ตั้งแต่โทนมินิมอล คลาสสิก ไปจนถึงเฉดจัดจ้านสายแฟชั่น
                     </p>
                 </div>
                 <div>
-                    <div class="w-10 h-px bg-brand-brown mx-auto mb-6"></div>
-                    <h3 class="font-serif text-lg font-normal text-brand-black tracking-wider mb-3">ความยั่งยืน</h3>
+                    <div class="w-10 h-px bg-brand-black mx-auto mb-6"></div>
+                    <h3 class="font-serif text-lg font-normal text-brand-black tracking-wider mb-3">Unisex</h3>
                     <p class="text-sm text-brand-gray-medium leading-relaxed">
-                        ผลิตอย่างรับผิดชอบ ใส่ใจสิ่งแวดล้อมและผู้คน
+                        โครงสร้างทรงสวยที่ออกแบบให้ใส่ได้ทั้งหญิงและชาย ไซส์ XS ถึง 6XL
                     </p>
                 </div>
                 <div>
-                    <div class="w-10 h-px bg-brand-brown mx-auto mb-6"></div>
-                    <h3 class="font-serif text-lg font-normal text-brand-black tracking-wider mb-3">เอกลักษณ์ไทย</h3>
+                    <div class="w-10 h-px bg-brand-black mx-auto mb-6"></div>
+                    <h3 class="font-serif text-lg font-normal text-brand-black tracking-wider mb-3">Premium Quality</h3>
                     <p class="text-sm text-brand-gray-medium leading-relaxed">
-                        ออกแบบโดยคนไทย สำหรับทุกคนที่รักสไตล์ minimal luxury
+                        เนื้อผ้าคุณภาพสัมผัสนุ่ม ใส่สบายและดูแพงอย่างเป็นธรรมชาติ
                     </p>
                 </div>
             </div>

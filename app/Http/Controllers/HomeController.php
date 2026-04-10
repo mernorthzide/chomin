@@ -20,7 +20,7 @@ class HomeController extends Controller
             }])
             ->get();
 
-        $quote = SiteSetting::get('homepage_quote', '"ความงามที่แท้จริงอยู่ในความเรียบง่าย"');
+        $quote = SiteSetting::get('homepage_quote', '"CHO.MIN คือความเรียบที่ไม่ธรรมดา คือความมั่นใจที่คุณใส่ได้ทุกวัน"');
 
         return view('pages.home', compact('collections', 'quote'));
     }

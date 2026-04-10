@@ -12,14 +12,13 @@ export default {
         extend: {
             colors: {
                 brand: {
-                    black: '#000000',
-                    white: '#FFFFFF',
-                    brown: '#3C2415',
+                    black: '#1a1a1a',
+                    white: '#fafafa',
                     gray: '#F5F5F5',
                     'gray-dark': '#333333',
-                    'gray-medium': '#666666',
-                    'gray-light': '#999999',
-                    'gray-border': '#E5E5E5',
+                    'gray-medium': '#555555',
+                    'gray-light': '#767676',
+                    'gray-border': '#E0E0E0',
                 },
             },
             fontFamily: {

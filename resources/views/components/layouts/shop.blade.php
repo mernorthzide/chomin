@@ -25,12 +25,12 @@
                     เปลี่ยนคืนภายใน 30 วัน
                 </span>
                 <span class="ticker-item text-[10px] tracking-[0.2em] uppercase px-8 flex items-center gap-2">
-                    <svg class="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                    รับประกันคุณภาพตลอดอายุการใช้งาน
+                    <svg class="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
+                    50+ สี ให้เลือก
                 </span>
                 <span class="ticker-item text-[10px] tracking-[0.2em] uppercase px-8 flex items-center gap-2">
                     <svg class="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
-                    ลด 10% สำหรับสมาชิกใหม่
+                    ไซส์ XS &ndash; 6XL
                 </span>
             @endfor
         </div>
@@ -47,10 +47,9 @@
     <!-- Footer -->
     <x-footer />
 
-    <!-- Scroll Reveal + Parallax -->
+    <!-- Scroll Reveal -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Scroll Reveal
             const reveals = document.querySelectorAll('[data-reveal]');
             if (reveals.length) {
                 const observer = new IntersectionObserver((entries) => {
@@ -60,27 +59,8 @@
                             observer.unobserve(entry.target);
                         }
                     });
-                }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+                }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
                 reveals.forEach(el => observer.observe(el));
-            }
-
-            // Parallax hero image
-            const parallaxImg = document.querySelector('[data-parallax]');
-            if (parallaxImg) {
-                let ticking = false;
-                window.addEventListener('scroll', () => {
-                    if (!ticking) {
-                        requestAnimationFrame(() => {
-                            const scrollY = window.scrollY;
-                            const heroH = parallaxImg.closest('section').offsetHeight;
-                            if (scrollY < heroH) {
-                                parallaxImg.style.transform = `scale(1.05) translateY(${scrollY * 0.15}px)`;
-                            }
-                            ticking = false;
-                        });
-                        ticking = true;
-                    }
-                });
             }
         });
     </script>

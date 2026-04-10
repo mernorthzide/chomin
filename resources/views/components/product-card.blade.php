@@ -11,9 +11,9 @@
 @endphp
 
 <a href="{{ route('products.show', $product->slug) }}"
-   class="group block">
-    <!-- Image Container with shine effect -->
-    <div class="product-shine relative aspect-[3/4] overflow-hidden {{ $dark ? 'bg-brand-gray-dark' : 'bg-brand-gray' }}">
+   class="group block focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2">
+    <!-- Image Container -->
+    <div class="relative aspect-[3/4] overflow-hidden {{ $dark ? 'bg-brand-gray-dark' : 'bg-brand-gray' }}">
         @php
             $primaryImage = $product->primaryImage ?? $product->images->first();
         @endphp
@@ -35,7 +35,7 @@
         @if(!empty($badges))
             <div class="absolute top-2 left-2 flex flex-col gap-1 z-10">
                 @foreach($badges as $badge)
-                    <span class="{{ $badge['class'] }} text-[8px] font-bold tracking-wider uppercase px-2 py-1 rounded-sm">
+                    <span class="{{ $badge['class'] }} text-[10px] font-bold tracking-wider uppercase px-2 py-0.5">
                         {{ $badge['label'] }}
                     </span>
                 @endforeach
@@ -45,21 +45,21 @@
         <!-- Out of Stock Overlay -->
         @if(isset($product->variants) && $product->variants->isNotEmpty() && $product->variants->sum('stock') === 0)
             <div class="absolute inset-0 bg-white/60 flex items-center justify-center backdrop-blur-[1px]">
-                <span class="text-[10px] font-bold tracking-[0.2em] text-brand-gray-dark uppercase">หมดสต็อก</span>
+                <span class="text-xs font-bold tracking-[0.2em] text-brand-gray-dark uppercase">หมดสต็อก</span>
             </div>
         @endif
     </div>
 
     <!-- Product Info -->
     <div class="mt-4">
-        <h3 class="text-[11px] font-bold uppercase tracking-widest mb-1 truncate transition-colors duration-200 {{ $dark ? 'text-white group-hover:text-brand-gray-light' : 'text-brand-black group-hover:text-brand-brown' }}">
+        <h3 class="text-xs font-bold uppercase tracking-widest mb-1 truncate transition-colors duration-200 {{ $dark ? 'text-white group-hover:text-brand-gray-light' : 'text-brand-black group-hover:text-brand-gray-dark' }}">
             {{ $product->name }}
         </h3>
-        <p class="text-[11px] uppercase {{ $dark ? 'text-brand-gray-light' : 'text-brand-gray-medium' }}">
+        <p class="text-xs uppercase {{ $dark ? 'text-brand-gray-light' : 'text-brand-gray-medium' }}">
             ฿{{ number_format($product->price, 0) }}
         </p>
         @if($product->variants && $product->variants->unique('color')->count() > 1)
-            <p class="text-[9px] text-brand-gray-light uppercase tracking-wider mt-1">
+            <p class="text-[10px] text-brand-gray-light uppercase tracking-wider mt-1">
                 มี {{ $product->variants->unique('color')->count() }} สี
             </p>
         @endif

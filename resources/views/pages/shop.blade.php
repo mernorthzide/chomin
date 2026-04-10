@@ -15,8 +15,8 @@
     {{-- ============================================================
          FILTER BAR
     ============================================================ --}}
-    <section class="bg-white sticky top-16 z-40 border-b border-brand-gray-border">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <section class="bg-white border-b border-brand-gray-border">
+        <div class="mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <form method="GET" action="{{ route('shop.index') }}"
                   class="flex flex-wrap items-center gap-3 md:gap-5">
 
@@ -77,7 +77,7 @@
                 <!-- Clear Filters -->
                 @if(request()->hasAny(['category', 'collection']))
                     <a href="{{ route('shop.index') }}"
-                       class="text-xs text-brand-brown hover:underline tracking-wide">
+                       class="text-xs text-brand-black underline hover:underline tracking-wide">
                         ล้างตัวกรอง
                     </a>
                 @endif
@@ -89,10 +89,10 @@
          PRODUCTS GRID
     ============================================================ --}}
     <section class="bg-white py-10 md:py-14">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto px-4 sm:px-6 lg:px-8">
             @forelse($products as $product)
                 @if($loop->first)
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-8 md:gap-x-4 md:gap-y-10">
                 @endif
 
                 <div>
@@ -110,7 +110,7 @@
                     <p class="text-sm text-brand-gray-medium">ไม่พบสินค้า</p>
                     @if(request()->hasAny(['category', 'collection']))
                         <a href="{{ route('shop.index') }}"
-                           class="mt-4 inline-block text-sm text-brand-brown hover:underline">
+                           class="mt-4 inline-block text-sm text-brand-black underline hover:underline">
                             ล้างตัวกรองทั้งหมด
                         </a>
                     @endif
