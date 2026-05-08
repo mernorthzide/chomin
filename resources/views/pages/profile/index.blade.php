@@ -102,7 +102,7 @@
 
                         <div class="mt-8 flex items-center gap-4">
                             <button type="submit"
-                                    class="px-8 py-3 bg-brand-black text-white text-xs font-medium tracking-[0.2em] uppercase hover:bg-brand-brown transition-colors duration-300">
+                                    class="px-8 py-3 bg-brand-black text-white text-xs font-medium tracking-[0.2em] uppercase hover:bg-brand-gray-dark transition-colors duration-300">
                                 บันทึกข้อมูล
                             </button>
                         </div>

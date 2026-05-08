@@ -16,9 +16,9 @@
         </div>
     </section>
 
-    <section class="sticky z-30 border-b border-brand-gray-border bg-white" style="top: 60px;">
+    <section class="shop-filter-bar sticky z-30 border-b border-brand-gray-border bg-white" style="top: 60px;">
         <div class="px-6 md:px-12 py-4">
-            <form method="GET" action="{{ route('shop.index') }}" class="flex flex-wrap items-center gap-4 md:gap-6">
+            <form method="GET" action="{{ route('shop.index') }}" class="grid grid-cols-2 items-end gap-4 md:flex md:flex-wrap md:items-center md:gap-6">
                 <div class="filter-field">
                     <label for="category">หมวดหมู่</label>
                     <select id="category" name="category" onchange="this.form.submit()">
@@ -65,7 +65,7 @@
                     </select>
                 </div>
 
-                <div class="ml-auto text-xs uppercase tracking-[0.14em] text-brand-gray-light">
+                <div class="col-span-2 text-xs uppercase tracking-[0.14em] text-brand-gray-light md:ml-auto md:col-span-1">
                     {{ $products->total() }} รายการ
                 </div>
 
@@ -77,7 +77,7 @@
             </form>
 
             @if($availableColors->isNotEmpty())
-                <div class="mt-4 flex items-center gap-2 overflow-x-auto hide-scrollbar">
+                <div class="shop-color-scroll mt-4 flex items-center gap-2 overflow-x-auto pb-2">
                     <span class="text-[11px] uppercase tracking-[0.14em] text-brand-gray-light mr-1">Color</span>
                     @foreach($availableColors as $color)
                         @php
@@ -85,7 +85,7 @@
                             $colorQuery = array_filter(array_merge(request()->except(['page', 'color']), ['color' => $colorKey]), fn ($value) => filled($value));
                         @endphp
                         <a href="{{ route('shop.index', $colorQuery) }}"
-                           class="h-7 w-7 flex-shrink-0 rounded-full border {{ request('color') === $colorKey ? 'border-brand-black ring-2 ring-brand-black ring-offset-2' : 'border-brand-gray-border' }}"
+                           class="h-9 w-9 flex-shrink-0 rounded-full border {{ request('color') === $colorKey ? 'border-brand-black ring-2 ring-brand-black ring-offset-2' : 'border-brand-gray-border' }}"
                            style="background-color: {{ $color->color_code ?? '#eeeeee' }}"
                            title="{{ $color->localized_name }}"
                            aria-label="{{ $color->localized_name }}"></a>

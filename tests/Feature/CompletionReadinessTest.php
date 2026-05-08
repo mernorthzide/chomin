@@ -25,6 +25,82 @@ class CompletionReadinessTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_customer_auth_views_do_not_use_undefined_brand_brown_classes(): void
+    {
+        foreach ([
+            'resources/views/auth/login.blade.php',
+            'resources/views/auth/register.blade.php',
+            'resources/views/auth/forgot-password.blade.php',
+        ] as $view) {
+            $contents = file_get_contents(base_path($view));
+
+            $this->assertStringNotContainsString('brand-brown', $contents, "{$view} should use defined brand tokens.");
+        }
+    }
+
+    public function test_contact_style_content_pages_render_clear_form_controls(): void
+    {
+        $this->seed(\Database\Seeders\ContentSeeder::class);
+
+        $this->get('/th/contact')
+            ->assertOk()
+            ->assertSee('contact-field', false)
+            ->assertSee('contact-submit', false)
+            ->assertSee('aria-label="ชื่อ"', false)
+            ->assertSee('aria-label="Email"', false)
+            ->assertSee('aria-label="ข้อความ"', false);
+    }
+
+    public function test_product_page_orders_size_options_from_small_to_extended_sizes(): void
+    {
+        $product = $this->createCatalogProduct(['slug' => 'ordered-size-shirt']);
+        $color = $product->colors()->firstOrFail();
+
+        foreach (['XS', 'S', 'L', 'XL', '2XL', '3XL'] as $size) {
+            ProductVariant::create([
+                'product_id' => $product->id,
+                'product_color_id' => $color->id,
+                'size' => $size,
+                'stock' => 10,
+                'sku' => 'ORDERED-'.$size,
+            ]);
+        }
+
+        $content = $this->get('/th/products/ordered-size-shirt')
+            ->assertOk()
+            ->content();
+
+        $orderedSizes = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'];
+        $positions = [];
+
+        foreach ($orderedSizes as $size) {
+            $position = strpos($content, "selectSize('{$size}')");
+            $this->assertNotFalse($position, "Missing size {$size} on the product page.");
+            $positions[$size] = $position;
+        }
+
+        $this->assertSame($positions, collect($positions)->sort()->all());
+    }
+
+    public function test_shop_filters_and_cookie_actions_use_mobile_safe_targets(): void
+    {
+        $shop = file_get_contents(base_path('resources/views/pages/shop.blade.php'));
+        $css = file_get_contents(base_path('resources/css/app.css'));
+        $cookie = file_get_contents(base_path('resources/views/components/cookie-consent.blade.php'));
+        $footer = file_get_contents(base_path('resources/views/components/footer.blade.php'));
+        $navbar = file_get_contents(base_path('resources/views/components/navbar.blade.php'));
+        $product = file_get_contents(base_path('resources/views/pages/products/show.blade.php'));
+
+        $this->assertStringContainsString('shop-filter-bar', $shop);
+        $this->assertStringContainsString('min-height: 2.75rem', $css);
+        $this->assertStringContainsString('padding-bottom: env(safe-area-inset-bottom)', $css);
+        $this->assertStringContainsString('min-h-[44px]', $cookie);
+        $this->assertStringContainsString('max-h-[38svh]', $cookie);
+        $this->assertStringContainsString('min-h-[44px]', $footer);
+        $this->assertStringContainsString('inline-flex min-h-11 items-center', $navbar);
+        $this->assertStringContainsString('h-11 w-11', $product);
+    }
+
     public function test_shop_color_shortcuts_ignore_hero_images_when_building_filter_keys(): void
     {
         $product = $this->createCatalogProduct([

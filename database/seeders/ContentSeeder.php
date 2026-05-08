@@ -34,7 +34,7 @@ class ContentSeeder extends Seeder
 
             $record->translations()->updateOrCreate(['locale' => 'th'], [
                 'title' => $page['th'],
-                'excerpt' => 'เนื้อหานี้สามารถแก้ไขได้จาก Filament admin',
+                'excerpt' => $this->thaiExcerpt($slug),
                 'body' => $this->thaiBody($page['th'], $slug),
                 'seo_title' => "{$page['th']} | CHOMIN",
                 'seo_description' => "ข้อมูล{$page['th']}ของ CHOMIN",
@@ -42,7 +42,7 @@ class ContentSeeder extends Seeder
 
             $record->translations()->updateOrCreate(['locale' => 'en'], [
                 'title' => $page['en'],
-                'excerpt' => 'This content is editable in Filament admin.',
+                'excerpt' => $this->englishExcerpt($slug),
                 'body' => $this->englishBody($page['en'], $slug),
                 'seo_title' => "{$page['en']} | CHOMIN",
                 'seo_description' => "CHOMIN {$page['en']} information.",
@@ -92,6 +92,42 @@ class ContentSeeder extends Seeder
         ]);
     }
 
+    private function thaiExcerpt(string $slug): string
+    {
+        return match ($slug) {
+            'privacy' => 'วิธีที่ CHOMIN ดูแลข้อมูลส่วนบุคคลของลูกค้า',
+            'terms' => 'เงื่อนไขการใช้งานเว็บไซต์และการสั่งซื้อกับ CHOMIN',
+            'shipping' => 'รายละเอียดการเตรียมสินค้า การจัดส่ง และเลขติดตามพัสดุ',
+            'returns' => 'เงื่อนไขการเปลี่ยนหรือคืนสินค้าภายใน 30 วัน',
+            'size-guide' => 'แนวทางวัดไซส์เสื้อเชิ้ตตั้งแต่ XS ถึง 6XL',
+            'member' => 'สิทธิประโยชน์ แต้มสะสม และการใช้คะแนนสำหรับสมาชิก',
+            'gift-cards' => 'รายละเอียดบัตรของขวัญและการใช้ยอดคงเหลือที่ checkout',
+            'contact' => 'ส่งข้อความถึงทีม CHOMIN แล้วเราจะติดต่อกลับโดยเร็ว',
+            'careers' => 'ร่วมสร้างแบรนด์แฟชั่นไทยไปกับทีม CHOMIN',
+            'partnerships' => 'พูดคุยเรื่องคอลแลบ แคมเปญ และงานสื่อกับทีมเรา',
+            'wholesale' => 'สอบถามคำสั่งซื้อจำนวนมาก สี รุ่น และเงื่อนไขขายส่ง',
+            default => 'ข้อมูลจาก CHOMIN',
+        };
+    }
+
+    private function englishExcerpt(string $slug): string
+    {
+        return match ($slug) {
+            'privacy' => 'How CHOMIN handles customer personal data.',
+            'terms' => 'Terms for using the website and shopping with CHOMIN.',
+            'shipping' => 'Order preparation, delivery, and tracking information.',
+            'returns' => 'Return and exchange conditions within 30 days.',
+            'size-guide' => 'How to measure CHOMIN shirts from XS to 6XL.',
+            'member' => 'Member points, rewards, and redemption basics.',
+            'gift-cards' => 'Gift card balance and checkout redemption details.',
+            'contact' => 'Send a message to the CHOMIN team.',
+            'careers' => 'Join the team building a Thai fashion brand.',
+            'partnerships' => 'Campaign, collaboration, and media enquiries.',
+            'wholesale' => 'Bulk order and wholesale enquiries.',
+            default => 'CHOMIN information.',
+        };
+    }
+
     private function thaiBody(string $title, string $slug): string
     {
         return match ($slug) {
@@ -120,7 +156,11 @@ class ContentSeeder extends Seeder
             'size-guide' => "CHOMIN supports XS through 6XL. Measure a shirt that fits well, then compare chest, shoulder, and length with the product size chart.",
             'member' => "CHOMIN members earn points from completed orders and can redeem points on future purchases.",
             'gift-cards' => "CHOMIN gift cards are issued by the team and can be redeemed at checkout until the stored balance is used.",
-            default => "{$title}\n\nThis content is editable in the admin panel.",
+            'contact' => "Send the CHOMIN team a message using the form below. We will reply through the contact channel you provide.",
+            'careers' => "If you want to help build a Thai fashion brand with CHOMIN, send your background and area of interest through this form.",
+            'partnerships' => "For campaigns, collaborations, press, or media requests, share a short brief so our team can follow up.",
+            'wholesale' => "For bulk or wholesale enquiries, share the quantity, preferred styles, colors, and contact details.",
+            default => "{$title}\n\nCHOMIN information.",
         };
     }
 }

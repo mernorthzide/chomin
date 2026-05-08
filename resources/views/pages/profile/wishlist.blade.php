@@ -35,7 +35,7 @@
                             </svg>
                             <p class="text-brand-gray-medium text-sm mb-4">Wishlist ว่างเปล่า</p>
                             <a href="{{ route('shop.index') }}"
-                               class="inline-block px-6 py-2 bg-brand-black text-white text-xs font-medium tracking-[0.15em] uppercase hover:bg-brand-brown transition-colors duration-300">
+                               class="inline-block px-6 py-2 bg-brand-black text-white text-xs font-medium tracking-[0.15em] uppercase hover:bg-brand-gray-dark transition-colors duration-300">
                                 เลือกซื้อสินค้า
                             </a>
                         </div>

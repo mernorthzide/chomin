@@ -22,15 +22,15 @@
                     @csrf
                     <input type="text" name="company" class="hidden" tabindex="-1" autocomplete="off">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input name="name" value="{{ old('name') }}" required placeholder="{{ app()->getLocale() === 'en' ? 'Name' : 'ชื่อ' }}" class="border-brand-gray-border text-sm">
-                        <input name="email" value="{{ old('email') }}" required type="email" placeholder="Email" class="border-brand-gray-border text-sm">
+                        <input type="text" name="name" value="{{ old('name') }}" required aria-label="{{ app()->getLocale() === 'en' ? 'Name' : 'ชื่อ' }}" placeholder="{{ app()->getLocale() === 'en' ? 'Name' : 'ชื่อ' }}" class="contact-field w-full min-h-[48px] rounded-none border-brand-gray-border px-4 py-3 text-sm focus:border-brand-black focus:ring-0">
+                        <input name="email" value="{{ old('email') }}" required type="email" aria-label="Email" placeholder="Email" class="contact-field w-full min-h-[48px] rounded-none border-brand-gray-border px-4 py-3 text-sm focus:border-brand-black focus:ring-0">
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input name="phone" value="{{ old('phone') }}" placeholder="{{ app()->getLocale() === 'en' ? 'Phone' : 'เบอร์โทร' }}" class="border-brand-gray-border text-sm">
-                        <input name="topic" value="{{ old('topic', $page->slug) }}" placeholder="{{ app()->getLocale() === 'en' ? 'Topic' : 'หัวข้อ' }}" class="border-brand-gray-border text-sm">
+                        <input type="tel" name="phone" value="{{ old('phone') }}" aria-label="{{ app()->getLocale() === 'en' ? 'Phone' : 'เบอร์โทร' }}" placeholder="{{ app()->getLocale() === 'en' ? 'Phone' : 'เบอร์โทร' }}" class="contact-field w-full min-h-[48px] rounded-none border-brand-gray-border px-4 py-3 text-sm focus:border-brand-black focus:ring-0">
+                        <input type="text" name="topic" value="{{ old('topic', $page->slug) }}" aria-label="{{ app()->getLocale() === 'en' ? 'Topic' : 'หัวข้อ' }}" placeholder="{{ app()->getLocale() === 'en' ? 'Topic' : 'หัวข้อ' }}" class="contact-field w-full min-h-[48px] rounded-none border-brand-gray-border px-4 py-3 text-sm focus:border-brand-black focus:ring-0">
                     </div>
-                    <textarea name="message" required rows="5" placeholder="{{ app()->getLocale() === 'en' ? 'Message' : 'ข้อความ' }}" class="w-full border-brand-gray-border text-sm">{{ old('message') }}</textarea>
-                    <button type="submit" class="bg-brand-black text-white px-8 py-3 text-xs tracking-[0.15em] uppercase">
+                    <textarea name="message" required rows="5" aria-label="{{ app()->getLocale() === 'en' ? 'Message' : 'ข้อความ' }}" placeholder="{{ app()->getLocale() === 'en' ? 'Message' : 'ข้อความ' }}" class="contact-field w-full rounded-none border-brand-gray-border px-4 py-3 text-sm focus:border-brand-black focus:ring-0">{{ old('message') }}</textarea>
+                    <button type="submit" class="contact-submit min-h-[48px] bg-brand-black px-8 py-3 text-xs uppercase tracking-[0.15em] text-white hover:bg-brand-gray-dark">
                         {{ app()->getLocale() === 'en' ? 'Send' : 'ส่งข้อความ' }}
                     </button>
                 </form>

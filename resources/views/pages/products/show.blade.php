@@ -5,18 +5,24 @@
         x-init="init()"
         class="bg-white">
 
+        @php
+            $sizeOrder = collect(['XXS', 'XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL'])
+                ->flip();
+            $visibleColorLimit = 16;
+        @endphp
+
         {{-- ============================================================
              BREADCRUMB
         ============================================================ --}}
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <ol class="flex items-center space-x-2 text-xs text-brand-gray-medium">
-                <li><a href="{{ route('home') }}" class="hover:text-brand-black transition-colors">หน้าแรก</a></li>
+            <ol class="flex min-w-0 items-center space-x-2 overflow-hidden text-xs text-brand-gray-medium">
+                <li class="shrink-0"><a href="{{ route('home') }}" class="hover:text-brand-black transition-colors">หน้าแรก</a></li>
                 <li><span class="text-brand-gray-border">/</span></li>
                 @if($product->collection)
-                    <li><a href="{{ route('collections.show', $product->collection->slug) }}" class="hover:text-brand-black transition-colors">{{ $product->collection->name }}</a></li>
-                    <li><span class="text-brand-gray-border">/</span></li>
+                    <li class="min-w-0 shrink"><a href="{{ route('collections.show', $product->collection->slug) }}" class="block truncate hover:text-brand-black transition-colors">{{ $product->collection->name }}</a></li>
+                    <li class="shrink-0"><span class="text-brand-gray-border">/</span></li>
                 @endif
-                <li class="text-brand-black truncate max-w-[200px]">{{ $product->name }}</li>
+                <li class="min-w-0 truncate text-brand-black">{{ $product->name }}</li>
             </ol>
         </nav>
 
@@ -52,14 +58,14 @@
                             <div>
                                 <button @click="prevImage()"
                                         aria-label="รูปก่อนหน้า"
-                                        class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/80 hover:bg-white flex items-center justify-center transition-colors duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2">
+                                        class="absolute left-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-white/85 shadow-sm transition-colors duration-200 hover:bg-white focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-brand-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                                     </svg>
                                 </button>
                                 <button @click="nextImage()"
                                         aria-label="รูปถัดไป"
-                                        class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/80 hover:bg-white flex items-center justify-center transition-colors duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2">
+                                        class="absolute right-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-white/85 shadow-sm transition-colors duration-200 hover:bg-white focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-brand-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                                     </svg>
@@ -118,29 +124,39 @@
                                 <span class="text-xs font-medium tracking-widest uppercase text-brand-gray-dark">สี</span>
                                 <span class="text-xs text-brand-gray-medium" x-text="selectedColorName"></span>
                             </div>
-                            <div class="grid grid-cols-8 sm:grid-cols-10 gap-2.5">
+                            <div class="grid grid-cols-8 gap-2.5 sm:grid-cols-10">
                                 @foreach($product->colors as $color)
                                     <button
+                                        x-show="showAllColors || {{ $loop->iteration }} <= {{ $visibleColorLimit }}"
                                         @click="selectColor({{ $color->id }}, '{{ $color->localized_name }}', {{ json_encode($color->images->pluck('image_path')->map(fn($p) => \Illuminate\Support\Facades\Storage::url($p))->values()) }})"
-                                        class="aspect-square border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2"
+                                        class="aspect-square min-h-11 border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2"
                                         :class="{{ $color->id }} === selectedColorId ? 'border-brand-black scale-105' : 'border-brand-gray-border hover:border-brand-gray-dark'"
                                         style="background-color: {{ $color->color_code ?? '#cccccc' }}"
+                                        aria-label="เลือกสี {{ $color->localized_name }}"
                                         :title="'{{ $color->localized_name }}'">
                                     </button>
                                 @endforeach
                             </div>
-                            <a href="{{ route('color-library') }}" class="mt-3 inline-block text-xs uppercase tracking-[0.14em] text-brand-gray-medium underline">
-                                ดูคลังสีทั้งหมด
-                            </a>
+                            <div class="mt-3 flex flex-wrap items-center gap-4">
+                                @if($product->colors->count() > $visibleColorLimit)
+                                    <button type="button" @click="showAllColors = !showAllColors" class="inline-flex min-h-[44px] items-center text-xs uppercase tracking-[0.14em] text-brand-gray-medium underline">
+                                        <span x-text="showAllColors ? 'แสดงสีน้อยลง' : 'ดูสีทั้งหมด {{ $product->colors->count() }} สี'"></span>
+                                    </button>
+                                @endif
+                                <a href="{{ route('color-library') }}" class="inline-block text-xs uppercase tracking-[0.14em] text-brand-gray-medium underline">
+                                    ดูคลังสีทั้งหมด
+                                </a>
+                            </div>
                         </div>
                     @endif
 
                     <!-- SIZE SELECTION -->
                     @php
-                        $availableSizes = $product->variants->when(
-                            request()->has('color') || true,
-                            fn($v) => $v
-                        )->pluck('size')->unique()->sort()->values();
+                        $availableSizes = $product->variants
+                            ->pluck('size')
+                            ->unique()
+                            ->sortBy(fn ($size) => $sizeOrder->get($size, 1000))
+                            ->values();
                     @endphp
 
                     @if($availableSizes->isNotEmpty())
@@ -158,7 +174,7 @@
                                     <button
                                         @click="selectSize('{{ $size }}')"
                                         :disabled="!isSizeAvailable('{{ $size }}')"
-                                        class="min-w-[48px] h-10 px-3 text-sm border transition-all duration-200 focus:outline-none"
+                                        class="min-h-[44px] min-w-[56px] border px-3 text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2"
                                         :class="{
                                             'border-brand-black bg-brand-black text-white': selectedSize === '{{ $size }}',
                                             'border-brand-gray-border text-brand-black hover:border-brand-gray-dark': selectedSize !== '{{ $size }}' && isSizeAvailable('{{ $size }}'),
@@ -193,7 +209,7 @@
                             <div class="flex items-center border border-brand-gray-border">
                                 <button type="button"
                                         @click="quantity = Math.max(1, quantity - 1)" :disabled="quantity <= 1"
-                                        class="w-10 h-10 flex items-center justify-center text-brand-gray-dark hover:bg-brand-gray transition-colors duration-150">
+                                        class="flex h-11 w-11 items-center justify-center text-brand-gray-dark transition-colors duration-150 hover:bg-brand-gray focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" />
                                     </svg>
@@ -201,10 +217,10 @@
                                 <input type="number" name="quantity"
                                        x-model="quantity"
                                        min="1"
-                                       class="w-12 h-10 text-center border-x border-brand-gray-border text-sm text-brand-black focus:outline-none focus:ring-0">
+                                       class="h-11 w-14 border-x border-brand-gray-border text-center text-sm text-brand-black focus:outline-none focus:ring-0">
                                 <button type="button"
                                         @click="quantity = Math.min((selectedVariantStock || 99), quantity + 1)" :disabled="selectedVariantStock !== null && quantity >= selectedVariantStock"
-                                        class="w-10 h-10 flex items-center justify-center text-brand-gray-dark hover:bg-brand-gray transition-colors duration-150">
+                                        class="flex h-11 w-11 items-center justify-center text-brand-gray-dark transition-colors duration-150 hover:bg-brand-gray focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                                     </svg>
@@ -348,6 +364,7 @@
             activeImageIndex: 0,
             currentImages: allImages.length > 0 ? allImages : [],
             quantity: 1,
+            showAllColors: false,
 
             init() {
                 // Auto-select first color if available

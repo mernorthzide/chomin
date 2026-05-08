@@ -8,7 +8,7 @@
 
     <!-- Heading -->
     <div class="mb-8">
-        <h2 class="font-serif text-2xl text-brand-black mb-1">ลืมรหัสผ่าน</h2>
+        <h1 class="font-serif text-2xl text-brand-black mb-1">ลืมรหัสผ่าน</h1>
         <p class="text-sm text-brand-gray-medium">กรุณากรอกอีเมลของคุณ เราจะส่งลิงก์สำหรับตั้งรหัสผ่านใหม่</p>
     </div>
 
@@ -22,7 +22,7 @@
         <div>
             <label for="email" class="block text-sm font-medium text-brand-gray-dark mb-1">อีเมล</label>
             <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
-                   class="block w-full rounded border-brand-gray-border focus:ring-brand-brown focus:border-brand-brown text-sm py-2.5" />
+                   class="block w-full rounded-none border-brand-gray-border focus:ring-brand-black focus:border-brand-black text-sm min-h-[44px]" />
             @error('email')
                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
             @enderror
@@ -31,7 +31,7 @@
         <!-- Submit Button -->
         <div class="mt-6">
             <button type="submit"
-                    class="w-full bg-brand-brown text-white text-sm font-medium tracking-wide py-3 rounded hover:bg-opacity-90 transition-all duration-200">
+                    class="w-full bg-brand-black text-white text-sm font-medium tracking-wide py-3.5 hover:bg-brand-gray-dark transition-colors duration-200">
                 ส่งลิงก์รีเซ็ตรหัสผ่าน
             </button>
         </div>
@@ -39,7 +39,7 @@
 
     <!-- Back to Login -->
     <div class="mt-6 text-center">
-        <a href="{{ route('login') }}" class="text-sm text-brand-brown hover:underline">
+        <a href="{{ route('login') }}" class="text-sm text-brand-black hover:underline">
             ← กลับไปหน้าเข้าสู่ระบบ
         </a>
     </div>

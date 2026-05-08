@@ -150,8 +150,8 @@
             <h4 class="text-xs font-bold uppercase tracking-widest mb-4">รับข่าวสารจาก CHOMIN</h4>
             <form method="POST" action="{{ route('newsletter.store') }}" class="flex gap-2">
                 @csrf
-                <input type="email" name="email" required placeholder="Email" class="min-w-0 flex-1 border-brand-gray-border text-sm">
-                <button type="submit" class="bg-brand-black text-white px-5 text-xs tracking-[0.15em] uppercase">Join</button>
+                <input type="email" name="email" required placeholder="Email" class="min-h-[44px] min-w-0 flex-1 border-brand-gray-border text-sm focus:border-brand-black focus:ring-brand-black">
+                <button type="submit" class="min-h-[44px] bg-brand-black px-5 text-xs uppercase tracking-[0.15em] text-white transition-colors hover:bg-brand-gray-dark">Join</button>
             </form>
         </div>
 

@@ -273,7 +273,7 @@
                                        class="block text-sm text-brand-gray-dark file:mr-4 file:py-2 file:px-4 file:border file:border-brand-gray-border file:text-xs file:font-medium file:tracking-wide file:bg-white file:text-brand-black hover:file:bg-brand-gray file:cursor-pointer file:transition-colors file:duration-150"
                                        required>
                                 <button type="submit"
-                                        class="flex-shrink-0 px-6 py-2 bg-brand-black text-white text-xs font-medium tracking-[0.15em] uppercase hover:bg-brand-brown transition-colors duration-300">
+                                        class="flex-shrink-0 px-6 py-2 bg-brand-black text-white text-xs font-medium tracking-[0.15em] uppercase hover:bg-brand-gray-dark transition-colors duration-300">
                                     อัปโหลดสลิป
                                 </button>
                             </div>

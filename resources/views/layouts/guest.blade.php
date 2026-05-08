@@ -16,9 +16,6 @@
 
         <!-- Left Panel: Brand Image (hidden on mobile) -->
         <div class="hidden md:flex md:w-1/2 bg-brand-black relative items-center justify-center">
-            <!-- Gradient overlay placeholder for future brand image -->
-            <div class="absolute inset-0 bg-gradient-to-br from-brand-black via-brand-brown/30 to-brand-black"></div>
-
             <!-- Brand content -->
             <div class="relative z-10 text-center px-12">
                 <x-brand-logo variant="white" class="h-16 lg:h-20 mx-auto mb-4" />

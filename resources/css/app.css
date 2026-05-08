@@ -138,10 +138,28 @@
     background: var(--brand-black);
     color: white;
 }
+.cookie-consent-panel {
+    padding-bottom: env(safe-area-inset-bottom);
+}
+@supports (padding: max(0px)) {
+    .cookie-consent-panel {
+        padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    }
+}
+.shop-filter-bar {
+    max-height: min(46svh, 20rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+.shop-color-scroll {
+    scroll-padding-inline: 1.5rem;
+    -webkit-overflow-scrolling: touch;
+}
 .filter-field {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    min-width: 0;
 }
 .filter-field label {
     font-size: 0.6875rem;
@@ -155,6 +173,9 @@
     border: 0;
     border-bottom: 1px solid var(--brand-gray-border);
     background: transparent;
+    min-height: 2.75rem;
+    min-width: 0;
+    width: 100%;
     padding: 0.2rem 1.5rem 0.2rem 0;
     font-size: 0.8125rem;
     color: var(--brand-black);

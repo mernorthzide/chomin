@@ -26,9 +26,9 @@
         </div>
     </section>
 
-    <section class="sticky z-30 border-b border-brand-gray-border bg-white" style="top: 60px;">
+    <section class="shop-filter-bar sticky z-30 border-b border-brand-gray-border bg-white" style="top: 60px;">
         <div class="px-6 md:px-12 py-4">
-            <form method="GET" action="{{ route('collections.show', $collection->slug) }}" class="flex flex-wrap items-center gap-4 md:gap-6">
+            <form method="GET" action="{{ route('collections.show', $collection->slug) }}" class="grid grid-cols-2 items-end gap-4 md:flex md:flex-wrap md:items-center md:gap-6">
                 <div class="filter-field">
                     <label for="category">หมวดหมู่</label>
                     <select id="category" name="category" onchange="this.form.submit()">
@@ -51,7 +51,7 @@
                     </select>
                 </div>
 
-                <div class="ml-auto text-xs uppercase tracking-[0.14em] text-brand-gray-light">
+                <div class="col-span-2 text-xs uppercase tracking-[0.14em] text-brand-gray-light md:ml-auto md:col-span-1">
                     {{ $products->total() }} รายการ
                 </div>
 

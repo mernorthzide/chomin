@@ -56,7 +56,7 @@
                                 @include('pages.profile._address-form')
                                 <div class="mt-4 flex gap-3">
                                     <button type="submit"
-                                            class="px-6 py-2 bg-brand-black text-white text-xs font-medium tracking-[0.15em] uppercase hover:bg-brand-brown transition-colors duration-300">
+                                            class="px-6 py-2 bg-brand-black text-white text-xs font-medium tracking-[0.15em] uppercase hover:bg-brand-gray-dark transition-colors duration-300">
                                         บันทึก
                                     </button>
                                     <button type="button" @click="showAddForm = false"
@@ -120,7 +120,7 @@
                                             @include('pages.profile._address-form', ['address' => $address])
                                             <div class="mt-4 flex gap-3">
                                                 <button type="submit"
-                                                        class="px-6 py-2 bg-brand-black text-white text-xs font-medium tracking-[0.15em] uppercase hover:bg-brand-brown transition-colors duration-300">
+                                                        class="px-6 py-2 bg-brand-black text-white text-xs font-medium tracking-[0.15em] uppercase hover:bg-brand-gray-dark transition-colors duration-300">
                                                     บันทึก
                                                 </button>
                                                 <button type="button" @click="editing = false"
