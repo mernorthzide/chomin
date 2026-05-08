@@ -14,7 +14,7 @@ class ColorLibraryController extends Controller
             ->orderBy('sort_order')
             ->orderBy('name')
             ->get()
-            ->unique(fn ($color) => $color->slug ?: $color->name)
+            ->unique(fn ($color) => $color->filter_key)
             ->values();
 
         return view('pages.color-library', compact('colors'));

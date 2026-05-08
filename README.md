@@ -1,58 +1,56 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# CHOMIN
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+CHOMIN is a Laravel storefront and admin system for a Thai fashion shop. It covers catalog browsing, color-library filtering, cart and checkout, PromptPay slip review, coupons, gift cards, points, wishlist, content pages, newsletter capture, and Filament reports.
 
-## About Laravel
-
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
-
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Local Setup
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan db:seed --class=ProductSeeder
+php artisan db:seed --class=AdminUserSeeder
+php artisan storage:link
+npm run build
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Use `MAIL_MAILER=log` locally unless you are testing a real SMTP account. Use `QUEUE_CONNECTION=database` with a running worker for queued mail:
 
-## Contributing
+```bash
+php artisan queue:work
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Test And Build
 
-## Code of Conduct
+```bash
+php artisan test
+npm run build
+php artisan route:cache
+php artisan config:cache
+php artisan view:cache
+php artisan optimize:clear
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Required Environment
 
-## Security Vulnerabilities
+Set `APP_NAME=CHOMIN`, `APP_URL`, `APP_LOCALE=th`, database credentials, `FILESYSTEM_DISK=public`, mail credentials, queue settings, and PromptPay/site settings before launch. To bootstrap an admin safely, set `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and optionally `ADMIN_PHONE` before running `AdminUserSeeder`.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Deployment
 
-## License
+GitHub Actions builds assets on the runner, uploads `public/build`, then runs production install, migration, storage link, cache warming, and a `/th` health check on the server. Do not commit SMTP, SSH, database, admin, PromptPay, or deploy webhook secrets.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The optional `deploy.php` webhook requires `DEPLOY_TOKEN` from the server environment and has no default token.
+
+## Production launch checklist
+
+- Confirm legal copy for privacy, terms, shipping, returns, and exchange policy.
+- Configure PromptPay ID/name/QR and verify checkout payment instructions.
+- Configure SMTP and run a queue worker or supervisor for queued mail.
+- Run migrations and seed only intentional production data.
+- Set `ADMIN_EMAIL` and `ADMIN_PASSWORD`, then rotate the first admin password after login.
+- Verify `storage:link`, product images, color swatches, and `public/build` assets on production.
+- Check `/th`, `/th/shop`, product detail, cart, checkout success, `/login`, `/admin`, and reports export.
+- Confirm production logs have no 500s or missing critical assets after deploy.

@@ -72,7 +72,7 @@ class ShopController extends Controller
             ->orderBy('sort_order')
             ->orderBy('name')
             ->get()
-            ->unique(fn ($color) => $color->slug ?: $color->name)
+            ->unique(fn ($color) => $color->filter_key)
             ->take(10)
             ->values();
 

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -24,6 +24,7 @@ class ProductController extends Controller
             'colors.translations',
             'colors.variants',
             'images',
+            'primaryImage',
             'variants',
         ]);
 
@@ -39,6 +40,17 @@ class ProductController extends Controller
             ->limit(6)
             ->get();
 
-        return view('pages.products.show', compact('product', 'related'));
+        $title = ($product->localized('seo_title') ?: $product->localized_name).' | CHOMIN';
+        $description = $product->localized('seo_description')
+            ?: $product->localized_description
+            ?: 'CHO.MIN — เชิ้ตดีไซน์ 50+ สี ไซส์ XS-6XL จัดส่งฟรีทั่วประเทศ';
+        $ogImage = $product->primaryImage
+            ? url(Storage::url($product->primaryImage->image_path))
+            : null;
+        $inWishlist = auth()->check()
+            ? auth()->user()->wishlists()->where('product_id', $product->id)->exists()
+            : false;
+
+        return view('pages.products.show', compact('product', 'related', 'title', 'description', 'ogImage', 'inWishlist'));
     }
 }

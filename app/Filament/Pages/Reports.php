@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Exports\SalesReportExport;
+use App\Exports\TopProductsExport;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Filament\Pages\Page;
@@ -62,5 +63,12 @@ class Reports extends Page
     {
         $filename = 'sales-report-' . $this->from . '-to-' . $this->to . '.xlsx';
         return Excel::download(new SalesReportExport($this->from . ' 00:00:00', $this->to . ' 23:59:59'), $filename);
+    }
+
+    public function exportTopProducts(): BinaryFileResponse
+    {
+        $filename = 'top-products-' . $this->from . '-to-' . $this->to . '.xlsx';
+
+        return Excel::download(new TopProductsExport($this->from . ' 00:00:00', $this->to . ' 23:59:59'), $filename);
     }
 }

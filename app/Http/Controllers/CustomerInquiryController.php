@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Mail\CustomerInquiryReceived;
 use App\Models\CustomerInquiry;
 use App\Models\SiteSetting;
+use App\Support\SafeMail;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 
 class CustomerInquiryController extends Controller
 {
@@ -34,9 +34,7 @@ class CustomerInquiryController extends Controller
         ]);
 
         $adminEmail = SiteSetting::get('inquiry_notification_email') ?: SiteSetting::get('site_email');
-        if ($adminEmail) {
-            Mail::to($adminEmail)->queue(new CustomerInquiryReceived($inquiry));
-        }
+        SafeMail::queue($adminEmail, new CustomerInquiryReceived($inquiry));
 
         return back()->with('success', $locale === 'en' ? 'Message received.' : 'รับข้อความเรียบร้อยแล้ว');
     }

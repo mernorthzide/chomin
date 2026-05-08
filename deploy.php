@@ -4,10 +4,15 @@
  * Simple deploy webhook for CHOMIN
  * Trigger: GET/POST https://your-domain.com/deploy.php?token=YOUR_TOKEN
  *
- * This runs `git pull` and clears Laravel cache when called with the correct token.
+ * This runs the production deploy steps when called with the correct token.
  */
 
-$secret = getenv('DEPLOY_TOKEN') ?: '6be882483ccb5c22df004f92696671d72e4bac81ad606ba732a3012270e4ec29';
+$secret = getenv('DEPLOY_TOKEN');
+
+if (!$secret) {
+    http_response_code(503);
+    die('DEPLOY_TOKEN is not configured');
+}
 
 $token = $_GET['token'] ?? $_POST['token'] ?? '';
 
@@ -22,6 +27,9 @@ $projectDir = __DIR__;
 
 $commands = [
     "cd $projectDir && git pull origin main 2>&1",
+    "cd $projectDir && composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader 2>&1",
+    "cd $projectDir && php artisan migrate --force 2>&1",
+    "cd $projectDir && php artisan storage:link 2>&1",
     "cd $projectDir && php artisan optimize:clear 2>&1",
     "cd $projectDir && php artisan config:cache 2>&1",
     "cd $projectDir && php artisan route:cache 2>&1",

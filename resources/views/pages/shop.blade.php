@@ -81,8 +81,7 @@
                     <span class="text-[11px] uppercase tracking-[0.14em] text-brand-gray-light mr-1">Color</span>
                     @foreach($availableColors as $color)
                         @php
-                            $imageColorCode = pathinfo($color->images->first()?->image_path ?? '', PATHINFO_FILENAME);
-                            $colorKey = $color->slug ?: ($imageColorCode ?: $color->name);
+                            $colorKey = $color->filter_key;
                             $colorQuery = array_filter(array_merge(request()->except(['page', 'color']), ['color' => $colorKey]), fn ($value) => filled($value));
                         @endphp
                         <a href="{{ route('shop.index', $colorQuery) }}"

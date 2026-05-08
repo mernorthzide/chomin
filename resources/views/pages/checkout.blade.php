@@ -24,15 +24,30 @@
             </div>
         @endif
 
+        @php
+            $defaultAddress = $addresses->firstWhere('is_default', true) ?? $addresses->first();
+        @endphp
+
         <form action="{{ route('checkout.store') }}" method="POST"
+              x-init="init()"
               x-data="{
                   useNewAddress: {{ $addresses->isEmpty() ? 'true' : 'false' }},
-                  selectedAddress: null,
+                  selectedAddress: {{ $defaultAddress?->id ?? 'null' }},
                   addresses: {{ $addresses->toJson() }},
                   couponCode: '{{ request('coupon_code', '') }}',
                   pointsUsed: {{ request('points_used', 0) }},
-                  maxPoints: {{ auth()->user()->points }},
+                  maxPoints: {{ (int) (auth()->user()?->points ?? 0) }},
                   giftCardCodes: [''],
+
+                  init() {
+                      if (!this.useNewAddress && this.selectedAddress) {
+                          const address = this.addresses.find((item) => item.id === this.selectedAddress);
+
+                          if (address) {
+                              this.fillFromAddress(address);
+                          }
+                      }
+                  },
 
                   fillFromAddress(addr) {
                       this.$refs.shippingName.value = addr.name;
@@ -190,16 +205,6 @@
                             </div>
 
                         </div>
-                    </div>
-
-                    {{-- Hidden shipping fields when using saved address --}}
-                    <div x-show="!useNewAddress" x-cloak>
-                        <input type="hidden" name="shipping_name" x-ref="shippingName">
-                        <input type="hidden" name="shipping_phone" x-ref="shippingPhone">
-                        <input type="hidden" name="shipping_address" x-ref="shippingAddress">
-                        <input type="hidden" name="shipping_district" x-ref="shippingDistrict">
-                        <input type="hidden" name="shipping_province" x-ref="shippingProvince">
-                        <input type="hidden" name="shipping_postal_code" x-ref="shippingPostalCode">
                     </div>
 
                     {{-- Coupon & Points Summary (mobile) --}}

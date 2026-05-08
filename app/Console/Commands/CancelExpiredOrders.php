@@ -3,8 +3,8 @@ namespace App\Console\Commands;
 
 use App\Mail\OrderCancelled;
 use App\Models\Order;
+use App\Support\SafeMail;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Mail;
 
 class CancelExpiredOrders extends Command
 {
@@ -37,7 +37,7 @@ class CancelExpiredOrders extends Command
             }
 
             $order->update(['status' => 'cancelled', 'cancelled_at' => now()]);
-            Mail::to($order->user->email)->queue(new OrderCancelled($order));
+            SafeMail::queue($order->user->email, new OrderCancelled($order));
             $this->info("Cancelled order {$order->order_number}");
         }
 

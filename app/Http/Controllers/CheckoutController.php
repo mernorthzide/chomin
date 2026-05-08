@@ -8,9 +8,9 @@ use App\Models\SiteSetting;
 use App\Services\CartService;
 use App\Services\GiftCardService;
 use App\Services\OrderService;
+use App\Support\SafeMail;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Mail;
 
 class CheckoutController extends Controller
 {
@@ -67,11 +67,9 @@ class CheckoutController extends Controller
 
         // Dispatch email notifications
         $order->load('user', 'items.product', 'items.variant');
-        Mail::to($order->user->email)->send(new OrderCreated($order));
+        SafeMail::queue($order->user->email, new OrderCreated($order));
         $adminEmail = SiteSetting::get('site_email');
-        if ($adminEmail) {
-            Mail::to($adminEmail)->send(new NewOrderNotification($order));
-        }
+        SafeMail::queue($adminEmail, new NewOrderNotification($order));
 
         return redirect()->route('checkout.success', $order)->with('success', 'สั่งซื้อสำเร็จ');
     }

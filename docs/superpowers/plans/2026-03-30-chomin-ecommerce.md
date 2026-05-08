@@ -1772,12 +1772,19 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
+        $email = env('ADMIN_EMAIL');
+        $password = env('ADMIN_PASSWORD');
+
+        if (! $email || ! $password) {
+            return;
+        }
+
         User::firstOrCreate(
-            ['email' => 'admin@chomin.com'],
+            ['email' => $email],
             [
-                'name' => 'Admin',
-                'password' => Hash::make('password'),
-                'phone' => '0812345678',
+                'name' => env('ADMIN_NAME', 'Admin'),
+                'password' => Hash::make($password),
+                'phone' => env('ADMIN_PHONE'),
                 'email_verified_at' => now(),
             ]
         );
@@ -1972,7 +1979,7 @@ When prompted, select the admin panel. This creates roles and permissions.
 - [ ] **Step 3: Assign super_admin role to admin user**
 
 ```bash
-php artisan shield:super-admin --user=admin@chomin.com
+php artisan shield:super-admin --user="${ADMIN_EMAIL}"
 ```
 
 - [ ] **Step 4: Verify admin panel loads**
@@ -4774,9 +4781,8 @@ class CancelExpiredOrders extends Command
                 'cancelled_at' => now(),
             ]);
 
-            // Send cancellation email
-            \Illuminate\Support\Facades\Mail::to($order->user->email)
-                ->queue(new \App\Mail\OrderCancelled($order));
+            // Queue cancellation email without blocking the order flow.
+            \App\Support\SafeMail::queue($order->user->email, new \App\Mail\OrderCancelled($order));
 
             $this->info("Cancelled order {$order->order_number}");
         }

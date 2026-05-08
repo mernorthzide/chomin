@@ -6,6 +6,7 @@ use App\Mail\OrderCompleted;
 use App\Mail\OrderShipped;
 use App\Mail\PaymentConfirmed;
 use App\Mail\PaymentRejected;
+use App\Support\SafeMail;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
@@ -16,7 +17,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 
 class OrdersTable
 {
@@ -90,7 +90,7 @@ class OrdersTable
                             ]);
                         }
                         $record->load('user', 'items.product');
-                        Mail::to($record->user->email)->send(new PaymentConfirmed($record));
+                        SafeMail::queue($record->user->email, new PaymentConfirmed($record));
                     }),
                 Action::make('reject')
                     ->label('ปฏิเสธ')
@@ -110,7 +110,7 @@ class OrdersTable
                             ]);
                         }
                         $record->load('user', 'paymentSlip');
-                        Mail::to($record->user->email)->send(new PaymentRejected($record));
+                        SafeMail::queue($record->user->email, new PaymentRejected($record));
                     }),
                 Action::make('ship')
                     ->label('จัดส่ง')
@@ -133,7 +133,7 @@ class OrdersTable
                             'shipped_at' => now(),
                         ]);
                         $record->load('user');
-                        Mail::to($record->user->email)->send(new OrderShipped($record));
+                        SafeMail::queue($record->user->email, new OrderShipped($record));
                     }),
                 Action::make('complete')
                     ->label('เสร็จสิ้น')
@@ -147,7 +147,7 @@ class OrdersTable
                             'completed_at' => now(),
                         ]);
                         $record->load('user');
-                        Mail::to($record->user->email)->send(new OrderCompleted($record));
+                        SafeMail::queue($record->user->email, new OrderCompleted($record));
                         app(\App\Services\PointsService::class)->earnPoints($record);
                     }),
             ])

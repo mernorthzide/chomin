@@ -21,10 +21,14 @@ class StoryController extends Controller
     {
         abort_unless($story->is_published, 404);
         $story->load('translations');
+        $title = $story->localized('seo_title') ?: $story->localized('title');
+        if (! str_contains($title, 'CHOMIN')) {
+            $title .= ' | CHOMIN';
+        }
 
         return view('pages.stories.show', [
             'story' => $story,
-            'title' => $story->localized('seo_title') ?: $story->localized('title'),
+            'title' => $title,
             'description' => $story->localized('seo_description') ?: $story->localized('excerpt'),
         ]);
     }

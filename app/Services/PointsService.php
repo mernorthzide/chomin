@@ -9,6 +9,27 @@ class PointsService
 {
     public function earnPoints(Order $order): int
     {
+        $order = $order->fresh(['user']) ?? $order;
+
+        if ($order->status !== 'completed') {
+            return 0;
+        }
+
+        if ((int) $order->points_earned > 0) {
+            return (int) $order->points_earned;
+        }
+
+        $existingTransaction = PointTransaction::where('order_id', $order->id)
+            ->where('user_id', $order->user_id)
+            ->where('type', 'earn')
+            ->first();
+
+        if ($existingTransaction) {
+            $order->update(['points_earned' => (int) $existingTransaction->points]);
+
+            return (int) $existingTransaction->points;
+        }
+
         $pointsPerBaht = (int) SiteSetting::get('points_per_baht', 100);
         if ($pointsPerBaht <= 0) return 0;
 

@@ -9,6 +9,40 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, dom, fileinfo, mysql, pdo, pdo_mysql, zip
+          coverage: none
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install PHP dependencies
+        run: composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+
+      - name: Build assets
+        run: |
+          npm ci
+          npm run build
+
+      - name: Upload built assets
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: 151.106.116.52
+          username: u700921586
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 65002
+          source: public/build
+          target: domains/moccasin-dogfish-924842.hostingersite.com/chomin
+
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1
         with:
@@ -18,10 +52,15 @@ jobs:
           port: 65002
           timeout: 30s
           script: |
+            set -e
             cd domains/moccasin-dogfish-924842.hostingersite.com/chomin
             git pull origin main
+            composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+            php artisan migrate --force
+            php artisan storage:link
             php artisan optimize:clear
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
+            curl -fsS https://moccasin-dogfish-924842.hostingersite.com/th >/dev/null
             echo "Deploy complete: $(date)"

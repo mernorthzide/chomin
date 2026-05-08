@@ -17,8 +17,7 @@
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 border-t border-brand-gray-border">
             @foreach($colors as $color)
                 @php
-                    $imageColorCode = pathinfo($color->images->first()?->image_path ?? '', PATHINFO_FILENAME);
-                    $colorKey = $color->slug ?: ($imageColorCode ?: \Illuminate\Support\Str::slug($color->name));
+                    $colorKey = $color->filter_key;
                 @endphp
                 <a href="{{ route('shop.index', ['color' => $colorKey]) }}"
                    class="group border-b border-r border-brand-gray-border bg-white p-3 md:p-4 focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-inset">

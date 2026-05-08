@@ -1,4 +1,4 @@
-<x-layouts.shop :title="$collection->localized_name.' | CHOMIN'">
+<x-layouts.shop :title="$title" :description="$description" :ogImage="$ogImage">
 
     @php
         $collectionImage = $collection->banner_image

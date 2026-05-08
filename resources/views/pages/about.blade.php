@@ -1,4 +1,4 @@
-<x-layouts.shop>
+<x-layouts.shop :title="$title" :description="$description" :ogImage="$ogImage">
 
     <!-- Page Header -->
     <section class="bg-brand-black py-16 md:py-24">

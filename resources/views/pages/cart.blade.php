@@ -149,7 +149,7 @@
                          x-data="{
                              couponCode: '',
                              pointsUsed: 0,
-                             maxPoints: {{ auth()->check() ? auth()->user()->points : 0 }},
+                             maxPoints: {{ (int) (auth()->user()?->points ?? 0) }},
                          }">
 
                         <h2 class="text-sm font-medium tracking-widest uppercase text-brand-black mb-6">

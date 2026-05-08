@@ -16,7 +16,12 @@
                 </div>
                 <div style="flex-shrink:0;">
                     <x-filament::button wire:click="export" icon="heroicon-o-arrow-down-tray" size="lg">
-                        Export Excel
+                        Export Sales
+                    </x-filament::button>
+                </div>
+                <div style="flex-shrink:0;">
+                    <x-filament::button wire:click="exportTopProducts" icon="heroicon-o-arrow-down-tray" color="gray" size="lg">
+                        Export Top Products
                     </x-filament::button>
                 </div>
             </div>
