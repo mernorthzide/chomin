@@ -1,9 +1,10 @@
 <x-layouts.shop>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+    <div class="px-6 md:px-12 py-10 md:py-14">
 
         {{-- Page Title --}}
-        <h1 class="text-2xl md:text-3xl font-medium text-brand-black tracking-widest uppercase mb-8">
+        <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-4">Shopping Bag</p>
+        <h1 class="font-serif text-5xl md:text-7xl uppercase leading-none text-brand-black mb-8">
             ตะกร้าสินค้า
         </h1>
 
@@ -28,7 +29,7 @@
                 </svg>
                 <p class="text-brand-gray-medium text-sm tracking-wide mb-6">ตะกร้าของคุณว่างเปล่า</p>
                 <a href="{{ route('shop.index') }}"
-                   class="inline-block px-8 py-3 bg-brand-black text-white text-xs font-medium tracking-[0.2em] uppercase hover:bg-brand-brown transition-colors duration-300">
+                   class="inline-block px-8 py-3 bg-brand-black text-white text-xs font-medium tracking-[0.2em] uppercase hover:bg-brand-gray-dark transition-colors duration-300">
                     เลือกซื้อสินค้า
                 </a>
             </div>
@@ -144,7 +145,7 @@
 
                 {{-- Order Summary --}}
                 <div class="mt-10 lg:mt-0">
-                    <div class="bg-brand-gray p-6 sticky top-4"
+                    <div class="border border-brand-gray-border bg-white p-6 sticky top-28"
                          x-data="{
                              couponCode: '',
                              pointsUsed: 0,
@@ -211,15 +212,30 @@
                         {{-- Checkout Button --}}
                         @auth
                             <a :href="`{{ route('checkout.index') }}?coupon_code=${encodeURIComponent(couponCode)}&points_used=${pointsUsed}`"
-                               class="block w-full py-4 text-center text-sm font-medium tracking-[0.15em] uppercase bg-brand-black text-white hover:bg-brand-brown transition-colors duration-300">
+                               class="block w-full py-4 text-center text-sm font-medium tracking-[0.15em] uppercase bg-brand-black text-white hover:bg-brand-gray-dark transition-colors duration-300">
                                 ดำเนินการสั่งซื้อ
                             </a>
                         @else
                             <a href="{{ route('login') }}?redirect={{ urlencode(route('checkout.index')) }}"
-                               class="block w-full py-4 text-center text-sm font-medium tracking-[0.15em] uppercase bg-brand-black text-white hover:bg-brand-brown transition-colors duration-300">
+                               class="block w-full py-4 text-center text-sm font-medium tracking-[0.15em] uppercase bg-brand-black text-white hover:bg-brand-gray-dark transition-colors duration-300">
                                 เข้าสู่ระบบเพื่อสั่งซื้อ
                             </a>
                         @endauth
+
+                        <div class="mt-5 grid grid-cols-3 border border-brand-gray-border text-center">
+                            <a href="{{ route('pages.shipping') }}" class="p-3 border-r border-brand-gray-border">
+                                <span class="block text-[10px] uppercase tracking-[0.12em] text-brand-gray-light">Ship</span>
+                                <span class="block text-xs mt-1">Free</span>
+                            </a>
+                            <a href="{{ route('pages.returns') }}" class="p-3 border-r border-brand-gray-border">
+                                <span class="block text-[10px] uppercase tracking-[0.12em] text-brand-gray-light">Return</span>
+                                <span class="block text-xs mt-1">30D</span>
+                            </a>
+                            <a href="{{ route('pages.member') }}" class="p-3">
+                                <span class="block text-[10px] uppercase tracking-[0.12em] text-brand-gray-light">Point</span>
+                                <span class="block text-xs mt-1">Earn</span>
+                            </a>
+                        </div>
 
                     </div>
                 </div>

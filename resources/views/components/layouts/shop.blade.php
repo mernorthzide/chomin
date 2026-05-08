@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -31,17 +31,16 @@
 <body class="font-sans antialiased bg-white text-brand-black">
 
     <!-- Announcement Ticker -->
-    <div class="bg-brand-black text-white overflow-hidden">
-        <div class="ticker-track flex whitespace-nowrap py-2.5">
+    <div class="bg-brand-black text-white overflow-hidden border-b border-brand-black">
+        <div class="ticker-track flex whitespace-nowrap py-2">
             @for($i = 0; $i < 3; $i++)
-                <span class="ticker-item text-[11px] tracking-[0.1em] uppercase px-10">
-                    จัดส่งฟรีทั่วประเทศ
-                </span>
-                <span class="text-white/30 text-[11px]">&mdash;</span>
-                <span class="ticker-item text-[11px] tracking-[0.1em] uppercase px-10">
-                    เปลี่ยนคืนภายใน 30 วัน
-                </span>
-                <span class="text-white/30 text-[11px]">&mdash;</span>
+                <span class="ticker-item text-[11px] tracking-[0.14em] uppercase px-10">Free shipping Thailand</span>
+                <span class="text-white/30 text-[11px]">/</span>
+                <span class="ticker-item text-[11px] tracking-[0.14em] uppercase px-10">50+ colors</span>
+                <span class="text-white/30 text-[11px]">/</span>
+                <span class="ticker-item text-[11px] tracking-[0.14em] uppercase px-10">XS-6XL</span>
+                <span class="text-white/30 text-[11px]">/</span>
+                <span class="ticker-item text-[11px] tracking-[0.14em] uppercase px-10">30 day exchange</span>
             @endfor
         </div>
     </div>

@@ -199,7 +199,7 @@
                             </div>
 
                             <button type="submit"
-                                    class="mt-4 w-full py-3 text-sm font-medium tracking-[0.15em] uppercase bg-brand-black text-white hover:bg-brand-brown transition-colors duration-300">
+                                    class="mt-4 w-full py-3 text-sm font-medium tracking-[0.15em] uppercase bg-brand-black text-white hover:bg-brand-gray-dark transition-colors duration-300">
                                 อัปโหลดสลิป
                             </button>
                         </form>
@@ -213,7 +213,7 @@
                         กลับหน้าแรก
                     </a>
                     <a href="{{ route('shop.index') }}"
-                       class="flex-1 py-3 text-center text-xs font-medium tracking-widest uppercase bg-brand-black text-white hover:bg-brand-brown transition-colors duration-200">
+                       class="flex-1 py-3 text-center text-xs font-medium tracking-widest uppercase bg-brand-black text-white hover:bg-brand-gray-dark transition-colors duration-200">
                         ช้อปต่อ
                     </a>
                 </div>

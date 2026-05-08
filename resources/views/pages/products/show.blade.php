@@ -23,7 +23,7 @@
         {{-- ============================================================
              MAIN PRODUCT SECTION
         ============================================================ --}}
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 md:pb-20">
+        <section class="px-6 md:px-12 pb-16 md:pb-20">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
 
                 {{-- ---- LEFT: IMAGE GALLERY ---- --}}
@@ -92,7 +92,7 @@
                     @endif
 
                     <!-- Product Name -->
-                    <h1 class="text-2xl md:text-3xl font-medium text-brand-black leading-tight">
+                    <h1 class="font-serif text-4xl md:text-6xl uppercase text-brand-black leading-none">
                         {{ $product->localized_name }}
                     </h1>
 
@@ -118,17 +118,20 @@
                                 <span class="text-xs font-medium tracking-widest uppercase text-brand-gray-dark">สี</span>
                                 <span class="text-xs text-brand-gray-medium" x-text="selectedColorName"></span>
                             </div>
-                            <div class="flex flex-wrap gap-2.5">
+                            <div class="grid grid-cols-8 sm:grid-cols-10 gap-2.5">
                                 @foreach($product->colors as $color)
                                     <button
                                         @click="selectColor({{ $color->id }}, '{{ $color->localized_name }}', {{ json_encode($color->images->pluck('image_path')->map(fn($p) => \Illuminate\Support\Facades\Storage::url($p))->values()) }})"
-                                        class="w-8 h-8 rounded-full border-2 transition-all duration-200 focus:outline-none"
-                                        :class="{{ $color->id }} === selectedColorId ? 'border-brand-black scale-110 shadow-md' : 'border-brand-gray-border hover:border-brand-gray-dark'"
+                                        class="aspect-square border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2"
+                                        :class="{{ $color->id }} === selectedColorId ? 'border-brand-black scale-105' : 'border-brand-gray-border hover:border-brand-gray-dark'"
                                         style="background-color: {{ $color->color_code ?? '#cccccc' }}"
                                         :title="'{{ $color->localized_name }}'">
                                     </button>
                                 @endforeach
                             </div>
+                            <a href="{{ route('color-library') }}" class="mt-3 inline-block text-xs uppercase tracking-[0.14em] text-brand-gray-medium underline">
+                                ดูคลังสีทั้งหมด
+                            </a>
                         </div>
                     @endif
 
@@ -236,6 +239,21 @@
                         </svg>
                         <span>เพิ่ม Wishlist</span>
                     </button>
+
+                    <div class="mt-6 grid grid-cols-3 border border-brand-gray-border text-center">
+                        <a href="{{ route('pages.shipping') }}" class="p-4 border-r border-brand-gray-border">
+                            <span class="block text-[10px] uppercase tracking-[0.14em] text-brand-gray-light">Shipping</span>
+                            <span class="mt-1 block text-xs">ฟรีทั่วประเทศ</span>
+                        </a>
+                        <a href="{{ route('pages.returns') }}" class="p-4 border-r border-brand-gray-border">
+                            <span class="block text-[10px] uppercase tracking-[0.14em] text-brand-gray-light">Exchange</span>
+                            <span class="mt-1 block text-xs">30 วัน</span>
+                        </a>
+                        <a href="{{ route('pages.member') }}" class="p-4">
+                            <span class="block text-[10px] uppercase tracking-[0.14em] text-brand-gray-light">Member</span>
+                            <span class="mt-1 block text-xs">สะสมแต้ม</span>
+                        </a>
+                    </div>
 
                     <!-- Description -->
                     @if($product->localized_description)

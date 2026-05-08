@@ -31,7 +31,7 @@ class CollectionController extends Controller
 
         $query = $collection->products()
             ->active()
-            ->with(['primaryImage', 'images', 'variants', 'category.translations', 'translations', 'colors.translations']);
+            ->with(['primaryImage', 'images', 'variants', 'category.translations', 'collection.translations', 'translations', 'colors.translations']);
 
         // Filter by category
         if ($request->filled('category')) {

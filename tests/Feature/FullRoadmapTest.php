@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Collection;
 use App\Models\Product;
 use App\Models\ProductColor;
+use App\Models\ProductImage;
 use App\Models\ProductVariant;
 use App\Models\User;
 use App\Services\GiftCardService;
@@ -279,6 +280,92 @@ class FullRoadmapTest extends TestCase
         $this->get('/th/products/localized-shirt')
             ->assertOk()
             ->assertSee('/th/cart/add', false);
+    }
+
+    public function test_homepage_surfaces_campaign_first_storefront_sections(): void
+    {
+        $this->createCatalogProduct([
+            'name' => 'CM Classic Shirt',
+            'slug' => 'cm-classic-shirt',
+        ]);
+
+        $this->get('/th')
+            ->assertOk()
+            ->assertSee('Design Your Own Shirt')
+            ->assertSee('Build Your Shirt')
+            ->assertSee('50+ สี')
+            ->assertSee('XS-6XL')
+            ->assertSee('/th/color-library', false)
+            ->assertSee('/th/member', false);
+    }
+
+    public function test_shop_can_filter_products_by_variant_size(): void
+    {
+        $mediumProduct = $this->createCatalogProduct([
+            'name' => 'Medium Shirt',
+            'slug' => 'medium-shirt',
+        ]);
+
+        $largeProduct = Product::create([
+            'name' => 'Large Shirt',
+            'slug' => 'large-shirt',
+            'description' => 'Large only',
+            'price' => 990,
+            'collection_id' => $mediumProduct->collection_id,
+            'category_id' => $mediumProduct->category_id,
+            'is_active' => true,
+            'is_featured' => true,
+        ]);
+
+        $largeColor = ProductColor::create([
+            'product_id' => $largeProduct->id,
+            'name' => 'White',
+            'slug' => 'white',
+            'color_code' => '#ffffff',
+        ]);
+
+        ProductVariant::create([
+            'product_id' => $largeProduct->id,
+            'product_color_id' => $largeColor->id,
+            'size' => 'L',
+            'stock' => 10,
+            'sku' => 'LARGE-WHT-L',
+        ]);
+
+        $this->get('/th/shop?size=M')
+            ->assertOk()
+            ->assertSee('Medium Shirt')
+            ->assertDontSee('Large Shirt')
+            ->assertSee('value="M" selected', false);
+    }
+
+    public function test_shop_accepts_factory_color_code_filters_from_color_library(): void
+    {
+        $product = $this->createCatalogProduct([
+            'name' => 'Warm Greige Shirt',
+            'slug' => 'warm-greige-shirt',
+        ]);
+        $color = $product->colors()->firstOrFail();
+        $color->update([
+            'name' => 'Warm Light Greige',
+            'slug' => null,
+        ]);
+
+        ProductImage::create([
+            'product_id' => $product->id,
+            'product_color_id' => $color->id,
+            'image_path' => 'products/colors/7.png',
+            'is_primary' => false,
+            'sort_order' => 2,
+        ]);
+
+        $this->get('/th/color-library')
+            ->assertOk()
+            ->assertSee('/th/shop?color=7', false);
+
+        $this->get('/th/shop?color=7&size=M')
+            ->assertOk()
+            ->assertSee('Warm Greige Shirt');
     }
 
     public function test_cookie_consent_logs_optional_categories(): void

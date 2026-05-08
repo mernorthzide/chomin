@@ -1,9 +1,10 @@
 <x-layouts.shop>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+    <div class="px-6 md:px-12 py-10 md:py-14">
 
         {{-- Page Title --}}
-        <h1 class="text-2xl md:text-3xl font-medium text-brand-black tracking-widest uppercase mb-8">
+        <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-4">Checkout</p>
+        <h1 class="font-serif text-5xl md:text-7xl uppercase leading-none text-brand-black mb-8">
             ชำระเงิน
         </h1>
 
@@ -202,7 +203,7 @@
                     </div>
 
                     {{-- Coupon & Points Summary (mobile) --}}
-                    <div class="lg:hidden bg-brand-gray p-4 rounded space-y-3">
+                    <div class="lg:hidden border border-brand-gray-border bg-white p-4 space-y-3">
                         <div>
                             <p class="text-xs text-brand-gray-medium">รหัสคูปอง: <span class="text-brand-black" x-text="couponCode || 'ไม่มี'"></span></p>
                             <p class="text-xs text-brand-gray-medium mt-1">แต้มที่ใช้: <span class="text-brand-black" x-text="pointsUsed"></span></p>
@@ -213,7 +214,7 @@
 
                 {{-- Right: Order Summary --}}
                 <div class="mt-10 lg:mt-0">
-                    <div class="bg-brand-gray p-6 sticky top-4">
+                    <div class="border border-brand-gray-border bg-white p-6 sticky top-28">
                         <h2 class="text-sm font-medium tracking-widest uppercase text-brand-black mb-6">
                             รายการสั่งซื้อ
                         </h2>
@@ -300,13 +301,28 @@
                         </div>
 
                         <button type="submit"
-                                class="mt-6 w-full py-4 text-sm font-medium tracking-[0.15em] uppercase bg-brand-black text-white hover:bg-brand-brown transition-colors duration-300">
+                                class="mt-6 w-full py-4 text-sm font-medium tracking-[0.15em] uppercase bg-brand-black text-white hover:bg-brand-gray-dark transition-colors duration-300">
                             ยืนยันสั่งซื้อ
                         </button>
 
                         <p class="mt-3 text-center text-xs text-brand-gray-medium">
                             ชำระเงินผ่าน PromptPay หลังยืนยันออเดอร์
                         </p>
+
+                        <div class="mt-5 grid grid-cols-3 border border-brand-gray-border text-center">
+                            <a href="{{ route('pages.shipping') }}" class="p-3 border-r border-brand-gray-border">
+                                <span class="block text-[10px] uppercase tracking-[0.12em] text-brand-gray-light">Ship</span>
+                                <span class="block text-xs mt-1">Free</span>
+                            </a>
+                            <a href="{{ route('pages.returns') }}" class="p-3 border-r border-brand-gray-border">
+                                <span class="block text-[10px] uppercase tracking-[0.12em] text-brand-gray-light">Return</span>
+                                <span class="block text-xs mt-1">30D</span>
+                            </a>
+                            <a href="{{ route('pages.member') }}" class="p-3">
+                                <span class="block text-[10px] uppercase tracking-[0.12em] text-brand-gray-light">Point</span>
+                                <span class="block text-xs mt-1">Earn</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
 

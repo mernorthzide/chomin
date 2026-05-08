@@ -1,129 +1,125 @@
-<x-layouts.shop>
+<x-layouts.shop :title="(app()->getLocale() === 'en' ? 'Shop' : 'ร้านค้า').' | CHOMIN'">
 
-    <!-- Page Header -->
-    <section class="bg-brand-black py-16 md:py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="font-serif text-4xl md:text-5xl font-normal text-white uppercase tracking-widest">
-                ร้านค้า
-            </h1>
-            <p class="mt-4 text-sm text-white/60 tracking-wide">
-                สินค้าทั้งหมดจาก CHOMIN
-            </p>
+    <section class="page-kicker border-b border-brand-gray-border bg-white">
+        <div class="px-6 md:px-12 py-12 md:py-16">
+            <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-4">Products</p>
+                    <h1 class="font-serif uppercase leading-none text-5xl md:text-7xl">
+                        {{ app()->getLocale() === 'en' ? 'Shop' : 'ร้านค้า' }}
+                    </h1>
+                </div>
+                <p class="max-w-md text-sm text-brand-gray-medium leading-relaxed">
+                    เชิ้ต CHOMIN เลือกได้ตามสี ไซส์ คอลเล็คชัน และรายละเอียดที่เข้ากับวันของคุณ
+                </p>
+            </div>
         </div>
     </section>
 
-    {{-- ============================================================
-         FILTER BAR
-    ============================================================ --}}
-    <section class="bg-white border-b border-brand-gray-border">
-        <div class="mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <form method="GET" action="{{ route('shop.index') }}"
-                  class="flex flex-wrap items-center gap-3 md:gap-5">
-
-                <!-- Category Filter -->
-                <div class="flex items-center space-x-2">
-                    <label for="category" class="text-xs font-medium tracking-wider text-brand-gray-medium uppercase whitespace-nowrap">หมวดหมู่</label>
-                    <select id="category" name="category"
-                            onchange="this.form.submit()"
-                            class="text-sm border-0 border-b border-brand-gray-border bg-transparent py-1 pr-6 pl-0 text-brand-black focus:ring-0 focus:border-brand-black cursor-pointer">
+    <section class="sticky top-[92px] z-30 border-b border-brand-gray-border bg-white/95 backdrop-blur">
+        <div class="px-6 md:px-12 py-4">
+            <form method="GET" action="{{ route('shop.index') }}" class="flex flex-wrap items-center gap-4 md:gap-6">
+                <div class="filter-field">
+                    <label for="category">หมวดหมู่</label>
+                    <select id="category" name="category" onchange="this.form.submit()">
                         <option value="">ทั้งหมด</option>
                         @foreach($categories as $category)
-                            <option value="{{ $category->slug }}"
-                                    {{ request('category') === $category->slug ? 'selected' : '' }}>
+                            <option value="{{ $category->slug }}" {{ request('category') === $category->slug ? 'selected' : '' }}>
                                 {{ $category->localized_name }}
                             </option>
                         @endforeach
                     </select>
                 </div>
 
-                <div class="w-px h-4 bg-brand-gray-border hidden sm:block"></div>
-
-                <!-- Collection Filter -->
-                <div class="flex items-center space-x-2">
-                    <label for="collection" class="text-xs font-medium tracking-wider text-brand-gray-medium uppercase whitespace-nowrap">คอลเล็คชัน</label>
-                    <select id="collection" name="collection"
-                            onchange="this.form.submit()"
-                            class="text-sm border-0 border-b border-brand-gray-border bg-transparent py-1 pr-6 pl-0 text-brand-black focus:ring-0 focus:border-brand-black cursor-pointer">
+                <div class="filter-field">
+                    <label for="collection">คอลเล็คชัน</label>
+                    <select id="collection" name="collection" onchange="this.form.submit()">
                         <option value="">ทั้งหมด</option>
                         @foreach($collections as $collection)
-                            <option value="{{ $collection->slug }}"
-                                    {{ request('collection') === $collection->slug ? 'selected' : '' }}>
+                            <option value="{{ $collection->slug }}" {{ request('collection') === $collection->slug ? 'selected' : '' }}>
                                 {{ $collection->localized_name }}
                             </option>
                         @endforeach
                     </select>
                 </div>
 
-                <div class="w-px h-4 bg-brand-gray-border hidden sm:block"></div>
-
-                <!-- Sort -->
-                <div class="flex items-center space-x-2">
-                    <label for="sort" class="text-xs font-medium tracking-wider text-brand-gray-medium uppercase whitespace-nowrap">เรียงตาม</label>
-                    <select id="sort" name="sort"
-                            onchange="this.form.submit()"
-                            class="text-sm border-0 border-b border-brand-gray-border bg-transparent py-1 pr-6 pl-0 text-brand-black focus:ring-0 focus:border-brand-black cursor-pointer">
-                        <option value="newest"     {{ $sort === 'newest'     ? 'selected' : '' }}>ใหม่สุด</option>
-                        <option value="price_asc"  {{ $sort === 'price_asc'  ? 'selected' : '' }}>ราคาต่ำ–สูง</option>
-                        <option value="price_desc" {{ $sort === 'price_desc' ? 'selected' : '' }}>ราคาสูง–ต่ำ</option>
-                        <option value="name_asc"   {{ $sort === 'name_asc'   ? 'selected' : '' }}>ชื่อ A–Z</option>
+                <div class="filter-field">
+                    <label for="size">ไซส์</label>
+                    <select id="size" name="size" onchange="this.form.submit()">
+                        <option value="">ทั้งหมด</option>
+                        @foreach($availableSizes as $size)
+                            <option value="{{ $size }}" {{ request('size') === $size ? 'selected' : '' }}>
+                                {{ $size }}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
 
-                <!-- Result Count -->
-                <div class="ml-auto text-xs text-brand-gray-light tracking-wide">
+                <div class="filter-field">
+                    <label for="sort">เรียงตาม</label>
+                    <select id="sort" name="sort" onchange="this.form.submit()">
+                        <option value="newest" {{ $sort === 'newest' ? 'selected' : '' }}>ใหม่สุด</option>
+                        <option value="price_asc" {{ $sort === 'price_asc' ? 'selected' : '' }}>ราคาต่ำ-สูง</option>
+                        <option value="price_desc" {{ $sort === 'price_desc' ? 'selected' : '' }}>ราคาสูง-ต่ำ</option>
+                        <option value="name_asc" {{ $sort === 'name_asc' ? 'selected' : '' }}>ชื่อ A-Z</option>
+                    </select>
+                </div>
+
+                <div class="ml-auto text-xs uppercase tracking-[0.14em] text-brand-gray-light">
                     {{ $products->total() }} รายการ
                 </div>
 
-                <!-- Clear Filters -->
-                @if(request()->hasAny(['category', 'collection']))
-                    <a href="{{ route('shop.index') }}"
-                       class="text-xs text-brand-black underline hover:underline tracking-wide">
+                @if(request()->hasAny(['category', 'collection', 'color', 'size']))
+                    <a href="{{ route('shop.index') }}" class="text-xs uppercase tracking-[0.14em] border-b border-brand-black pb-1">
                         ล้างตัวกรอง
                     </a>
                 @endif
             </form>
-        </div>
-    </section>
 
-    {{-- ============================================================
-         PRODUCTS GRID
-    ============================================================ --}}
-    <section class="bg-white py-10 md:py-14">
-        <div class="mx-auto px-4 sm:px-6 lg:px-8">
-            @forelse($products as $product)
-                @if($loop->first)
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-8 md:gap-x-4 md:gap-y-10">
-                @endif
-
-                <div>
-                    <x-product-card :product="$product" />
-                </div>
-
-                @if($loop->last)
-                    </div>
-                @endif
-            @empty
-                <div class="text-center py-20">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-brand-gray-border mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                    </svg>
-                    <p class="text-sm text-brand-gray-medium">ไม่พบสินค้า</p>
-                    @if(request()->hasAny(['category', 'collection']))
-                        <a href="{{ route('shop.index') }}"
-                           class="mt-4 inline-block text-sm text-brand-black underline hover:underline">
-                            ล้างตัวกรองทั้งหมด
+            @if($availableColors->isNotEmpty())
+                <div class="mt-4 flex items-center gap-2 overflow-x-auto hide-scrollbar">
+                    <span class="text-[11px] uppercase tracking-[0.14em] text-brand-gray-light mr-1">Color</span>
+                    @foreach($availableColors as $color)
+                        @php
+                            $imageColorCode = pathinfo($color->images->first()?->image_path ?? '', PATHINFO_FILENAME);
+                            $colorKey = $color->slug ?: ($imageColorCode ?: $color->name);
+                            $colorQuery = array_filter(array_merge(request()->except(['page', 'color']), ['color' => $colorKey]), fn ($value) => filled($value));
+                        @endphp
+                        <a href="{{ route('shop.index', $colorQuery) }}"
+                           class="h-7 w-7 flex-shrink-0 rounded-full border {{ request('color') === $colorKey ? 'border-brand-black ring-2 ring-brand-black ring-offset-2' : 'border-brand-gray-border' }}"
+                           style="background-color: {{ $color->color_code ?? '#eeeeee' }}"
+                           title="{{ $color->localized_name }}"
+                           aria-label="{{ $color->localized_name }}"></a>
+                    @endforeach
+                    @if(request('color'))
+                        <a href="{{ route('shop.index', request()->except(['page', 'color'])) }}" class="ml-2 text-[11px] uppercase tracking-[0.14em] text-brand-gray-medium underline">
+                            clear color
                         </a>
                     @endif
                 </div>
-            @endforelse
-
-            <!-- Pagination -->
-            @if($products->hasPages())
-                <div class="mt-12 flex justify-center">
-                    {{ $products->links() }}
-                </div>
             @endif
         </div>
+    </section>
+
+    <section class="bg-white">
+        <div class="commerce-grid">
+            @forelse($products as $product)
+                <x-product-card :product="$product" />
+            @empty
+                <div class="col-span-full px-6 py-24 text-center">
+                    <p class="text-sm text-brand-gray-medium">ไม่พบสินค้า</p>
+                    <a href="{{ route('shop.index') }}" class="mt-5 inline-block text-xs uppercase tracking-[0.16em] border-b border-brand-black pb-1">
+                        ล้างตัวกรองทั้งหมด
+                    </a>
+                </div>
+            @endforelse
+        </div>
+
+        @if($products->hasPages())
+            <div class="px-6 md:px-12 py-10 border-t border-brand-gray-border">
+                {{ $products->links() }}
+            </div>
+        @endif
     </section>
 
 </x-layouts.shop>

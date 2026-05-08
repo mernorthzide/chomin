@@ -10,7 +10,7 @@ class SaleController extends Controller
     {
         $products = Product::active()
             ->onSale()
-            ->with(['translations', 'primaryImage', 'images', 'variants', 'colors.translations'])
+            ->with(['translations', 'primaryImage', 'images', 'variants', 'collection.translations', 'colors.translations'])
             ->orderBy('sale_ends_at')
             ->paginate(12);
 
