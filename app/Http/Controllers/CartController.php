@@ -11,7 +11,7 @@ class CartController extends Controller
     public function index()
     {
         $cart = $this->cartService->getCart();
-        $cart->load('items.product.primaryImage', 'items.variant.color');
+        $cart->load('items.product.primaryImage', 'items.product.translations', 'items.variant.color.translations');
         return view('pages.cart', compact('cart'));
     }
 
@@ -25,14 +25,14 @@ class CartController extends Controller
         return back()->with('success', 'เพิ่มสินค้าลงตะกร้าแล้ว');
     }
 
-    public function update(Request $request, int $itemId)
+    public function update(Request $request, string $locale, int $itemId)
     {
         $request->validate(['quantity' => 'required|integer|min:0']);
         $this->cartService->updateQuantity($itemId, $request->quantity);
         return back()->with('success', 'อัปเดตตะกร้าแล้ว');
     }
 
-    public function remove(int $itemId)
+    public function remove(string $locale, int $itemId)
     {
         $this->cartService->removeItem($itemId);
         return back()->with('success', 'ลบสินค้าออกจากตะกร้าแล้ว');

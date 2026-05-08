@@ -27,18 +27,18 @@
                     @if($collection->banner_image)
                         <img
                             src="{{ \Illuminate\Support\Facades\Storage::url($collection->banner_image) }}"
-                            alt="{{ $collection->name }}"
+                            alt="{{ $collection->localized_name }}"
                             class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                             loading="lazy">
                     @elseif($collection->image)
                         <img
                             src="{{ \Illuminate\Support\Facades\Storage::url($collection->image) }}"
-                            alt="{{ $collection->name }}"
+                            alt="{{ $collection->localized_name }}"
                             class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                             loading="lazy">
                     @else
                         <div class="absolute inset-0 bg-brand-gray flex items-center justify-center">
-                            <span class="font-serif text-6xl text-brand-gray-border">{{ strtoupper(substr($collection->name, 0, 1)) }}</span>
+                            <span class="font-serif text-6xl text-brand-gray-border">{{ strtoupper(substr($collection->localized_name, 0, 1)) }}</span>
                         </div>
                     @endif
 
@@ -48,7 +48,7 @@
                     <!-- Text Overlay -->
                     <div class="absolute bottom-0 left-0 right-0 p-6">
                         <h2 class="font-serif text-xl md:text-2xl font-normal text-white uppercase tracking-widest">
-                            {{ $collection->name }}
+                            {{ $collection->localized_name }}
                         </h2>
                         @if($collection->products_count > 0)
                             <p class="text-xs text-white/70 mt-1 tracking-wider">

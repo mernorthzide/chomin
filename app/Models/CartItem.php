@@ -9,5 +9,5 @@ class CartItem extends Model
     public function cart(): BelongsTo { return $this->belongsTo(Cart::class); }
     public function product(): BelongsTo { return $this->belongsTo(Product::class); }
     public function variant(): BelongsTo { return $this->belongsTo(ProductVariant::class, 'product_variant_id'); }
-    public function getLineTotalAttribute(): float { return $this->product->price * $this->quantity; }
+    public function getLineTotalAttribute(): float { return $this->product->display_price * $this->quantity; }
 }

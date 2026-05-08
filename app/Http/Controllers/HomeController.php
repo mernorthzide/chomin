@@ -12,9 +12,10 @@ class HomeController extends Controller
     {
         $collections = Collection::active()
             ->ordered()
+            ->with('translations')
             ->with(['products' => function ($query) {
                 $query->active()
-                    ->with(['primaryImage', 'images', 'variants'])
+                    ->with(['primaryImage', 'images', 'variants', 'translations', 'colors.translations'])
                     ->orderBy('sort_order')
                     ->limit(6);
             }])

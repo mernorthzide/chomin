@@ -16,7 +16,7 @@ class OrderHistoryController extends Controller
         return view('pages.profile.orders', compact('orders'));
     }
 
-    public function show(Order $order)
+    public function show(string $locale, Order $order)
     {
         abort_unless($order->user_id === auth()->id(), 403);
         $order->load('items.product', 'items.variant.color', 'paymentSlip');

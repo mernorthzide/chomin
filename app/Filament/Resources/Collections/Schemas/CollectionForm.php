@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Collections\Schemas;
 
 use App\Models\Collection;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -58,6 +59,24 @@ class CollectionForm
                     ->label('ลำดับ')
                     ->numeric()
                     ->default(0),
+                Repeater::make('translations')
+                    ->label('Translations')
+                    ->relationship()
+                    ->schema([
+                        Select::make('locale')
+                            ->label('ภาษา')
+                            ->options(config('chomin.locales.labels'))
+                            ->required(),
+                        TextInput::make('name')
+                            ->label('ชื่อคอลเล็คชัน')
+                            ->required(),
+                        Textarea::make('description')
+                            ->label('คำอธิบาย')
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(2)
+                    ->defaultItems(2)
+                    ->columnSpanFull(),
             ]);
     }
 }

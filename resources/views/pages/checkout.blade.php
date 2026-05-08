@@ -31,6 +31,7 @@
                   couponCode: '{{ request('coupon_code', '') }}',
                   pointsUsed: {{ request('points_used', 0) }},
                   maxPoints: {{ auth()->user()->points }},
+                  giftCardCodes: [''],
 
                   fillFromAddress(addr) {
                       this.$refs.shippingName.value = addr.name;
@@ -224,14 +225,14 @@
                                     <div class="flex-shrink-0 w-14 h-18 overflow-hidden bg-white">
                                         @if($item->product->primaryImage ?? false)
                                             <img src="{{ \Illuminate\Support\Facades\Storage::url($item->product->primaryImage->image_path) }}"
-                                                 alt="{{ $item->product->name }}"
+                                                 alt="{{ $item->product->localized_name }}"
                                                  class="w-full h-full object-cover">
                                         @endif
                                     </div>
                                     <div class="flex-1 min-w-0">
-                                        <p class="text-xs font-medium text-brand-black truncate">{{ $item->product->name }}</p>
+                                        <p class="text-xs font-medium text-brand-black truncate">{{ $item->product->localized_name }}</p>
                                         <p class="text-xs text-brand-gray-medium mt-0.5">
-                                            @if($item->variant->color){{ $item->variant->color->name }} / @endif{{ $item->variant->size }}
+                                            @if($item->variant->color){{ $item->variant->color->localized_name }} / @endif{{ $item->variant->size }}
                                         </p>
                                         <div class="flex justify-between mt-1">
                                             <span class="text-xs text-brand-gray-medium">x{{ $item->quantity }}</span>
@@ -263,6 +264,32 @@
                                     <span>-</span>
                                 </div>
                             </template>
+                        </div>
+
+                        <div class="border-t border-brand-gray-border mt-4 pt-4">
+                            <label class="block text-xs font-medium tracking-widest uppercase text-brand-gray-dark mb-3">
+                                Gift Card
+                            </label>
+                            <template x-for="(code, index) in giftCardCodes" :key="index">
+                                <div class="flex gap-2 mb-2">
+                                    <input type="text"
+                                           :name="`gift_card_codes[${index}]`"
+                                           x-model="giftCardCodes[index]"
+                                           placeholder="CHOMIN-XXXX-XXXX"
+                                           class="min-w-0 flex-1 border border-brand-gray-border px-3 py-2 text-xs focus:outline-none focus:border-brand-black bg-white">
+                                    <button type="button"
+                                            x-show="giftCardCodes.length > 1"
+                                            @click="giftCardCodes.splice(index, 1)"
+                                            class="px-3 text-xs border border-brand-gray-border">
+                                        ลบ
+                                    </button>
+                                </div>
+                            </template>
+                            <button type="button"
+                                    @click="giftCardCodes.push('')"
+                                    class="text-xs underline text-brand-gray-medium hover:text-brand-black">
+                                + เพิ่มบัตรอีกใบ
+                            </button>
                         </div>
 
                         <div class="border-t border-brand-gray-border mt-4 pt-4">

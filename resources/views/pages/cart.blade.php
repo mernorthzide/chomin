@@ -45,7 +45,7 @@
                                 <div class="flex-shrink-0 w-24 h-32 md:w-28 md:h-36 overflow-hidden bg-brand-gray">
                                     @if($item->product->primaryImage)
                                         <img src="{{ \Illuminate\Support\Facades\Storage::url($item->product->primaryImage->image_path) }}"
-                                             alt="{{ $item->product->name }}"
+                                             alt="{{ $item->product->localized_name }}"
                                              class="w-full h-full object-cover">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center">
@@ -61,16 +61,19 @@
                                     <div class="flex justify-between items-start">
                                         <div class="min-w-0 pr-4">
                                             <h3 class="text-sm font-medium text-brand-black truncate">
-                                                {{ $item->product->name }}
+                                                {{ $item->product->localized_name }}
                                             </h3>
                                             <p class="mt-1 text-xs text-brand-gray-medium">
                                                 @if($item->variant->color)
-                                                    {{ $item->variant->color->name }} /
+                                                    {{ $item->variant->color->localized_name }} /
                                                 @endif
                                                 {{ $item->variant->size }}
                                             </p>
                                             <p class="mt-1 text-sm text-brand-black">
-                                                ฿{{ number_format($item->product->price, 0) }}
+                                                ฿{{ number_format($item->product->display_price, 0) }}
+                                                @if($item->product->is_on_sale)
+                                                    <span class="ml-2 text-xs text-brand-gray-light line-through">฿{{ number_format((float) $item->product->price, 0) }}</span>
+                                                @endif
                                             </p>
                                         </div>
 

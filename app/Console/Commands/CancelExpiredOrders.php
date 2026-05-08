@@ -32,6 +32,10 @@ class CancelExpiredOrders extends Command
                 ]);
             }
 
+            if ($order->gift_card_discount > 0) {
+                app(\App\Services\GiftCardService::class)->refundOrder($order->load('giftCardRedemptions.giftCard'));
+            }
+
             $order->update(['status' => 'cancelled', 'cancelled_at' => now()]);
             Mail::to($order->user->email)->queue(new OrderCancelled($order));
             $this->info("Cancelled order {$order->order_number}");

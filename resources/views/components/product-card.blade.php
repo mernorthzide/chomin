@@ -8,6 +8,9 @@
     if (isset($product->variants) && $product->variants->isNotEmpty() && $product->variants->sum('stock') <= 5 && $product->variants->sum('stock') > 0) {
         $badges[] = ['label' => 'เหลือน้อย', 'class' => 'badge-sale'];
     }
+    if ($product->is_on_sale) {
+        $badges[] = ['label' => 'Sale', 'class' => 'badge-sale'];
+    }
 @endphp
 
 <a href="{{ route('products.show', $product->slug) }}"
@@ -20,7 +23,7 @@
         @if($primaryImage)
             <img
                 src="{{ \Illuminate\Support\Facades\Storage::url($primaryImage->image_path) }}"
-                alt="{{ $product->name }}"
+                alt="{{ $product->localized_name }}"
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 loading="lazy">
         @else
@@ -53,11 +56,18 @@
     <!-- Product Info -->
     <div class="mt-4">
         <h3 class="text-xs font-bold uppercase tracking-widest mb-1 truncate transition-colors duration-200 {{ $dark ? 'text-white group-hover:text-brand-gray-light' : 'text-brand-black group-hover:text-brand-gray-dark' }}">
-            {{ $product->name }}
+            {{ $product->localized_name }}
         </h3>
-        <p class="text-xs uppercase {{ $dark ? 'text-brand-gray-light' : 'text-brand-gray-medium' }}">
-            ฿{{ number_format($product->price, 0) }}
-        </p>
+        <div class="flex items-baseline gap-2">
+            <p class="text-xs uppercase {{ $dark ? 'text-brand-gray-light' : 'text-brand-gray-medium' }}">
+                ฿{{ number_format($product->display_price, 0) }}
+            </p>
+            @if($product->is_on_sale)
+                <p class="text-[10px] uppercase line-through {{ $dark ? 'text-white/40' : 'text-brand-gray-light' }}">
+                    ฿{{ number_format((float) $product->price, 0) }}
+                </p>
+            @endif
+        </div>
         @if($product->variants && $product->variants->unique('color')->count() > 1)
             <p class="text-[10px] text-brand-gray-light uppercase tracking-wider mt-1">
                 มี {{ $product->variants->unique('color')->count() }} สี

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Mail;
 
 class PaymentSlipController extends Controller
 {
-    public function store(Request $request, Order $order)
+    public function store(Request $request, string $locale, Order $order)
     {
         abort_unless($order->user_id === auth()->id(), 403);
         abort_unless(in_array($order->status, ['pending', 'awaiting_payment']), 422, 'ไม่สามารถแนบสลิปได้');

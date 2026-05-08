@@ -51,13 +51,15 @@
                         <template x-if="currentImages.length > 1">
                             <div>
                                 <button @click="prevImage()"
-                                        class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/80 hover:bg-white flex items-center justify-center transition-colors duration-200 shadow-sm">
+                                        aria-label="รูปก่อนหน้า"
+                                        class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/80 hover:bg-white flex items-center justify-center transition-colors duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-brand-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                                     </svg>
                                 </button>
                                 <button @click="nextImage()"
-                                        class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/80 hover:bg-white flex items-center justify-center transition-colors duration-200 shadow-sm">
+                                        aria-label="รูปถัดไป"
+                                        class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/80 hover:bg-white flex items-center justify-center transition-colors duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-brand-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                                     </svg>
@@ -91,13 +93,20 @@
 
                     <!-- Product Name -->
                     <h1 class="text-2xl md:text-3xl font-medium text-brand-black leading-tight">
-                        {{ $product->name }}
+                        {{ $product->localized_name }}
                     </h1>
 
                     <!-- Price -->
-                    <p class="mt-3 text-xl font-normal text-brand-black">
-                        ฿{{ number_format($product->price, 0) }}
-                    </p>
+                    <div class="mt-3 flex items-baseline gap-3">
+                        <p class="text-xl font-normal text-brand-black">
+                            ฿{{ number_format($product->display_price, 0) }}
+                        </p>
+                        @if($product->is_on_sale)
+                            <p class="text-sm text-brand-gray-light line-through">
+                                ฿{{ number_format((float) $product->price, 0) }}
+                            </p>
+                        @endif
+                    </div>
 
                     <!-- Divider -->
                     <div class="w-12 h-px bg-brand-gray-border my-6"></div>
@@ -112,11 +121,11 @@
                             <div class="flex flex-wrap gap-2.5">
                                 @foreach($product->colors as $color)
                                     <button
-                                        @click="selectColor({{ $color->id }}, '{{ $color->name }}', {{ json_encode($color->images->pluck('image_path')->map(fn($p) => \Illuminate\Support\Facades\Storage::url($p))->values()) }})"
+                                        @click="selectColor({{ $color->id }}, '{{ $color->localized_name }}', {{ json_encode($color->images->pluck('image_path')->map(fn($p) => \Illuminate\Support\Facades\Storage::url($p))->values()) }})"
                                         class="w-8 h-8 rounded-full border-2 transition-all duration-200 focus:outline-none"
                                         :class="{{ $color->id }} === selectedColorId ? 'border-brand-black scale-110 shadow-md' : 'border-brand-gray-border hover:border-brand-gray-dark'"
                                         style="background-color: {{ $color->color_code ?? '#cccccc' }}"
-                                        :title="'{{ $color->name }}'">
+                                        :title="'{{ $color->localized_name }}'">
                                     </button>
                                 @endforeach
                             </div>
@@ -170,7 +179,7 @@
                     </div>
 
                     <!-- QUANTITY + ADD TO CART FORM -->
-                    <form action="/cart/add" method="POST" class="space-y-4">
+                    <form action="{{ route('cart.add') }}" method="POST" class="space-y-4">
                         @csrf
                         <input type="hidden" name="variant_id" :value="selectedVariantId">
                         <input type="hidden" name="product_id" value="{{ $product->id }}">
@@ -180,7 +189,7 @@
                             <span class="text-xs font-medium tracking-widest uppercase text-brand-gray-dark">จำนวน</span>
                             <div class="flex items-center border border-brand-gray-border">
                                 <button type="button"
-                                        @click="quantity = Math.max(1, quantity - 1)"
+                                        @click="quantity = Math.max(1, quantity - 1)" :disabled="quantity <= 1"
                                         class="w-10 h-10 flex items-center justify-center text-brand-gray-dark hover:bg-brand-gray transition-colors duration-150">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" />
@@ -191,7 +200,7 @@
                                        min="1"
                                        class="w-12 h-10 text-center border-x border-brand-gray-border text-sm text-brand-black focus:outline-none focus:ring-0">
                                 <button type="button"
-                                        @click="quantity++"
+                                        @click="quantity = Math.min((selectedVariantStock || 99), quantity + 1)" :disabled="selectedVariantStock !== null && quantity >= selectedVariantStock"
                                         class="w-10 h-10 flex items-center justify-center text-brand-gray-dark hover:bg-brand-gray transition-colors duration-150">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
@@ -204,7 +213,7 @@
                         <button type="submit"
                                 :disabled="!selectedVariantId || selectedVariantStock === 0"
                                 class="w-full py-4 text-sm font-medium tracking-[0.15em] uppercase transition-all duration-300
-                                       bg-brand-black text-white hover:bg-brand-brown
+                                       bg-brand-black text-white hover:bg-brand-gray-dark
                                        disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-brand-black">
                             <template x-if="!selectedVariantId">
                                 <span>กรุณาเลือกสีและไซส์</span>
@@ -229,11 +238,11 @@
                     </button>
 
                     <!-- Description -->
-                    @if($product->description)
+                    @if($product->localized_description)
                         <div class="mt-8 pt-6 border-t border-brand-gray-border">
                             <h3 class="text-xs font-medium tracking-widest uppercase text-brand-gray-dark mb-3">รายละเอียด</h3>
                             <div class="text-sm text-brand-gray-medium leading-relaxed prose prose-sm max-w-none">
-                                {!! nl2br(e($product->description)) !!}
+                                {!! nl2br(e($product->localized_description)) !!}
                             </div>
                         </div>
                     @endif
@@ -311,7 +320,7 @@
                 // Auto-select first color if available
                 @if($product->colors->isNotEmpty())
                     const firstColor = {{ $product->colors->first()->id }};
-                    const firstName = '{{ $product->colors->first()->name }}';
+                    const firstName = '{{ $product->colors->first()->localized_name }}';
                     const firstImages = colorImages[firstColor] || allImages;
                     this.selectColor(firstColor, firstName, firstImages);
                 @endif

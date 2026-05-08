@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
-    public function createOrder(array $data, $cart, ?Coupon $coupon = null, int $pointsUsed = 0): Order
+    public function createOrder(array $data, $cart, ?Coupon $coupon = null, int $pointsUsed = 0, array $giftCardCodes = []): Order
     {
-        return DB::transaction(function () use ($data, $cart, $coupon, $pointsUsed) {
+        return DB::transaction(function () use ($data, $cart, $coupon, $pointsUsed, $giftCardCodes) {
             $cart->load('items.product', 'items.variant.color');
 
             foreach ($cart->items as $item) {
@@ -20,7 +20,7 @@ class OrderService
                     "สินค้า {$item->product->name} ({$variant->color->name} / {$variant->size}) สต็อกไม่เพียงพอ");
             }
 
-            $subtotal = $cart->items->sum(fn ($item) => $item->product->price * $item->quantity);
+            $subtotal = $cart->items->sum(fn ($item) => $item->product->display_price * $item->quantity);
             $shipping = ShippingSetting::current();
             $shippingFee = $shipping->getShippingFeeFor($subtotal);
 
@@ -33,7 +33,10 @@ class OrderService
             $pointsDiscount = $pointsUsed > 0 ? floor($pointsUsed / $pointsToBaht) : 0;
 
             $discount = $couponDiscount + $pointsDiscount;
-            $total = max(0, $subtotal - $discount + $shippingFee);
+            $preGiftCardTotal = max(0, $subtotal - $discount + $shippingFee);
+            $giftCards = app(GiftCardService::class)->resolveRedeemableCards($giftCardCodes);
+            $giftCardDiscount = min($preGiftCardTotal, (float) $giftCards->sum(fn ($card) => (float) $card->balance));
+            $total = max(0, $preGiftCardTotal - $giftCardDiscount);
 
             $order = Order::create([
                 'user_id' => auth()->id(),
@@ -42,6 +45,7 @@ class OrderService
                 'subtotal' => $subtotal,
                 'shipping_fee' => $shippingFee,
                 'discount' => $discount,
+                'gift_card_discount' => $giftCardDiscount,
                 'total' => $total,
                 'points_used' => $pointsUsed,
                 'coupon_id' => $coupon?->id,
@@ -61,7 +65,7 @@ class OrderService
                     'product_name' => $item->product->name,
                     'color_name' => $item->variant->color->name,
                     'size' => $item->variant->size,
-                    'price' => $item->product->price,
+                    'price' => $item->product->display_price,
                     'quantity' => $item->quantity,
                 ]);
                 $item->variant->decrement('stock', $item->quantity);
@@ -78,6 +82,11 @@ class OrderService
             }
 
             if ($coupon) $coupon->increment('used_count');
+
+            if ($giftCardDiscount > 0) {
+                app(GiftCardService::class)->redeemForOrder($order, $giftCards, $giftCardDiscount);
+            }
+
             $cart->items()->delete();
 
             return $order;

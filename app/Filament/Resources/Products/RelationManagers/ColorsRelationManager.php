@@ -8,6 +8,8 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
@@ -29,12 +31,31 @@ class ColorsRelationManager extends RelationManager
                     ->label('ชื่อสี')
                     ->required()
                     ->maxLength(255),
+                TextInput::make('slug')
+                    ->label('Slug')
+                    ->helperText('ใช้กับ filter /shop?color=...')
+                    ->maxLength(255),
                 ColorPicker::make('color_code')
                     ->label('รหัสสี'),
                 TextInput::make('sort_order')
                     ->label('ลำดับ')
                     ->numeric()
                     ->default(0),
+                Repeater::make('translations')
+                    ->label('Translations')
+                    ->relationship()
+                    ->schema([
+                        Select::make('locale')
+                            ->label('ภาษา')
+                            ->options(config('chomin.locales.labels'))
+                            ->required(),
+                        TextInput::make('name')
+                            ->label('ชื่อสี')
+                            ->required(),
+                    ])
+                    ->columns(2)
+                    ->defaultItems(2)
+                    ->columnSpanFull(),
             ]);
     }
 

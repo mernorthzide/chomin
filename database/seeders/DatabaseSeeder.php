@@ -10,6 +10,7 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
             SiteSettingSeeder::class,
             ShippingSettingSeeder::class,
+            ContentSeeder::class,
         ]);
     }
 }

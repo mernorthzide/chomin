@@ -1,12 +1,13 @@
 <?php
 namespace App\Models;
+use App\Models\Concerns\HasLocalizedContent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Collection extends Model
 {
-    use HasFactory;
+    use HasFactory, HasLocalizedContent;
     protected $fillable = ['name', 'slug', 'description', 'image', 'banner_image', 'is_active', 'sort_order', 'layout_type'];
 
     public const LAYOUT_TYPES = [
@@ -17,6 +18,9 @@ class Collection extends Model
     ];
     protected $casts = ['is_active' => 'boolean'];
     public function products(): HasMany { return $this->hasMany(Product::class); }
+    public function translations(): HasMany { return $this->hasMany(CollectionTranslation::class); }
     public function scopeActive($query) { return $query->where('is_active', true); }
     public function scopeOrdered($query) { return $query->orderBy('sort_order'); }
+    public function getLocalizedNameAttribute(): string { return $this->localized('name'); }
+    public function getLocalizedDescriptionAttribute(): ?string { return $this->localized('description'); }
 }

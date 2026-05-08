@@ -29,6 +29,11 @@ class ProductsTable
                     ->label('ราคา')
                     ->money('THB')
                     ->sortable(),
+                TextColumn::make('sale_price')
+                    ->label('ราคา Sale')
+                    ->money('THB')
+                    ->placeholder('-')
+                    ->sortable(),
                 TextColumn::make('collection.name')
                     ->label('คอลเล็คชัน'),
                 TextColumn::make('category.name')
@@ -42,6 +47,9 @@ class ProductsTable
                     ->boolean(),
                 IconColumn::make('is_featured')
                     ->label('แนะนำ')
+                    ->boolean(),
+                IconColumn::make('is_on_sale')
+                    ->label('Sale')
                     ->boolean(),
             ])
             ->filters([

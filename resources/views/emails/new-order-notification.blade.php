@@ -5,6 +5,9 @@
 **ลูกค้า:** {{ $order->user->name }} ({{ $order->user->email }})
 **วันที่:** {{ $order->created_at->format('d/m/Y H:i') }}
 **ยอดรวม:** ฿{{ number_format($order->total, 0) }}
+@if($order->gift_card_discount > 0)
+**บัตรของขวัญ:** -฿{{ number_format($order->gift_card_discount, 0) }}
+@endif
 
 ## รายการสินค้า
 
@@ -24,3 +27,4 @@
 <x-mail::button :url="url('/admin/orders')">
 จัดการออเดอร์ในระบบ Admin
 </x-mail::button>
+</x-mail::message>

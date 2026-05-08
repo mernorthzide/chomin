@@ -16,3 +16,4 @@
 </x-mail::button>
 
 ขอบคุณที่ไว้วางใจ **{{ config('app.name') }}**
+</x-mail::message>

@@ -15,6 +15,7 @@ class CollectionController extends Controller
     {
         $collections = Collection::active()
             ->ordered()
+            ->with('translations')
             ->withCount(['products' => fn($q) => $q->active()])
             ->get();
 
@@ -24,13 +25,13 @@ class CollectionController extends Controller
     /**
      * Display products in a specific collection.
      */
-    public function show(Request $request, Collection $collection)
+    public function show(Request $request, string $locale, Collection $collection)
     {
         abort_unless($collection->is_active, 404);
 
         $query = $collection->products()
             ->active()
-            ->with(['primaryImage', 'images', 'variants', 'category']);
+            ->with(['primaryImage', 'images', 'variants', 'category.translations', 'translations', 'colors.translations']);
 
         // Filter by category
         if ($request->filled('category')) {
@@ -48,7 +49,7 @@ class CollectionController extends Controller
 
         $products = $query->paginate(12)->withQueryString();
 
-        $categories = Category::active()->ordered()->get();
+        $categories = Category::active()->ordered()->with('translations')->get();
 
         return view('pages.collections.show', compact('collection', 'products', 'categories', 'sort'));
     }

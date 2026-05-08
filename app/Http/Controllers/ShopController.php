@@ -15,7 +15,7 @@ class ShopController extends Controller
     public function __invoke(Request $request)
     {
         $query = Product::active()
-            ->with(['primaryImage', 'images', 'variants', 'category', 'collection']);
+            ->with(['primaryImage', 'images', 'variants', 'category.translations', 'collection.translations', 'translations', 'colors.translations']);
 
         // Filter by category
         if ($request->filled('category')) {
@@ -25,6 +25,13 @@ class ShopController extends Controller
         // Filter by collection
         if ($request->filled('collection')) {
             $query->whereHas('collection', fn($q) => $q->where('slug', $request->collection));
+        }
+
+        // Filter by color
+        if ($request->filled('color')) {
+            $query->whereHas('colors', fn($q) => $q
+                ->where('slug', $request->color)
+                ->orWhere('name', $request->color));
         }
 
         // Sort
@@ -38,8 +45,8 @@ class ShopController extends Controller
 
         $products = $query->paginate(12)->withQueryString();
 
-        $categories   = Category::active()->ordered()->get();
-        $collections  = Collection::active()->ordered()->get();
+        $categories   = Category::active()->ordered()->with('translations')->get();
+        $collections  = Collection::active()->ordered()->with('translations')->get();
 
         return view('pages.shop', compact('products', 'categories', 'collections', 'sort'));
     }

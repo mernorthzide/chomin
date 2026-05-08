@@ -9,3 +9,4 @@
 <x-mail::button :url="url('/admin/orders')">
 ตรวจสอบสลิปในระบบ Admin
 </x-mail::button>
+</x-mail::message>

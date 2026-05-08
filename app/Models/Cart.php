@@ -9,6 +9,6 @@ class Cart extends Model
     protected $fillable = ['user_id', 'session_id'];
     public function user(): BelongsTo { return $this->belongsTo(User::class); }
     public function items(): HasMany { return $this->hasMany(CartItem::class); }
-    public function getSubtotalAttribute(): float { return $this->items->sum(fn (CartItem $item) => $item->product->price * $item->quantity); }
+    public function getSubtotalAttribute(): float { return $this->items->sum(fn (CartItem $item) => $item->product->display_price * $item->quantity); }
     public function getTotalItemsAttribute(): int { return $this->items->sum('quantity'); }
 }

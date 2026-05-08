@@ -10,14 +10,15 @@ class Order extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id', 'order_number', 'status', 'subtotal', 'shipping_fee', 'discount', 'total',
+        'user_id', 'order_number', 'status', 'subtotal', 'shipping_fee', 'discount', 'gift_card_discount', 'total',
         'points_earned', 'points_used', 'coupon_id',
         'shipping_name', 'shipping_phone', 'shipping_address', 'shipping_district',
         'shipping_province', 'shipping_postal_code',
         'tracking_number', 'carrier_name', 'shipped_at', 'completed_at', 'cancelled_at', 'note',
     ];
     protected $casts = [
-        'subtotal' => 'decimal:2', 'shipping_fee' => 'decimal:2', 'discount' => 'decimal:2', 'total' => 'decimal:2',
+        'subtotal' => 'decimal:2', 'shipping_fee' => 'decimal:2', 'discount' => 'decimal:2',
+        'gift_card_discount' => 'decimal:2', 'total' => 'decimal:2',
         'shipped_at' => 'datetime', 'completed_at' => 'datetime', 'cancelled_at' => 'datetime',
     ];
 
@@ -25,6 +26,7 @@ class Order extends Model
     public function items(): HasMany { return $this->hasMany(OrderItem::class); }
     public function paymentSlip(): HasOne { return $this->hasOne(PaymentSlip::class); }
     public function coupon(): BelongsTo { return $this->belongsTo(Coupon::class); }
+    public function giftCardRedemptions(): HasMany { return $this->hasMany(OrderGiftCardRedemption::class); }
 
     public static function generateOrderNumber(): string
     {

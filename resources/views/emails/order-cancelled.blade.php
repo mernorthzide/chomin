@@ -12,3 +12,4 @@
 </x-mail::button>
 
 หากมีข้อสงสัย กรุณาติดต่อทีมงาน **{{ config('app.name') }}**
+</x-mail::message>

@@ -17,216 +17,277 @@
         $collectionPairs = $featuredCollections->chunk(2);
     @endphp
 
-    {{-- HERO BANNER --}}
+    {{-- ═══════════════════════════════════════════
+         SECTION 1: HERO
+    ═══════════════════════════════════════════ --}}
     @if($heroCollection)
-        <section class="relative w-full h-[70vh] md:h-[90vh] overflow-hidden">
+        <section class="hero-cinematic bg-brand-black" aria-label="Hero banner">
             @if($heroImage)
-                <img src="{{ $heroImage }}"
-                     alt="{{ $heroCollection->name }}"
-                     class="w-full h-full object-cover ken-burns"
-                     fetchpriority="high">
-            @else
-                <div class="w-full h-full bg-brand-gray flex items-center justify-center">
-                    <span class="text-brand-gray-light text-sm tracking-widest uppercase">{{ $heroCollection->name }}</span>
+                <div class="absolute inset-0 hero-mask">
+                    <img src="{{ $heroImage }}"
+                         alt="{{ $heroCollection->name }}"
+                         class="w-full h-full object-cover"
+                         fetchpriority="high">
+                    <div class="absolute inset-0 bg-brand-black/40"></div>
                 </div>
             @endif
 
-            <div class="absolute inset-0 bg-gradient-to-t from-brand-black/60 via-brand-black/15 to-transparent"></div>
-
-            <div class="absolute inset-0 flex flex-col items-center justify-center text-white text-center px-6 z-10 hero-text-reveal">
-                <span class="text-[10px] md:text-xs tracking-[0.5em] uppercase mb-6 opacity-70">
-                    Design Your Own Shirt
-                </span>
-                <h1 class="text-5xl md:text-7xl lg:text-8xl font-serif uppercase editorial-title leading-none mb-8">
-                    {{ $heroCollection->name }}
+            <div class="absolute inset-0 flex items-center justify-center z-10 pointer-events-none" aria-hidden="true">
+                <h1 class="hero-title-reveal font-serif uppercase leading-[0.85] text-white text-center whitespace-nowrap"
+                    style="font-size: clamp(3rem, 15vw, 12rem);">
+                    CHO.MIN
                 </h1>
-                <p class="text-xs md:text-sm tracking-widest uppercase opacity-60 mb-12 max-w-lg">
-                    เลือกได้มากถึง 50 สี ดีไซน์เรียบ แต่ซ่อนรายละเอียดที่ทำให้แตกต่าง
-                </p>
-                <a href="{{ route('shop.index') }}"
-                   class="bg-white text-brand-black px-10 py-4 text-[10px] font-bold tracking-[0.25em] uppercase hover:bg-brand-black hover:text-white transition-colors duration-500 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-black/50">
-                    ช้อปเลย
-                </a>
+            </div>
+
+            <div class="absolute bottom-0 left-0 right-0 z-10 px-6 md:px-12 pb-6 md:pb-8 flex items-end justify-between">
+                <div class="hero-sub-reveal hidden sm:block">
+                    <span class="text-white/50 text-xs tracking-[0.15em] uppercase block">
+                        Design Your Own Shirt
+                    </span>
+                </div>
+
+                <div class="hero-sub-reveal flex flex-col items-center gap-3 mx-auto sm:mx-0">
+                    <span class="text-white/40 text-xs tracking-[0.15em] uppercase">Scroll</span>
+                    <div class="scroll-hint-line text-white/40" aria-hidden="true"></div>
+                </div>
+
+                <div class="hero-sub-reveal text-right hidden sm:block">
+                    <span class="text-white/50 text-xs tracking-[0.15em] uppercase block">
+                        50+ Colors &mdash; XS to 6XL
+                    </span>
+                </div>
             </div>
         </section>
     @endif
 
-    {{-- NEW ARRIVALS --}}
+    {{-- ═══════════════════════════════════════════
+         SECTION 2: HORIZONTAL PRODUCT GALLERY
+    ═══════════════════════════════════════════ --}}
     @if($newArrivals->isNotEmpty())
-        <section class="py-16 md:py-24 reveal" data-reveal>
-            <div class="px-6 md:px-12 flex justify-between items-end mb-10 border-b border-brand-gray-border pb-4">
-                <div>
-                    <h2 class="text-xl md:text-2xl font-bold uppercase tracking-wide">สินค้ามาใหม่</h2>
-                    <p class="text-xs text-brand-gray-medium tracking-widest uppercase mt-1">
-                        ค้นพบสินค้าล่าสุดจากคอลเล็คชันของเรา
-                    </p>
+        <section class="pt-16 pb-12 md:pt-24 md:pb-16" aria-label="สินค้ามาใหม่">
+            <div class="px-6 md:px-12 mb-10 md:mb-14">
+                <div class="flex justify-between items-end">
+                    <div class="reveal" data-reveal>
+                        <span class="text-xs tracking-[0.2em] uppercase text-brand-gray-light block mb-3">New Arrivals</span>
+                        <h2 class="font-serif uppercase editorial-title leading-[0.9]"
+                            style="font-size: clamp(2rem, 5vw, 3.5rem);">
+                            สินค้ามาใหม่
+                        </h2>
+                    </div>
+                    <a href="{{ route('shop.index') }}"
+                       class="reveal text-xs tracking-[0.15em] uppercase hover:opacity-50 transition-opacity focus:outline-none focus:underline focus:underline-offset-4"
+                       data-reveal>
+                        ดูทั้งหมด
+                    </a>
                 </div>
-                <a href="{{ route('shop.index') }}"
-                   class="text-xs font-bold tracking-[0.2em] uppercase hover:opacity-60 transition-opacity focus:outline-none focus:underline">
-                    ดูทั้งหมด →
-                </a>
             </div>
 
-            <div class="pl-6 md:pl-12 relative">
-                <div class="flex gap-5 overflow-x-auto hide-scrollbar pb-4 reveal-stagger" data-reveal>
-                    @foreach($newArrivals as $product)
-                        <div class="flex-shrink-0 w-[200px] md:w-[260px]">
-                            <x-product-card :product="$product" />
-                        </div>
-                    @endforeach
-                </div>
-                <!-- Scroll hint -->
-                <div class="absolute right-0 top-0 bottom-4 w-16 bg-gradient-to-l from-white to-transparent pointer-events-none md:block hidden"></div>
-            </div>
-        </section>
-    @endif
+            <div class="h-gallery hide-scrollbar" data-drag-scroll>
+                <div class="flex-shrink-0 w-[2vw] md:w-[6vw]" aria-hidden="true"></div>
 
-    {{-- FEATURED COLLECTIONS --}}
-    @if($featuredCollections->isNotEmpty())
-        <section class="py-16 md:py-24 px-6 md:px-12">
-            @foreach($collectionPairs as $pair)
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 {{ !$loop->last ? 'mb-4 md:mb-6' : '' }} reveal" data-reveal>
-                    @foreach($pair as $collection)
-                        @php
-                            $colImage = null;
-                            if ($collection->banner_image) {
-                                $colImage = \Illuminate\Support\Facades\Storage::url($collection->banner_image);
-                            } elseif ($collection->image) {
-                                $colImage = \Illuminate\Support\Facades\Storage::url($collection->image);
-                            }
-                        @endphp
-                        <a href="{{ route('collections.show', $collection->slug) }}"
-                           class="collection-card group relative block aspect-[4/5] overflow-hidden bg-brand-gray focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2">
-                            @if($colImage)
-                                <img src="{{ $colImage }}"
-                                     alt="{{ $collection->name }}"
-                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                @foreach($newArrivals as $product)
+                    @php
+                        $primaryImage = $product->primaryImage ?? $product->images->first();
+                    @endphp
+                    <a href="{{ route('products.show', $product->slug) }}"
+                       class="h-gallery-item w-[70vw] md:w-[30vw] group focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2"
+                       aria-label="{{ $product->localized_name }} — ฿{{ number_format($product->display_price) }}">
+                        <div class="aspect-[3/4] bg-brand-gray overflow-hidden mb-4">
+                            @if($primaryImage)
+                                <img src="{{ \Illuminate\Support\Facades\Storage::url($primaryImage->image_path) }}"
+                                     alt="{{ $product->localized_name }}"
+                                     class="w-full h-full object-cover"
                                      loading="lazy">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center">
-                                    <span class="text-brand-gray-light text-sm tracking-widest uppercase">{{ $collection->name }}</span>
-                                </div>
                             @endif
-
-                            <div class="card-overlay absolute inset-0 bg-gradient-to-t from-brand-black/60 via-brand-black/10 to-transparent opacity-60"></div>
-
-                            <div class="card-content absolute bottom-0 left-0 right-0 p-6 md:p-8">
-                                <h3 class="text-white text-xl md:text-2xl font-bold uppercase tracking-wide mb-1">
-                                    {{ $collection->name }}
-                                </h3>
-                                @if($collection->description)
-                                    <p class="text-white/70 text-xs tracking-widest uppercase mb-5">
-                                        {{ \Illuminate\Support\Str::limit($collection->description, 60) }}
-                                    </p>
+                        </div>
+                        <div class="flex justify-between items-start gap-4">
+                            <div>
+                                <h3 class="text-sm uppercase tracking-[0.05em] leading-snug max-w-[220px]">{{ $product->localized_name }}</h3>
+                                @if($product->variants && $product->variants->unique('color')->count() > 1)
+                                    <span class="text-xs text-brand-gray-light tracking-[0.1em] uppercase mt-1.5 block">
+                                        {{ $product->variants->unique('color')->count() }} สี
+                                    </span>
                                 @endif
-                                <span class="card-btn inline-block bg-white text-brand-black px-6 py-2.5 text-xs font-bold tracking-[0.2em] uppercase">
-                                    สำรวจ
-                                </span>
                             </div>
-                        </a>
-                    @endforeach
-                </div>
-            @endforeach
+                            <span class="text-sm text-brand-gray-dark whitespace-nowrap">฿{{ number_format($product->display_price) }}</span>
+                        </div>
+                    </a>
+                @endforeach
+
+                <div class="flex-shrink-0 w-[2vw] md:w-[6vw]" aria-hidden="true"></div>
+            </div>
         </section>
     @endif
 
-    {{-- BRAND STORY — editorial, no price --}}
-    <section class="py-16 md:py-24 px-6 md:px-16 overflow-hidden">
-        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 items-center">
-            <div class="reveal" data-reveal>
-                <img src="{{ asset('images/fb-posts/premium-shirt-ad.jpg') }}"
-                     alt="CHO.MIN Premium Shirt"
-                     class="w-full aspect-[4/5] object-cover"
-                     loading="lazy">
-            </div>
-            <div class="reveal" data-reveal>
-                <span class="text-[10px] tracking-[0.5em] uppercase text-brand-gray-light block mb-6">เกี่ยวกับ CHO.MIN</span>
-                <h2 class="text-3xl md:text-4xl lg:text-5xl font-serif uppercase editorial-title leading-none mb-8">
-                    สไตล์<br>ไม่ควร<br>ถูกจำกัด
-                </h2>
-                <div class="space-y-4 text-sm text-brand-gray-dark leading-relaxed max-w-md">
+    {{-- ═══════════════════════════════════════════
+         SECTION 3: BRAND EDITORIAL
+    ═══════════════════════════════════════════ --}}
+    <section class="sticky-editorial md:min-h-[100vh] py-16 md:py-0" aria-label="เกี่ยวกับแบรนด์">
+        <div class="sticky-editorial-text px-6 md:px-16 order-2 md:order-1 pt-10 md:pt-0">
+            <div class="max-w-xl">
+                <span class="text-xs tracking-[0.2em] uppercase text-brand-gray-light block mb-8 reveal" data-reveal>
+                    The Brand
+                </span>
+
+                <div class="mb-10 reveal" data-reveal>
+                    <h2 class="font-serif uppercase editorial-title leading-[0.9]"
+                        style="font-size: clamp(2rem, 4vw, 3rem);">
+                        สไตล์<br>
+                        ไม่ควร<br>
+                        ถูกจำกัด
+                    </h2>
+                </div>
+
+                <div class="space-y-4 text-base text-brand-gray-dark leading-[1.75] max-w-[50ch] reveal" data-reveal>
                     <p>เราออกแบบเชิ้ตให้คุณเป็นคนกำหนดเอง เลือกได้มากถึง 50 สี ตั้งแต่โทนมินิมอล คลาสสิก ไปจนถึงเฉดจัดจ้านสายแฟชั่น</p>
-                    <p>เนื้อผ้าคุณภาพสัมผัสนุ่ม ใส่สบายและดูแพงอย่างเป็นธรรมชาติ ดีไซน์เรียบ แต่ซ่อนรายละเอียดที่ทำให้แตกต่างอย่างมีชั้นเชิง</p>
+                    <p>เนื้อผ้าคุณภาพสัมผัสนุ่ม ใส่สบายและดูแพงอย่างเป็นธรรมชาติ</p>
                 </div>
-                <a href="{{ route('shop.index') }}"
-                   class="inline-block mt-10 bg-brand-black text-white px-10 py-4 text-[10px] font-bold tracking-[0.25em] uppercase hover:bg-brand-gray-dark transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2">
-                    ดูสินค้าทั้งหมด
+
+                <a href="{{ route('about') }}"
+                   class="inline-block mt-10 text-xs tracking-[0.15em] uppercase border-b border-brand-black pb-1 hover:opacity-50 transition-opacity focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-4 reveal"
+                   data-reveal>
+                    เรื่องของเรา
                 </a>
+            </div>
+        </div>
+
+        <div class="order-1 md:order-2">
+            <div class="overflow-hidden reveal" data-reveal>
+                <img src="{{ asset('images/fb-posts/product-1.jpg') }}"
+                     alt="CHO.MIN — คู่รักใส่เชิ้ต"
+                     class="w-full aspect-[4/5] md:aspect-[3/4] object-cover">
+            </div>
+            <div class="overflow-hidden mt-4 reveal" data-reveal>
+                <img src="{{ asset('images/fb-posts/product-3.jpg') }}"
+                     alt="CHO.MIN — เชิ้ตหลากสี"
+                     class="w-full aspect-[4/3] object-cover">
             </div>
         </div>
     </section>
 
-    {{-- PINSTRIPE & CARE GUIDE --}}
-    <section class="py-16 md:py-24 px-6 md:px-12">
-        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 reveal-stagger" data-reveal>
-            <a href="{{ route('shop.index') }}" class="group block img-hover-zoom">
-                <div class="aspect-[3/4] bg-neutral-100 overflow-hidden">
-                    <img src="{{ asset('images/fb-posts/pinstripe-1.jpg') }}"
-                         alt="Pinstripe Collection"
-                         class="w-full h-full object-cover"
-                         loading="lazy">
+    {{-- ═══════════════════════════════════════════
+         SECTION 4: FEATURED COLLECTIONS
+    ═══════════════════════════════════════════ --}}
+    @if($featuredCollections->isNotEmpty())
+        <section class="pb-8 md:pb-12 px-6 md:px-12 pt-16 md:pt-24" aria-label="คอลเล็คชัน">
+            <div class="max-w-6xl mx-auto">
+                <div class="mb-12 md:mb-14 reveal" data-reveal>
+                    <span class="text-xs tracking-[0.2em] uppercase text-brand-gray-light block mb-3">Collections</span>
+                    <h2 class="font-serif uppercase editorial-title leading-[0.9]"
+                        style="font-size: clamp(2rem, 5vw, 3.5rem);">
+                        คอลเล็คชัน
+                    </h2>
                 </div>
-                <h3 class="mt-5 text-sm font-bold uppercase tracking-wide">Pinstripe Collection</h3>
-                <p class="text-[10px] text-brand-gray-light tracking-[0.3em] uppercase mt-2">คอลเลคชั่นใหม่</p>
-            </a>
-            <a href="{{ route('shop.index') }}" class="group block img-hover-zoom md:mt-12">
-                <div class="aspect-[3/4] bg-neutral-100 overflow-hidden">
-                    <img src="{{ asset('images/fb-posts/pinstripe-2.jpg') }}"
-                         alt="เชิ้ตลาย Pinstripe"
-                         class="w-full h-full object-cover"
-                         loading="lazy">
-                </div>
-                <h3 class="mt-5 text-sm font-bold uppercase tracking-wide">เชิ้ตลาย Pinstripe</h3>
-                <p class="text-[10px] text-brand-gray-light tracking-[0.3em] uppercase mt-2">เรียบหรูทุกโอกาส</p>
-            </a>
-            <div class="img-hover-zoom">
-                <div class="aspect-[3/4] bg-neutral-100 overflow-hidden">
-                    <img src="{{ asset('images/fb-posts/care-guide.jpg') }}"
-                         alt="วิธีดูแลเชิ้ต CHO.MIN"
-                         class="w-full h-full object-cover"
-                         loading="lazy">
-                </div>
-                <h3 class="mt-5 text-sm font-bold uppercase tracking-wide">วิธีดูแลเชิ้ต CHO.MIN</h3>
-                <p class="text-[10px] text-brand-gray-light tracking-[0.3em] uppercase mt-2">ให้ใส่ได้นาน ทรงยังสวย</p>
-            </div>
-        </div>
-    </section>
 
-    {{-- BOTTOM BANNER --}}
-    @if($collections->count() > 1)
-        @php
-            $bottomCollection = $collections->last();
-            $bottomImage = null;
-            if ($bottomCollection->banner_image) {
-                $bottomImage = \Illuminate\Support\Facades\Storage::url($bottomCollection->banner_image);
-            } elseif ($bottomCollection->image) {
-                $bottomImage = \Illuminate\Support\Facades\Storage::url($bottomCollection->image);
-            }
-        @endphp
-        <section class="relative w-full h-[50vh] md:h-[65vh] overflow-hidden">
-            @if($bottomImage)
-                <img src="{{ $bottomImage }}"
-                     alt="{{ $bottomCollection->name }}"
-                     class="w-full h-full object-cover"
-                     loading="lazy">
-            @else
-                <div class="w-full h-full bg-brand-gray flex items-center justify-center">
-                    <span class="text-brand-gray-light text-sm tracking-widest uppercase">{{ $bottomCollection->name }}</span>
-                </div>
-            @endif
+                @foreach($collectionPairs as $pair)
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-5 {{ !$loop->last ? 'mb-4 md:mb-5' : '' }}">
+                        @foreach($pair as $collection)
+                            @php
+                                $colImage = null;
+                                if ($collection->banner_image) {
+                                    $colImage = \Illuminate\Support\Facades\Storage::url($collection->banner_image);
+                                } elseif ($collection->image) {
+                                    $colImage = \Illuminate\Support\Facades\Storage::url($collection->image);
+                                }
+                            @endphp
+                            <a href="{{ route('collections.show', $collection->slug) }}"
+                               class="collection-card group relative block aspect-[4/5] overflow-hidden bg-brand-gray focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 reveal {{ $loop->first ? 'md:col-span-7' : 'md:col-span-5' }}"
+                               data-reveal
+                               aria-label="{{ $collection->localized_name }}">
+                                @if($colImage)
+                                    <img src="{{ $colImage }}"
+                                         alt="{{ $collection->localized_name }}"
+                                         class="w-full h-full object-cover transition-transform duration-700"
+                                         loading="lazy">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center">
+                                        <span class="text-brand-gray-light text-sm tracking-[0.1em] uppercase">{{ $collection->localized_name }}</span>
+                                    </div>
+                                @endif
 
-            <div class="absolute inset-0 bg-brand-black/40"></div>
+                                <div class="card-overlay absolute inset-0 bg-gradient-to-t from-brand-black/60 via-brand-black/10 to-transparent opacity-60"></div>
 
-            <div class="absolute inset-0 flex flex-col items-center justify-end pb-14 md:pb-20 px-6 z-10">
-                <h2 class="text-white text-4xl md:text-6xl lg:text-7xl font-serif uppercase editorial-title leading-none text-center mb-8">
-                    {{ $bottomCollection->name }}
-                </h2>
-                <a href="{{ route('collections.show', $bottomCollection->slug) }}"
-                   class="border border-white/60 text-white px-10 py-4 text-[10px] font-bold tracking-[0.25em] uppercase hover:bg-white hover:text-brand-black transition-colors duration-500 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-black/50">
-                    ดูคอลเล็คชัน
-                </a>
+                                <div class="card-content absolute bottom-0 left-0 right-0 p-6 md:p-8">
+                                    <h3 class="text-white text-base md:text-lg uppercase tracking-[0.05em] mb-1">
+                                        {{ $collection->localized_name }}
+                                    </h3>
+                                    @if($collection->localized_description)
+                                        <p class="text-white/60 text-xs tracking-[0.1em] mb-5">
+                                            {{ \Illuminate\Support\Str::limit($collection->localized_description, 60) }}
+                                        </p>
+                                    @endif
+                                    <span class="card-btn text-white text-xs tracking-[0.1em] uppercase underline underline-offset-4 decoration-white/40" aria-hidden="true">
+                                        สำรวจ
+                                    </span>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+                @endforeach
             </div>
         </section>
     @endif
+
+    {{-- ═══════════════════════════════════════════
+         SECTION 5: LOOKBOOK
+    ═══════════════════════════════════════════ --}}
+    <section class="px-6 md:px-12 pt-12 md:pt-16 pb-24 md:pb-32" aria-label="Lookbook">
+        <div class="max-w-6xl mx-auto">
+            <div class="lookbook-grid">
+                <a href="{{ route('shop.index') }}" class="group block reveal focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2" data-reveal
+                   aria-label="Pinstripe Collection">
+                    <div class="aspect-[3/4] md:aspect-auto md:h-full bg-brand-gray overflow-hidden">
+                        <img src="{{ asset('images/fb-posts/pinstripe-1.jpg') }}"
+                             alt="Pinstripe Collection — เชิ้ตลายทาง"
+                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                             loading="lazy">
+                    </div>
+                </a>
+
+                <a href="{{ route('shop.index') }}" class="group block reveal focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2" data-reveal
+                   aria-label="เชิ้ตลาย Pinstripe">
+                    <div class="aspect-[4/3] bg-brand-gray overflow-hidden">
+                        <img src="{{ asset('images/fb-posts/pinstripe-2.jpg') }}"
+                             alt="เชิ้ตลาย Pinstripe — เรียบหรูทุกโอกาส"
+                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                             loading="lazy">
+                    </div>
+                    <h3 class="mt-4 text-sm uppercase tracking-[0.05em]">Pinstripe</h3>
+                    <p class="text-xs text-brand-gray-light tracking-[0.1em] mt-1">เรียบหรูทุกโอกาส</p>
+                </a>
+
+                <a href="{{ route('shop.index') }}" class="group block reveal focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2" data-reveal
+                   aria-label="Everyday Essentials">
+                    <div class="aspect-[4/3] bg-brand-gray overflow-hidden">
+                        <img src="{{ asset('images/fb-posts/product-3.jpg') }}"
+                             alt="CHO.MIN Everyday Essentials"
+                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                             loading="lazy">
+                    </div>
+                    <h3 class="mt-4 text-sm uppercase tracking-[0.05em]">Everyday Essentials</h3>
+                    <p class="text-xs text-brand-gray-light tracking-[0.1em] mt-1">ใส่ได้ทุกวัน สวยทุกโอกาส</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    {{-- ═══════════════════════════════════════════
+         SECTION 6: CLOSING CTA
+    ═══════════════════════════════════════════ --}}
+    <section class="cta-fullscreen bg-brand-black px-6" aria-label="Call to action">
+        <div class="reveal" data-reveal>
+            <h2 class="font-serif uppercase editorial-title leading-[0.85] text-white text-center"
+                style="font-size: clamp(2.5rem, 10vw, 8rem);">
+                เสื้อผ้า<br>
+                ที่เป็นคุณ
+            </h2>
+        </div>
+
+        <a href="{{ route('shop.index') }}"
+           class="mt-12 md:mt-16 inline-block text-white text-xs tracking-[0.15em] uppercase underline underline-offset-8 decoration-white/40 hover:decoration-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-black reveal"
+           data-reveal>
+            ช้อปเลย &rarr;
+        </a>
+    </section>
 
 </x-layouts.shop>

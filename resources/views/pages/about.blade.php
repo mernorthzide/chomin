@@ -26,7 +26,7 @@
                 <div class="prose prose-lg max-w-none
                             prose-headings:font-serif prose-headings:font-normal prose-headings:tracking-wider prose-headings:text-brand-black
                             prose-p:text-brand-gray-dark prose-p:leading-relaxed prose-p:text-base
-                            prose-a:text-brand-brown prose-a:no-underline hover:prose-a:underline
+                            prose-a:text-brand-black prose-a:underline prose-a:underline-offset-2 hover:prose-a:opacity-60
                             prose-strong:font-semibold prose-strong:text-brand-black
                             prose-hr:border-brand-gray-border">
                     {!! $aboutContent !!}

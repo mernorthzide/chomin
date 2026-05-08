@@ -49,6 +49,13 @@ class SiteSettings extends Page implements HasForms
             'footer_text' => SiteSetting::get('footer_text'),
             'announcement_text' => SiteSetting::get('announcement_text'),
             'homepage_quote' => SiteSetting::get('homepage_quote', '"ความงามที่แท้จริงอยู่ในความเรียบง่าย"'),
+            'inquiry_notification_email' => SiteSetting::get('inquiry_notification_email'),
+            'newsletter_popup_enabled' => SiteSetting::get('newsletter_popup_enabled', '0') === '1',
+            'external_embeds_enabled' => SiteSetting::get('external_embeds_enabled', '0') === '1',
+            'instagram_url' => SiteSetting::get('instagram_url'),
+            'instagram_embed_html' => SiteSetting::get('instagram_embed_html'),
+            'line_chat_url' => SiteSetting::get('line_chat_url'),
+            'line_widget_script' => SiteSetting::get('line_widget_script'),
         ]);
     }
 
@@ -117,6 +124,38 @@ class SiteSettings extends Page implements HasForms
                             ->label('ข้อความ Footer')
                             ->columnSpanFull(),
                     ]),
+                Section::make('Leads, popup และการแจ้งเตือน')
+                    ->schema([
+                        TextInput::make('inquiry_notification_email')
+                            ->label('อีเมลรับแจ้งเตือนฟอร์ม')
+                            ->email()
+                            ->helperText('ถ้าเว้นว่าง จะใช้ site email เป็น fallback'),
+                        Toggle::make('newsletter_popup_enabled')
+                            ->label('เปิด Newsletter popup')
+                            ->helperText('ระบบใช้ cooldown 14 วันใน localStorage'),
+                    ])
+                    ->columns(2),
+                Section::make('External embeds และ Live chat')
+                    ->schema([
+                        Toggle::make('external_embeds_enabled')
+                            ->label('อนุญาตโหลด embed ภายนอก')
+                            ->helperText('ค่าเริ่มต้นปิดไว้จนกว่า admin เปิดและผู้ใช้ยอมรับคุกกี้หมวด embeds'),
+                        TextInput::make('instagram_url')
+                            ->label('Instagram URL')
+                            ->url(),
+                        Textarea::make('instagram_embed_html')
+                            ->label('Instagram embed HTML')
+                            ->helperText('เก็บไว้ใน setting แต่ frontend จะไม่โหลดจนกว่าการตั้งค่าและ consent อนุญาต')
+                            ->columnSpanFull(),
+                        TextInput::make('line_chat_url')
+                            ->label('LINE chat URL')
+                            ->url(),
+                        Textarea::make('line_widget_script')
+                            ->label('LINE widget script')
+                            ->helperText('ค่าเริ่มต้นไม่ render script นี้บนหน้าเว็บ')
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(2),
             ])
             ->statePath('data');
     }
@@ -128,11 +167,15 @@ class SiteSettings extends Page implements HasForms
         // Save site settings
         $siteKeys = ['site_name', 'site_description', 'site_phone', 'site_email',
             'promptpay_number', 'promptpay_name', 'points_per_baht', 'baht_per_point',
-            'footer_text', 'announcement_text', 'homepage_quote'];
+            'footer_text', 'announcement_text', 'homepage_quote', 'inquiry_notification_email',
+            'instagram_url', 'instagram_embed_html', 'line_chat_url', 'line_widget_script'];
 
         foreach ($siteKeys as $key) {
             SiteSetting::set($key, $data[$key] ?? null);
         }
+
+        SiteSetting::set('newsletter_popup_enabled', !empty($data['newsletter_popup_enabled']) ? '1' : '0');
+        SiteSetting::set('external_embeds_enabled', !empty($data['external_embeds_enabled']) ? '1' : '0');
 
         // Save shipping settings
         $shipping = ShippingSetting::current();

@@ -30,7 +30,7 @@
                         @foreach($categories as $category)
                             <option value="{{ $category->slug }}"
                                     {{ request('category') === $category->slug ? 'selected' : '' }}>
-                                {{ $category->name }}
+                                {{ $category->localized_name }}
                             </option>
                         @endforeach
                     </select>
@@ -48,7 +48,7 @@
                         @foreach($collections as $collection)
                             <option value="{{ $collection->slug }}"
                                     {{ request('collection') === $collection->slug ? 'selected' : '' }}>
-                                {{ $collection->name }}
+                                {{ $collection->localized_name }}
                             </option>
                         @endforeach
                     </select>

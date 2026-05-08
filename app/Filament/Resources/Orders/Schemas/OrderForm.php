@@ -40,6 +40,11 @@ class OrderForm
                     ->required()
                     ->numeric()
                     ->default(0.0),
+                TextInput::make('gift_card_discount')
+                    ->label('Gift card discount')
+                    ->required()
+                    ->numeric()
+                    ->default(0.0),
                 TextInput::make('total')
                     ->required()
                     ->numeric(),

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address;
 use Illuminate\Http\Request;
 
 class AddressController extends Controller
@@ -35,7 +36,7 @@ class AddressController extends Controller
         return back()->with('success', 'เพิ่มที่อยู่เรียบร้อย');
     }
 
-    public function update(Request $request, \App\Models\Address $address)
+    public function update(Request $request, string $locale, Address $address)
     {
         abort_unless($address->user_id === auth()->id(), 403);
 
@@ -58,7 +59,7 @@ class AddressController extends Controller
         return back()->with('success', 'แก้ไขที่อยู่เรียบร้อย');
     }
 
-    public function destroy(\App\Models\Address $address)
+    public function destroy(string $locale, Address $address)
     {
         abort_unless($address->user_id === auth()->id(), 403);
         $address->delete();

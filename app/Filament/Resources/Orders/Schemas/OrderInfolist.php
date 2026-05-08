@@ -73,6 +73,9 @@ class OrderInfolist
                         TextEntry::make('discount')
                             ->label('ส่วนลด')
                             ->money('THB'),
+                        TextEntry::make('gift_card_discount')
+                            ->label('บัตรของขวัญ')
+                            ->money('THB'),
                         TextEntry::make('total')
                             ->label('ยอดรวม')
                             ->money('THB'),

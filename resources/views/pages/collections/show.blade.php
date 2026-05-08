@@ -7,23 +7,23 @@
         @if($collection->banner_image)
             <img
                 src="{{ \Illuminate\Support\Facades\Storage::url($collection->banner_image) }}"
-                alt="{{ $collection->name }}"
+                alt="{{ $collection->localized_name }}"
                 class="absolute inset-0 w-full h-full object-cover opacity-70">
         @elseif($collection->image)
             <img
                 src="{{ \Illuminate\Support\Facades\Storage::url($collection->image) }}"
-                alt="{{ $collection->name }}"
+                alt="{{ $collection->localized_name }}"
                 class="absolute inset-0 w-full h-full object-cover opacity-70">
         @endif
         <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/50"></div>
         <div class="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
             <p class="text-xs text-white/60 tracking-[0.25em] uppercase mb-3">คอลเล็คชัน</p>
             <h1 class="font-serif text-4xl md:text-5xl lg:text-6xl font-normal text-white uppercase tracking-widest">
-                {{ $collection->name }}
+                {{ $collection->localized_name }}
             </h1>
-            @if($collection->description)
+            @if($collection->localized_description)
                 <p class="mt-4 text-sm text-white/70 max-w-xl tracking-wide leading-relaxed">
-                    {{ $collection->description }}
+                    {{ $collection->localized_description }}
                 </p>
             @endif
         </div>
@@ -47,7 +47,7 @@
                         @foreach($categories as $category)
                             <option value="{{ $category->slug }}"
                                     {{ request('category') === $category->slug ? 'selected' : '' }}>
-                                {{ $category->name }}
+                                {{ $category->localized_name }}
                             </option>
                         @endforeach
                     </select>

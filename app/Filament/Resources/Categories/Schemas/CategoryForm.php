@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Categories\Schemas;
 
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
@@ -37,6 +39,21 @@ class CategoryForm
                     ->label('ลำดับ')
                     ->numeric()
                     ->default(0),
+                Repeater::make('translations')
+                    ->label('Translations')
+                    ->relationship()
+                    ->schema([
+                        Select::make('locale')
+                            ->label('ภาษา')
+                            ->options(config('chomin.locales.labels'))
+                            ->required(),
+                        TextInput::make('name')
+                            ->label('ชื่อหมวดหมู่')
+                            ->required(),
+                    ])
+                    ->columns(2)
+                    ->defaultItems(2)
+                    ->columnSpanFull(),
             ]);
     }
 }
