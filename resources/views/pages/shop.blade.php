@@ -16,7 +16,7 @@
         </div>
     </section>
 
-    <section class="sticky top-[92px] z-30 border-b border-brand-gray-border bg-white/95 backdrop-blur">
+    <section class="sticky z-30 border-b border-brand-gray-border bg-white" style="top: 60px;">
         <div class="px-6 md:px-12 py-4">
             <form method="GET" action="{{ route('shop.index') }}" class="flex flex-wrap items-center gap-4 md:gap-6">
                 <div class="filter-field">
