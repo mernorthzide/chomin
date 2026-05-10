@@ -1,17 +1,27 @@
 <x-layouts.shop :title="(app()->getLocale() === 'en' ? 'Shop' : 'ร้านค้า').' | CHOMIN'">
 
+    @php
+        $shopHeroImage = \Illuminate\Support\Facades\Storage::url('products/chomin-imagen/lifestyle-editorial.jpg');
+    @endphp
+
     <section class="page-kicker border-b border-brand-gray-border bg-white">
-        <div class="px-6 md:px-12 py-12 md:py-16">
-            <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-                <div>
+        <div class="grid grid-cols-1 lg:grid-cols-12">
+            <div class="lg:col-span-7 px-6 md:px-12 py-12 md:py-16 flex items-end">
+                <div class="w-full">
                     <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-4">Products</p>
                     <h1 class="font-serif uppercase leading-none text-5xl md:text-7xl">
-                        {{ app()->getLocale() === 'en' ? 'Shop' : 'ร้านค้า' }}
+                        {{ app()->getLocale() === 'en' ? 'Design Your Own Shirt' : 'Design Your Own Shirt' }}
                     </h1>
+                    <p class="mt-6 max-w-md text-sm text-brand-gray-medium leading-relaxed">
+                        เลือกจาก 5 shirt lines ที่ต่อยอดจาก Facebook campaign: classic, workday, pastel, statement color และ mandarin minimal ราคาโปร 999 บาท พร้อมปรับคอเสื้อ ปลายแขน และกระเป๋าได้
+                    </p>
                 </div>
-                <p class="max-w-md text-sm text-brand-gray-medium leading-relaxed">
-                    เชิ้ต CHOMIN เลือกได้ตามสี ไซส์ คอลเล็คชัน และรายละเอียดที่เข้ากับวันของคุณ
-                </p>
+            </div>
+            <div class="lg:col-span-5 border-t lg:border-t-0 lg:border-l border-brand-gray-border">
+                <img src="{{ $shopHeroImage }}"
+                     alt="CHO.MIN custom shirt lifestyle"
+                     class="h-full min-h-[280px] w-full object-cover"
+                     loading="eager">
             </div>
         </div>
     </section>
@@ -58,7 +68,7 @@
                 <div class="filter-field">
                     <label for="sort">เรียงตาม</label>
                     <select id="sort" name="sort" onchange="this.form.submit()">
-                        <option value="newest" {{ $sort === 'newest' ? 'selected' : '' }}>ใหม่สุด</option>
+                        <option value="newest" {{ $sort === 'newest' ? 'selected' : '' }}>แนะนำ</option>
                         <option value="price_asc" {{ $sort === 'price_asc' ? 'selected' : '' }}>ราคาต่ำ-สูง</option>
                         <option value="price_desc" {{ $sort === 'price_desc' ? 'selected' : '' }}>ราคาสูง-ต่ำ</option>
                         <option value="name_asc" {{ $sort === 'name_asc' ? 'selected' : '' }}>ชื่อ A-Z</option>

@@ -34,6 +34,28 @@
                 </a>
             </div>
         @else
+            @php
+                $customOptionGroups = config('chomin.custom_options');
+                $customOptionLabel = function (?array $options) use ($customOptionGroups): array {
+                    if (!$options) {
+                        return [];
+                    }
+
+                    return collect($customOptionGroups)
+                        ->map(function ($group, $key) use ($options) {
+                            $value = $options[$key] ?? null;
+
+                            if (!$value || !isset($group['options'][$value])) {
+                                return null;
+                            }
+
+                            return $group['label'].': '.$group['options'][$value];
+                        })
+                        ->filter()
+                        ->values()
+                        ->all();
+                };
+            @endphp
             <div class="lg:grid lg:grid-cols-3 lg:gap-12">
 
                 {{-- Cart Items --}}
@@ -70,6 +92,13 @@
                                                 @endif
                                                 {{ $item->variant->size }}
                                             </p>
+                                            @if($optionSummary = $customOptionLabel($item->custom_options))
+                                                <ul class="mt-2 space-y-0.5 text-[11px] uppercase tracking-[0.08em] text-brand-gray-medium">
+                                                    @foreach($optionSummary as $optionLine)
+                                                        <li>{{ $optionLine }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            @endif
                                             <p class="mt-1 text-sm text-brand-black">
                                                 ฿{{ number_format($item->product->display_price, 0) }}
                                                 @if($item->product->is_on_sale)

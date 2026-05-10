@@ -15,7 +15,7 @@
 | สินค้า | จำนวน | ราคา |
 |:-------|:------:|------:|
 @foreach($order->items as $item)
-| {{ $item->product_name }} | {{ $item->quantity }} | ฿{{ number_format($item->price * $item->quantity, 0) }} |
+| {{ $item->product_name }}<br>{{ $item->variant_label }}@if($item->custom_options_text)<br>{!! nl2br(e($item->custom_options_text)) !!}@endif | {{ $item->quantity }} | ฿{{ number_format($item->price * $item->quantity, 0) }} |
 @endforeach
 </x-mail::table>
 

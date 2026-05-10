@@ -9,6 +9,13 @@
             $sizeOrder = collect(['XXS', 'XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL'])
                 ->flip();
             $visibleColorLimit = 16;
+            $customOptionGroups = config('chomin.custom_options');
+            $customOptionDefaults = config("chomin.product_option_defaults.{$product->slug}", []);
+            $productEditorialImages = [
+                'customDetails' => \Illuminate\Support\Facades\Storage::url('products/chomin-imagen/custom-details.jpg'),
+                'duoBox' => \Illuminate\Support\Facades\Storage::url('products/chomin-imagen/duo-box.jpg'),
+                'careStudio' => \Illuminate\Support\Facades\Storage::url('products/chomin-imagen/care-studio.jpg'),
+            ];
         @endphp
 
         {{-- ============================================================
@@ -114,6 +121,23 @@
                         @endif
                     </div>
 
+                    <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 border border-brand-gray-border">
+                        <div class="p-4 border-b sm:border-b-0 sm:border-r border-brand-gray-border">
+                            <p class="text-[10px] uppercase tracking-[0.16em] text-brand-gray-light">Special Price</p>
+                            <p class="mt-2 text-sm text-brand-black">จาก 1,790 เหลือ 999 บาท</p>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-[10px] uppercase tracking-[0.16em] text-brand-gray-light">DuoDeal</p>
+                            <p class="mt-2 text-sm text-brand-black">2 ตัว 1,850 บาท ผ่าน LINE</p>
+                        </div>
+                    </div>
+                    <a href="https://line.me/R/ti/p/@chomin.th"
+                       target="_blank"
+                       rel="noopener"
+                       class="mt-3 inline-flex min-h-11 items-center justify-center border border-brand-black px-5 text-xs uppercase tracking-[0.16em] hover:bg-brand-black hover:text-white">
+                        Chat LINE @chomin.th
+                    </a>
+
                     <!-- Divider -->
                     <div class="w-12 h-px bg-brand-gray-border my-6"></div>
 
@@ -202,6 +226,35 @@
                         @csrf
                         <input type="hidden" name="variant_id" :value="selectedVariantId">
                         <input type="hidden" name="product_id" value="{{ $product->id }}">
+
+                        <div class="space-y-5 border-y border-brand-gray-border py-5">
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light">Design Your Own Shirt</p>
+                                <p class="mt-2 text-sm text-brand-gray-dark leading-relaxed">เลือกคอเสื้อ ปลายแขน และกระเป๋าให้เข้ากับวันที่คุณใส่จริง</p>
+                            </div>
+                            @foreach($customOptionGroups as $groupKey => $group)
+                                @php
+                                    $defaultOption = $customOptionDefaults[$groupKey] ?? array_key_first($group['options']);
+                                @endphp
+                                <fieldset>
+                                    <legend class="mb-2 text-xs font-medium uppercase tracking-widest text-brand-gray-dark">{{ $group['label'] }}</legend>
+                                    <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                                        @foreach($group['options'] as $value => $label)
+                                            <label class="custom-option-choice">
+                                                <input type="radio"
+                                                       name="custom_options[{{ $groupKey }}]"
+                                                       value="{{ $value }}"
+                                                       class="peer sr-only"
+                                                       {{ $defaultOption === $value ? 'checked' : '' }}>
+                                                <span class="flex min-h-[44px] items-center justify-center border border-brand-gray-border px-3 text-center text-xs uppercase tracking-[0.08em] transition-colors peer-checked:border-brand-black peer-checked:bg-brand-black peer-checked:text-white hover:border-brand-gray-dark">
+                                                    {{ $label }}
+                                                </span>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </fieldset>
+                            @endforeach
+                        </div>
 
                         <!-- Quantity -->
                         <div class="flex items-center space-x-3">
@@ -300,22 +353,59 @@
             </div>
         </section>
 
+        <section class="grid grid-cols-1 md:grid-cols-3 border-t border-b border-brand-gray-border bg-white" aria-label="CHOMIN shirt details">
+            <article class="border-b md:border-b-0 md:border-r border-brand-gray-border">
+                <img src="{{ $productEditorialImages['customDetails'] }}"
+                     alt="CHO.MIN collar cuff pocket details"
+                     class="h-72 w-full object-cover"
+                     loading="lazy">
+                <div class="p-5">
+                    <p class="text-xs uppercase tracking-[0.16em] text-brand-gray-light">Custom details</p>
+                    <p class="mt-2 text-sm text-brand-gray-dark">เลือกคอเสื้อ ปลายแขน และกระเป๋าให้เข้ากับลุคที่ต้องใช้จริง</p>
+                </div>
+            </article>
+            <article class="border-b md:border-b-0 md:border-r border-brand-gray-border">
+                <img src="{{ $productEditorialImages['duoBox'] }}"
+                     alt="CHO.MIN DuoDeal shirts"
+                     class="h-72 w-full object-cover"
+                     loading="lazy">
+                <div class="p-5">
+                    <p class="text-xs uppercase tracking-[0.16em] text-brand-gray-light">DuoDeal</p>
+                    <p class="mt-2 text-sm text-brand-gray-dark">2 ตัว 1,850 บาท สำหรับเติมสีใหม่เข้าตู้หรือซื้อคู่เป็นของขวัญ</p>
+                </div>
+            </article>
+            <article>
+                <img src="{{ $productEditorialImages['careStudio'] }}"
+                     alt="CHO.MIN shirt care"
+                     class="h-72 w-full object-cover"
+                     loading="lazy">
+                <div class="p-5">
+                    <p class="text-xs uppercase tracking-[0.16em] text-brand-gray-light">Care guide</p>
+                    <p class="mt-2 text-sm text-brand-gray-dark">ดูแลทรงและผิวสัมผัสของเชิ้ตให้พร้อมใส่ซ้ำได้บ่อยขึ้น</p>
+                </div>
+            </article>
+        </section>
+
         {{-- ============================================================
              RELATED PRODUCTS
         ============================================================ --}}
         @if($related->isNotEmpty())
-            <section class="bg-brand-gray py-14 md:py-20">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h2 class="font-serif text-2xl md:text-3xl font-normal text-brand-black uppercase tracking-widest mb-10 text-center">
-                        สินค้าที่เกี่ยวข้อง
-                    </h2>
-                    <div class="flex gap-4 md:gap-6 overflow-x-auto pb-4 snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 sm:overflow-visible">
-                        @foreach($related as $relatedProduct)
-                            <div class="flex-shrink-0 w-48 sm:w-auto snap-start">
-                                <x-product-card :product="$relatedProduct" />
-                            </div>
-                        @endforeach
+            <section class="bg-white border-t border-b border-brand-gray-border" aria-label="Related shirt lines">
+                <div class="px-6 md:px-12 py-8 md:py-10 flex items-end justify-between gap-6">
+                    <div>
+                        <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-3">Related shirt lines</p>
+                        <h2 class="font-serif uppercase leading-none text-3xl md:text-5xl text-brand-black">
+                            เลือกไลน์อื่น
+                        </h2>
                     </div>
+                    <a href="{{ route('shop.index') }}" class="hidden sm:inline-block text-xs uppercase tracking-[0.16em] border-b border-brand-black pb-1 hover:opacity-60">
+                        View all
+                    </a>
+                </div>
+                <div class="commerce-grid">
+                    @foreach($related as $relatedProduct)
+                        <x-product-card :product="$relatedProduct" />
+                    @endforeach
                 </div>
             </section>
         @endif

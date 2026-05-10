@@ -63,6 +63,13 @@
                                     <p class="text-xs text-brand-gray-medium mt-0.5">
                                         {{ $item->color_name }} / {{ $item->size }} x{{ $item->quantity }}
                                     </p>
+                                    @if($item->custom_option_labels)
+                                        <ul class="mt-1 space-y-0.5 text-xs text-brand-gray-medium">
+                                            @foreach($item->custom_option_labels as $optionLabel)
+                                                <li>{{ $optionLabel }}</li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
                                 </div>
                                 <span class="text-brand-black flex-shrink-0">฿{{ number_format($item->price * $item->quantity, 0) }}</span>
                             </div>

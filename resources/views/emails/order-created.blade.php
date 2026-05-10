@@ -11,7 +11,7 @@
 **วันที่สั่ง:** {{ $order->created_at->format('d/m/Y H:i') }}
 
 @foreach($order->items as $item)
-- {{ $item->product_name }} ({{ $item->color_name }} / {{ $item->size }}) x {{ $item->quantity }}: ฿{{ number_format($item->price * $item->quantity, 0) }}
+- {{ $item->product_name }} ({{ $item->variant_label }}@if($item->custom_options_text) | {{ str_replace("\n", ', ', $item->custom_options_text) }}@endif) x {{ $item->quantity }}: ฿{{ number_format($item->price * $item->quantity, 0) }}
 @endforeach
 
 ยอดรวมสินค้า: ฿{{ number_format($order->subtotal, 0) }}

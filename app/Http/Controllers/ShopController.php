@@ -52,7 +52,7 @@ class ShopController extends Controller
             'price_asc'  => $query->orderBy('price', 'asc'),
             'price_desc' => $query->orderBy('price', 'desc'),
             'name_asc'   => $query->orderBy('name', 'asc'),
-            default      => $query->orderBy('created_at', 'desc'),
+            default      => $query->orderBy('sort_order')->orderBy('created_at', 'desc'),
         };
 
         $products = $query->paginate(12)->withQueryString();

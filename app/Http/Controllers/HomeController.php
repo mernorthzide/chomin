@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Collection;
+use App\Models\Product;
 use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 
@@ -14,16 +15,16 @@ class HomeController extends Controller
             ->ordered()
             ->with('translations')
             ->withCount(['products' => fn ($query) => $query->active()])
-            ->with(['products' => function ($query) {
-                $query->active()
-                    ->with(['primaryImage', 'images', 'variants', 'translations', 'collection.translations', 'colors.translations'])
-                    ->orderBy('sort_order')
-                    ->limit(6);
-            }])
+            ->get();
+
+        $lineProducts = Product::active()
+            ->with(['primaryImage', 'images', 'variants', 'translations', 'collection.translations', 'colors.translations'])
+            ->orderBy('sort_order')
+            ->limit(6)
             ->get();
 
         $quote = SiteSetting::get('homepage_quote', '"CHO.MIN คือความเรียบที่ไม่ธรรมดา คือความมั่นใจที่คุณใส่ได้ทุกวัน"');
 
-        return view('pages.home', compact('collections', 'quote'));
+        return view('pages.home', compact('collections', 'lineProducts', 'quote'));
     }
 }

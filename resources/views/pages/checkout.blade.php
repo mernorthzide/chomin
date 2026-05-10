@@ -26,6 +26,26 @@
 
         @php
             $defaultAddress = $addresses->firstWhere('is_default', true) ?? $addresses->first();
+            $customOptionGroups = config('chomin.custom_options');
+            $customOptionLabel = function (?array $options) use ($customOptionGroups): array {
+                if (!$options) {
+                    return [];
+                }
+
+                return collect($customOptionGroups)
+                    ->map(function ($group, $key) use ($options) {
+                        $value = $options[$key] ?? null;
+
+                        if (!$value || !isset($group['options'][$value])) {
+                            return null;
+                        }
+
+                        return $group['label'].': '.$group['options'][$value];
+                    })
+                    ->filter()
+                    ->values()
+                    ->all();
+            };
         @endphp
 
         <form action="{{ route('checkout.store') }}" method="POST"
@@ -240,6 +260,13 @@
                                         <p class="text-xs text-brand-gray-medium mt-0.5">
                                             @if($item->variant->color){{ $item->variant->color->localized_name }} / @endif{{ $item->variant->size }}
                                         </p>
+                                        @if($optionSummary = $customOptionLabel($item->custom_options))
+                                            <ul class="mt-1 space-y-0.5 text-[10px] uppercase tracking-[0.08em] text-brand-gray-medium">
+                                                @foreach($optionSummary as $optionLine)
+                                                    <li>{{ $optionLine }}</li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
                                         <div class="flex justify-between mt-1">
                                             <span class="text-xs text-brand-gray-medium">x{{ $item->quantity }}</span>
                                             <span class="text-xs font-medium text-brand-black">฿{{ number_format($item->line_total, 0) }}</span>

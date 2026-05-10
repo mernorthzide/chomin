@@ -28,7 +28,7 @@
     <!-- Scripts & Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased bg-white text-brand-black">
+<body class="storefront font-sans antialiased bg-white text-brand-black">
 
     <!-- Announcement Ticker -->
     <div class="bg-brand-black text-white overflow-hidden border-b border-brand-black">

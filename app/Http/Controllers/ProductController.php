@@ -36,7 +36,7 @@ class ProductController extends Controller
                     ->orWhere('category_id', $product->category_id);
             })
             ->with(['primaryImage', 'images', 'variants', 'translations', 'collection.translations', 'colors.translations'])
-            ->inRandomOrder()
+            ->orderBy('sort_order')
             ->limit(6)
             ->get();
 

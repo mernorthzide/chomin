@@ -60,19 +60,24 @@ class ContentSeeder extends Seeder
         ]);
 
         $story = Story::updateOrCreate(['slug' => 'how-to-style-shirts'], [
+            'cover_image' => 'products/chomin-imagen/care-studio.jpg',
             'is_published' => true,
             'published_at' => now(),
             'sort_order' => 1,
         ]);
         $story->translations()->updateOrCreate(['locale' => 'th'], [
-            'title' => 'วิธีเลือกเชิ้ตให้เข้ากับทุกวัน',
-            'excerpt' => 'ไอเดีย styling สำหรับเชิ้ต CHOMIN',
-            'body' => "เชิ้ตที่ดีควรทำงานได้หลายบทบาทในตู้เสื้อผ้า\n\nเลือกสีที่เข้ากับอารมณ์ของวัน แล้วจับคู่กับกางเกงหรือกระโปรงทรงเรียบเพื่อให้สีของเชิ้ตเป็นตัวเล่าเรื่อง",
+            'title' => 'วิธีดูแลเชิ้ต CHO.MIN ให้ใส่ได้นาน',
+            'excerpt' => 'ซักมือ ซักเครื่อง และซักแห้งอย่างไรให้ทรงยังสวย',
+            'body' => "เชิ้ตที่ดีควรอยู่กับเราได้นานพอ ๆ กับวันที่เราอยากใส่มันซ้ำ\n\nซักมือด้วยน้ำเย็นและบีบเบา ๆ เมื่อต้องการถนอมเนื้อผ้า เลือกโหมดถนอมผ้าหากซักเครื่อง และแยกผ้าขาว สีอ่อน สีเข้มเสมอ\n\nสำหรับวันที่ต้องการความเป๊ะ ซักแห้งช่วยให้เสื้อเรียบ ทรงคม และพร้อมใส่ทันที",
+            'seo_title' => 'วิธีดูแลเชิ้ต CHO.MIN ให้ใส่ได้นาน',
+            'seo_description' => 'คู่มือดูแลเชิ้ต CHO.MIN จากเพจ Cho.min เพื่อให้เชิ้ตทรงสวยและใส่ได้นาน',
         ]);
         $story->translations()->updateOrCreate(['locale' => 'en'], [
-            'title' => 'How to style shirts for every day',
-            'excerpt' => 'Styling ideas for CHOMIN shirts.',
-            'body' => "A good shirt should work hard across your wardrobe.\n\nChoose the color that matches the day, then pair it with simple silhouettes.",
+            'title' => 'How to care for your CHO.MIN shirt',
+            'excerpt' => 'Care notes for keeping your shirt crisp longer.',
+            'body' => "A good shirt should last across many wears.\n\nHand wash cold when you want the gentlest care. If machine washing, use a delicate cycle and separate whites, lights, and darks. Dry cleaning is best for days when you need a crisp finish.",
+            'seo_title' => 'How to care for your CHO.MIN shirt',
+            'seo_description' => 'Care guide for CHO.MIN shirts, adapted from Cho.min public Facebook content.',
         ]);
 
         $location = StoreLocation::updateOrCreate(['sort_order' => 1], [

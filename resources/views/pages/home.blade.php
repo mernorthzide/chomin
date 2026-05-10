@@ -2,8 +2,14 @@
 
     @php
         $heroCollection = $collections->first();
-        $featuredCollections = $collections;
         $heroImage = null;
+        $storageImage = fn (string $path): string => \Illuminate\Support\Facades\Storage::url($path);
+        $campaignImages = [
+            'customDetails' => $storageImage('products/chomin-imagen/custom-details.jpg'),
+            'duoBox' => $storageImage('products/chomin-imagen/duo-box.jpg'),
+            'careStudio' => $storageImage('products/chomin-imagen/care-studio.jpg'),
+            'lifestyle' => $storageImage('products/chomin-imagen/lifestyle-editorial.jpg'),
+        ];
 
         if ($heroCollection) {
             if ($heroCollection->banner_image) {
@@ -13,8 +19,8 @@
             }
         }
 
-        $newArrivals = $heroCollection ? $heroCollection->products : collect();
-        $heroColors = $newArrivals
+        $lineProducts = $lineProducts ?? collect();
+        $heroColors = $lineProducts
             ->flatMap(fn ($product) => $product->colors)
             ->unique(fn ($color) => $color->slug ?: $color->name)
             ->take(12)
@@ -37,9 +43,10 @@
                         Design Your Own Shirt
                     </h1>
                     <div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs uppercase tracking-[0.14em] text-brand-gray-dark">
+                        <span>Special ฿999</span>
+                        <span>DuoDeal ฿1,850</span>
                         <span>50+ สี</span>
                         <span>XS-6XL</span>
-                        <span>Collar / Cuff / Pocket</span>
                     </div>
                 </div>
 
@@ -52,51 +59,43 @@
         </section>
     @endif
 
-    @if($featuredCollections->isNotEmpty())
-        <section class="bg-white border-b border-brand-gray-border" aria-label="Campaign collections">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border-t border-brand-gray-border">
-                @foreach($featuredCollections as $collection)
-                    @php
-                        $collectionImage = $collection->banner_image
-                            ? \Illuminate\Support\Facades\Storage::url($collection->banner_image)
-                            : ($collection->image ? \Illuminate\Support\Facades\Storage::url($collection->image) : null);
-                    @endphp
-                    <a href="{{ route('collections.show', $collection->slug) }}"
-                       class="campaign-tile group border-b border-r border-brand-gray-border focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-inset">
-                        <div class="aspect-[4/5] bg-brand-gray overflow-hidden">
-                            @if($collectionImage)
-                                <img src="{{ $collectionImage }}"
-                                     alt="{{ $collection->localized_name }}"
-                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                                     loading="lazy">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center">
-                                    <span class="font-serif text-6xl text-brand-gray-border">{{ strtoupper(substr($collection->localized_name, 0, 1)) }}</span>
-                                </div>
-                            @endif
-                        </div>
-                        <div class="min-h-[72px] px-3 py-3 flex items-center justify-between gap-3">
-                            <h2 class="text-xs uppercase tracking-[0.08em] leading-snug">{{ $collection->localized_name }}</h2>
-                            <span class="text-[10px] uppercase tracking-[0.12em] text-brand-gray-light whitespace-nowrap">
-                                {{ $collection->products_count ?? $collection->products->count() }} items
-                            </span>
-                        </div>
-                    </a>
+    @if($lineProducts->isNotEmpty())
+        <section class="bg-white border-b border-brand-gray-border" aria-label="Shop by shirt line">
+            <div class="px-6 md:px-12 py-8 border-t border-brand-gray-border flex items-end justify-between gap-6">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-3">Shop by shirt line</p>
+                    <h2 class="font-serif uppercase leading-none text-3xl md:text-5xl">เลือกจาก 5 ไลน์</h2>
+                </div>
+                <a href="{{ route('shop.index') }}" class="hidden sm:inline-block text-xs uppercase tracking-[0.16em] border-b border-brand-black pb-1 hover:opacity-60">
+                    View all
+                </a>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+                @foreach($lineProducts as $product)
+                    <x-product-card :product="$product" />
                 @endforeach
             </div>
         </section>
     @endif
 
     <section class="px-6 md:px-12 py-16 md:py-24 bg-white border-b border-brand-gray-border" aria-label="Build Your Shirt">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
-            <div class="lg:col-span-5">
-                <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-4">Build Your Shirt</p>
-                <h2 class="font-serif uppercase leading-none text-brand-black" style="font-size: clamp(2.4rem, 7vw, 6.5rem);">
-                    เชิ้ตที่<br>เป็นคุณ
-                </h2>
+        <div class="grid grid-cols-1 xl:grid-cols-12 border border-brand-gray-border bg-white">
+            <div class="xl:col-span-4 p-7 md:p-10 flex items-end min-h-[340px]">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-4">Build Your Shirt</p>
+                    <h2 class="font-serif uppercase leading-none text-brand-black" style="font-size: clamp(2.4rem, 7vw, 6.5rem);">
+                        เชิ้ตที่<br>เป็นคุณ
+                    </h2>
+                </div>
             </div>
-            <div class="lg:col-span-7 grid grid-cols-1 md:grid-cols-3 border border-brand-gray-border">
-                <a href="{{ route('color-library') }}" class="p-6 md:p-7 border-b md:border-b-0 md:border-r border-brand-gray-border group">
+            <div class="xl:col-span-4 border-t xl:border-t-0 xl:border-l border-brand-gray-border">
+                <img src="{{ $campaignImages['customDetails'] }}"
+                     alt="CHO.MIN custom collar cuff pocket details"
+                     class="h-full min-h-[360px] w-full object-cover"
+                     loading="lazy">
+            </div>
+            <div class="xl:col-span-4 grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-1 border-t xl:border-t-0 xl:border-l border-brand-gray-border">
+                <a href="{{ route('color-library') }}" class="p-6 md:p-7 border-b sm:border-b-0 sm:border-r xl:border-r-0 xl:border-b border-brand-gray-border group">
                     <span class="block text-4xl font-serif leading-none">50+</span>
                     <h3 class="mt-4 text-xs uppercase tracking-[0.14em]">สีให้เลือก</h3>
                     <p class="mt-3 text-sm text-brand-gray-medium leading-relaxed">เลือกโทนทำงาน คลาสสิก หรือสีชัดสำหรับวันพิเศษ</p>
@@ -110,7 +109,7 @@
                         </div>
                     @endif
                 </a>
-                <a href="{{ route('pages.size-guide') }}" class="p-6 md:p-7 border-b md:border-b-0 md:border-r border-brand-gray-border group">
+                <a href="{{ route('pages.size-guide') }}" class="p-6 md:p-7 border-b sm:border-b-0 sm:border-r xl:border-r-0 xl:border-b border-brand-gray-border group">
                     <span class="block text-4xl font-serif leading-none">XS-6XL</span>
                     <h3 class="mt-4 text-xs uppercase tracking-[0.14em]">ไซส์ครอบคลุม</h3>
                     <p class="mt-3 text-sm text-brand-gray-medium leading-relaxed">ทำให้การหาเชิ้ตพอดีตัวง่ายขึ้น ตั้งแต่ตัวเล็กถึงพลัสไซส์</p>
@@ -124,36 +123,41 @@
         </div>
     </section>
 
-    @if($newArrivals->isNotEmpty())
-        <section class="py-14 md:py-20 bg-white" aria-label="New arrivals">
-            <div class="px-6 md:px-12 mb-8 md:mb-10 flex items-end justify-between gap-6">
-                <div>
-                    <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-3">New Arrivals</p>
-                    <h2 class="font-serif uppercase leading-none text-4xl md:text-6xl">สินค้าใหม่</h2>
-                </div>
-                <a href="{{ route('shop.index') }}" class="hidden sm:inline-block text-xs uppercase tracking-[0.16em] border-b border-brand-black pb-1 hover:opacity-60">
-                    View all
-                </a>
-            </div>
+    <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 border-b border-brand-gray-border bg-white" aria-label="Facebook campaign offers">
+        <div class="border-b md:border-r border-brand-gray-border">
+            <img src="{{ $campaignImages['duoBox'] }}"
+                 alt="CHO.MIN DuoDeal gift-ready shirts"
+                 class="h-full min-h-[320px] w-full object-cover"
+                 loading="lazy">
+        </div>
+        <div class="px-6 md:px-10 py-12 md:py-16 border-b xl:border-r border-brand-gray-border">
+            <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-5">Special Price</p>
+            <h2 class="font-serif uppercase leading-none text-5xl md:text-7xl">999</h2>
+            <p class="mt-5 text-sm text-brand-gray-dark leading-relaxed">จากราคาเต็ม 1,790 บาท สำหรับ CM Classic Custom Shirt เลือกสี ไซส์ และรายละเอียดได้ครบ</p>
+            <a href="{{ route('shop.index') }}" class="mt-8 inline-block text-xs uppercase tracking-[0.16em] border-b border-brand-black pb-1">Shop special</a>
+        </div>
+        <div class="border-b md:border-b-0 md:border-r border-brand-gray-border">
+            <img src="{{ $campaignImages['careStudio'] }}"
+                 alt="CHO.MIN shirt care studio"
+                 class="h-full min-h-[320px] w-full object-cover"
+                 loading="lazy">
+        </div>
+        <div class="px-6 md:px-10 py-12 md:py-16 bg-brand-black text-white">
+            <p class="text-xs uppercase tracking-[0.18em] text-white/50 mb-5">DuoDeal</p>
+            <h2 class="font-serif uppercase leading-none text-4xl md:text-6xl">2 shirts<br>1,850</h2>
+            <p class="mt-5 text-sm text-white/70 leading-relaxed">โปรคู่สุดคุ้มสำหรับเติมเชิ้ตคุณภาพเข้าตู้ เสื้อเนื้อนุ่ม ใส่สบาย เหมาะทั้งใช้เองและเป็นของขวัญ</p>
+            <a href="https://line.me/R/ti/p/@chomin.th" target="_blank" rel="noopener" class="mt-8 inline-block text-xs uppercase tracking-[0.16em] border-b border-white pb-1">LINE @chomin.th</a>
+        </div>
+    </section>
 
-            <div class="product-rail hide-scrollbar" data-drag-scroll>
-                @foreach($newArrivals as $product)
-                    <div class="product-rail-item">
-                        <x-product-card :product="$product" />
-                    </div>
-                @endforeach
-            </div>
-        </section>
-    @endif
-
-    <section class="grid grid-cols-1 md:grid-cols-2 border-t border-b border-brand-gray-border bg-white" aria-label="CHOMIN editorial">
-        <div class="order-2 md:order-1 px-6 md:px-12 py-14 md:py-20 flex items-center">
+    <section class="grid grid-cols-1 lg:grid-cols-12 border-t border-b border-brand-gray-border bg-white" aria-label="CHOMIN editorial">
+        <div class="order-2 lg:order-1 lg:col-span-5 px-6 md:px-12 py-14 md:py-20 flex items-center">
             <div class="max-w-xl">
                 <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-6">The Brand</p>
-                <h2 class="font-serif uppercase leading-none text-4xl md:text-6xl">Style should fit real life.</h2>
+                <h2 class="font-serif uppercase leading-none text-4xl md:text-6xl">Simple. Comfortable. Your Style.</h2>
                 <div class="mt-8 space-y-4 text-sm md:text-base text-brand-gray-dark leading-relaxed">
                     <p>CHOMIN ทำเชิ้ตให้เลือกได้มากกว่าแค่สี เราให้คุณเลือกสัดส่วน รายละเอียด และโทนที่เข้ากับวันที่ต้องใส่จริง</p>
-                    <p>โครงเว็บใหม่นี้วางสินค้าเป็นพระเอก ให้ภาพ สี ไซส์ และทางลัดการซื้อช่วยเล่าเรื่องแทนคำขายยาว ๆ</p>
+                    <p>เริ่มจากเชิ้ตดี ๆ สักตัว แล้วปรับรายละเอียดให้เข้ากับวิธีแต่งตัวของคุณในทุกวัน</p>
                 </div>
                 <div class="mt-8 flex flex-wrap gap-4">
                     <a href="{{ route('shop.index') }}" class="text-xs uppercase tracking-[0.16em] border-b border-brand-black pb-1">Shop all</a>
@@ -161,27 +165,30 @@
                 </div>
             </div>
         </div>
-        <div class="order-1 md:order-2 grid grid-cols-2 border-b md:border-b-0 md:border-l border-brand-gray-border">
-            <img src="{{ asset('images/fb-posts/product-1.jpg') }}"
-                 alt="CHO.MIN styling"
-                 class="h-full min-h-[360px] w-full object-cover border-r border-brand-gray-border"
-                 loading="lazy">
-            <img src="{{ asset('images/fb-posts/pinstripe-1.jpg') }}"
-                 alt="CHO.MIN pinstripe shirt"
+        <div class="order-1 lg:order-2 lg:col-span-7 border-b lg:border-b-0 lg:border-l border-brand-gray-border">
+            <img src="{{ $campaignImages['lifestyle'] }}"
+                 alt="CHO.MIN lifestyle editorial shirts"
                  class="h-full min-h-[360px] w-full object-cover"
                  loading="lazy">
         </div>
     </section>
 
-    <section class="bg-brand-black text-white px-6 md:px-12 py-16 md:py-24 text-center" aria-label="Call to action">
-        <p class="text-xs uppercase tracking-[0.2em] text-white/50 mb-8">Free shipping / 30 day exchange / Member points</p>
-        <h2 class="font-serif uppercase leading-none mx-auto max-w-5xl" style="font-size: clamp(2.8rem, 9vw, 8rem);">
-            Start with the shirt.
-        </h2>
-        <a href="{{ route('shop.index') }}"
-           class="mt-10 inline-block text-xs uppercase tracking-[0.18em] border-b border-white pb-1 hover:text-white/70">
-            ช้อปเลย
-        </a>
+    <section class="relative overflow-hidden bg-brand-black text-white px-6 md:px-12 py-16 md:py-24 text-center" aria-label="Call to action">
+        <img src="{{ $campaignImages['lifestyle'] }}"
+             alt=""
+             class="absolute inset-0 h-full w-full object-cover opacity-35"
+             loading="lazy">
+        <div class="absolute inset-0 bg-brand-black/55"></div>
+        <div class="relative z-10">
+            <p class="text-xs uppercase tracking-[0.2em] text-white/60 mb-8">Free shipping / 30 day exchange / LINE @chomin.th</p>
+            <h2 class="font-serif uppercase leading-none mx-auto max-w-5xl" style="font-size: clamp(2.8rem, 9vw, 8rem);">
+                Define Your Elegance.
+            </h2>
+            <a href="{{ route('shop.index') }}"
+               class="mt-10 inline-block text-xs uppercase tracking-[0.18em] border-b border-white pb-1 hover:text-white/70">
+                ช้อปเลย
+            </a>
+        </div>
     </section>
 
 </x-layouts.shop>

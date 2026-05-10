@@ -65,6 +65,7 @@ class OrderService
                     'product_name' => $item->product->name,
                     'color_name' => $item->variant->color->name,
                     'size' => $item->variant->size,
+                    'custom_options' => $item->custom_options ?: null,
                     'price' => $item->product->display_price,
                     'quantity' => $item->quantity,
                 ]);

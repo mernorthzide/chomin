@@ -1,2 +1,8 @@
 *
 !.gitignore
+!collections/
+!collections/banners/
+!collections/banners/cm-classic-imagen-hero.jpg
+!products/
+!products/chomin-imagen/
+!products/chomin-imagen/*.jpg

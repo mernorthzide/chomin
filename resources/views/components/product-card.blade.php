@@ -33,7 +33,7 @@
         @if(!empty($badges))
             <div class="absolute left-3 top-3 flex flex-wrap gap-1.5">
                 @foreach($badges as $badge)
-                    <span class="bg-white px-2 py-1 text-[10px] uppercase tracking-[0.12em] text-brand-black">
+                    <span class="bg-white px-2.5 py-1.5 text-[10px] uppercase tracking-[0.08em] text-brand-black">
                         {{ $badge }}
                     </span>
                 @endforeach
@@ -47,14 +47,14 @@
         @endif
     </div>
 
-    <div class="min-h-[118px] border-t border-brand-gray-border p-3 md:p-4">
+    <div class="min-h-[146px] border-t border-brand-gray-border p-4 md:p-5">
         <div class="flex items-start justify-between gap-4">
             <div class="min-w-0">
                 <h3 class="text-xs uppercase tracking-[0.08em] leading-snug text-brand-black">
                     {{ $product->localized_name }}
                 </h3>
                 @if($product->collection ?? false)
-                    <p class="mt-1 text-[10px] uppercase tracking-[0.12em] text-brand-gray-light">
+                    <p class="mt-1.5 text-[10px] uppercase tracking-[0.08em] text-brand-gray-light">
                         {{ $product->collection->localized_name ?? $product->collection->name }}
                     </p>
                 @endif
@@ -62,7 +62,7 @@
             <div class="text-right text-xs text-brand-black whitespace-nowrap">
                 <span>฿{{ number_format($product->display_price, 0) }}</span>
                 @if($product->is_on_sale)
-                    <span class="mt-1 block text-[10px] text-brand-gray-light line-through">฿{{ number_format((float) $product->price, 0) }}</span>
+                    <span class="mt-1.5 block text-[10px] text-brand-gray-light line-through">฿{{ number_format((float) $product->price, 0) }}</span>
                 @endif
             </div>
         </div>
@@ -71,15 +71,15 @@
             @if($colorPreview->isNotEmpty())
                 <div class="flex -space-x-1">
                     @foreach($colorPreview->take(6) as $color)
-                        <span class="h-4 w-4 rounded-full border border-white ring-1 ring-brand-gray-border"
+                        <span class="h-5 w-5 rounded-full border border-white ring-1 ring-brand-gray-border"
                               style="background-color: {{ $color->color_code ?? '#eeeeee' }}"></span>
                     @endforeach
                 </div>
-                <span class="text-[10px] uppercase tracking-[0.12em] text-brand-gray-light">
+                <span class="text-[10px] uppercase tracking-[0.08em] text-brand-gray-light">
                     {{ $colorPreview->unique(fn ($color) => $color->slug ?: $color->name)->count() }} สี
                 </span>
             @else
-                <span class="text-[10px] uppercase tracking-[0.12em] text-brand-gray-light">CHOMIN</span>
+                <span class="text-[10px] uppercase tracking-[0.08em] text-brand-gray-light">CHOMIN</span>
             @endif
         </div>
     </div>

@@ -161,6 +161,13 @@
                                     @if($item->variant_label)
                                         <p class="text-xs text-brand-gray-medium mt-0.5">{{ $item->variant_label }}</p>
                                     @endif
+                                    @if($item->custom_option_labels)
+                                        <ul class="mt-1 space-y-0.5 text-xs text-brand-gray-medium">
+                                            @foreach($item->custom_option_labels as $optionLabel)
+                                                <li>{{ $optionLabel }}</li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
                                     <p class="text-xs text-brand-gray-medium mt-1">
                                         ฿{{ number_format($item->price, 0) }} x {{ $item->quantity }}
                                     </p>

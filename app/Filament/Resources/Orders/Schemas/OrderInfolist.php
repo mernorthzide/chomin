@@ -3,8 +3,9 @@
 namespace App\Filament\Resources\Orders\Schemas;
 
 use Filament\Infolists\Components\ImageEntry;
-use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class OrderInfolist
@@ -85,6 +86,34 @@ class OrderInfolist
                             ->label('แต้มที่ใช้'),
                     ])
                     ->columns(3),
+                Section::make('รายการสินค้า')
+                    ->schema([
+                        RepeatableEntry::make('items')
+                            ->label('')
+                            ->schema([
+                                TextEntry::make('product_name')
+                                    ->label('สินค้า')
+                                    ->weight('medium'),
+                                TextEntry::make('variant_label')
+                                    ->label('สี / ไซส์')
+                                    ->placeholder('-'),
+                                TextEntry::make('custom_option_labels')
+                                    ->label('แบบเสื้อ')
+                                    ->listWithLineBreaks()
+                                    ->placeholder('-'),
+                                TextEntry::make('quantity')
+                                    ->label('จำนวน')
+                                    ->numeric(),
+                                TextEntry::make('price')
+                                    ->label('ราคาต่อชิ้น')
+                                    ->money('THB'),
+                                TextEntry::make('line_total')
+                                    ->label('รวม')
+                                    ->money('THB'),
+                            ])
+                            ->columns(3),
+                    ])
+                    ->columnSpanFull(),
                 Section::make('ข้อมูลจัดส่ง')
                     ->schema([
                         TextEntry::make('tracking_number')
@@ -103,7 +132,7 @@ class OrderInfolist
                             ->placeholder('-'),
                     ])
                     ->columns(2)
-                    ->visible(fn ($record) => in_array($record->status, ['shipping', 'completed'])),
+                    ->visible(fn ($record): bool => $record !== null && in_array($record->status, ['shipping', 'completed'])),
                 Section::make('สลิปการโอน')
                     ->schema([
                         ImageEntry::make('paymentSlip.image_path')
@@ -112,7 +141,7 @@ class OrderInfolist
                             ->label('เหตุผลการปฏิเสธ')
                             ->placeholder('-'),
                     ])
-                    ->visible(fn ($record) => $record->paymentSlip !== null),
+                    ->visible(fn ($record): bool => $record?->paymentSlip !== null),
                 Section::make('หมายเหตุ')
                     ->schema([
                         TextEntry::make('note')
@@ -120,7 +149,7 @@ class OrderInfolist
                             ->placeholder('-')
                             ->columnSpanFull(),
                     ])
-                    ->visible(fn ($record) => !empty($record->note)),
+                    ->visible(fn ($record): bool => ! empty($record?->note)),
             ]);
     }
 }

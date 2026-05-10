@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Collection;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductColor;
 use App\Models\ProductImage;
@@ -13,6 +14,8 @@ use App\Models\User;
 use App\Services\GiftCardService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
 class FullRoadmapTest extends TestCase
@@ -284,14 +287,18 @@ class FullRoadmapTest extends TestCase
 
     public function test_homepage_surfaces_campaign_first_storefront_sections(): void
     {
-        $this->createCatalogProduct([
-            'name' => 'CM Classic Shirt',
-            'slug' => 'cm-classic-shirt',
-        ]);
+        $this->seed(\Database\Seeders\ProductSeeder::class);
 
         $this->get('/th')
             ->assertOk()
             ->assertSee('Design Your Own Shirt')
+            ->assertSee('Shop by shirt line')
+            ->assertSee('CM Classic Custom Shirt')
+            ->assertSee('CM Workday Shirt')
+            ->assertSee('CM Soft Pastel Shirt')
+            ->assertSee('CM Statement Color Shirt')
+            ->assertSee('CM Mandarin Minimal Shirt')
+            ->assertDontSee('5 items')
             ->assertSee('Build Your Shirt')
             ->assertSee('50+ สี')
             ->assertSee('XS-6XL')
@@ -385,6 +392,250 @@ class FullRoadmapTest extends TestCase
         $this->assertNotNull($consent);
         $this->assertSame('th', $consent->locale);
         $this->assertTrue(json_decode($consent->categories, true)['embeds']);
+    }
+
+    public function test_product_seeder_creates_five_active_facebook_inspired_product_lines(): void
+    {
+        $legacy = $this->createCatalogProduct([
+            'name' => 'CM Classic - French Collar - 1 Button - No Pocket',
+            'slug' => 'cm-classic-french-collar-1-button-no-pocket',
+        ]);
+
+        $this->seed(\Database\Seeders\ProductSeeder::class);
+
+        $canonical = Product::where('slug', 'cm-classic-custom-shirt')->firstOrFail();
+        $activeProducts = Product::active()->orderBy('sort_order')->pluck('slug')->all();
+
+        $this->assertSame([
+            'cm-classic-custom-shirt',
+            'cm-workday-shirt',
+            'cm-soft-pastel-shirt',
+            'cm-statement-color-shirt',
+            'cm-mandarin-minimal-shirt',
+        ], $activeProducts);
+        $this->assertFalse($legacy->fresh()->is_active);
+        $this->assertSame('CM Classic Custom Shirt', $canonical->name);
+        $this->assertSame(1790.0, (float) $canonical->price);
+        $this->assertSame(999.0, (float) $canonical->sale_price);
+        $this->assertSame(50, $canonical->colors()->count());
+        $this->assertSame(500, $canonical->variants()->count());
+
+        $canonical->update(['created_at' => now()->subMonth()]);
+
+        $shop = $this->get('/th/shop')
+            ->assertOk()
+            ->assertSee('5 รายการ')
+            ->assertSee('CM Classic Custom Shirt')
+            ->assertSee('CM Workday Shirt')
+            ->assertSee('CM Soft Pastel Shirt')
+            ->assertSee('CM Statement Color Shirt')
+            ->assertSee('CM Mandarin Minimal Shirt')
+            ->assertDontSee('French Collar - 1 Button - No Pocket');
+
+        $content = $shop->getContent();
+        $positions = collect([
+            'CM Classic Custom Shirt',
+            'CM Workday Shirt',
+            'CM Soft Pastel Shirt',
+            'CM Statement Color Shirt',
+            'CM Mandarin Minimal Shirt',
+        ])->mapWithKeys(fn (string $name): array => [$name => strpos($content, $name)])->all();
+
+        $this->assertSame($positions, collect($positions)->sort()->all());
+    }
+
+    public function test_collections_page_surfaces_each_seeded_shirt_line_collection(): void
+    {
+        $this->seed(\Database\Seeders\ProductSeeder::class);
+
+        $activeCollections = Collection::active()->orderBy('sort_order')->pluck('slug')->all();
+
+        $this->assertSame([
+            'cm-classic',
+            'cm-workday',
+            'cm-soft-pastel',
+            'cm-statement-color',
+            'cm-mandarin-minimal',
+        ], $activeCollections);
+
+        $this->get('/th/collections')
+            ->assertOk()
+            ->assertSee('CM Classic')
+            ->assertSee('CM Workday')
+            ->assertSee('CM Soft Pastel')
+            ->assertSee('CM Statement Color')
+            ->assertSee('CM Mandarin Minimal')
+            ->assertDontSee('Midnight Series');
+    }
+
+    public function test_product_page_renders_required_custom_shirt_options(): void
+    {
+        $product = $this->createCatalogProduct([
+            'name' => 'CM Classic Custom Shirt',
+            'slug' => 'cm-classic-custom-shirt',
+        ]);
+
+        $this->get('/th/products/'.$product->slug)
+            ->assertOk()
+            ->assertSee('name="custom_options[collar]"', false)
+            ->assertSee('name="custom_options[cuff]"', false)
+            ->assertSee('name="custom_options[pocket]"', false)
+            ->assertSee('French Collar')
+            ->assertSee('Button Down')
+            ->assertSee('No Pocket');
+    }
+
+    public function test_seeded_facebook_product_lines_keep_custom_options_on_each_product_page(): void
+    {
+        $this->seed(\Database\Seeders\ProductSeeder::class);
+
+        foreach ([
+            'cm-classic-custom-shirt',
+            'cm-workday-shirt',
+            'cm-soft-pastel-shirt',
+            'cm-statement-color-shirt',
+            'cm-mandarin-minimal-shirt',
+        ] as $slug) {
+            $this->get('/th/products/'.$slug)
+                ->assertOk()
+                ->assertSee('name="custom_options[collar]"', false)
+                ->assertSee('name="custom_options[cuff]"', false)
+                ->assertSee('name="custom_options[pocket]"', false);
+        }
+    }
+
+    public function test_product_page_related_lines_use_full_sized_editorial_grid(): void
+    {
+        $this->seed(\Database\Seeders\ProductSeeder::class);
+
+        $response = $this->get('/th/products/cm-classic-custom-shirt')
+            ->assertOk()
+            ->assertSee('Related shirt lines')
+            ->assertSee('เลือกไลน์อื่น')
+            ->assertSee('CM Workday Shirt')
+            ->assertSee('CM Soft Pastel Shirt')
+            ->assertSee('CM Statement Color Shirt')
+            ->assertSee('CM Mandarin Minimal Shirt')
+            ->assertDontSee('lg:grid-cols-6')
+            ->assertDontSee('w-48');
+
+        $content = $response->getContent();
+        $positions = collect([
+            'CM Workday Shirt',
+            'CM Soft Pastel Shirt',
+            'CM Statement Color Shirt',
+            'CM Mandarin Minimal Shirt',
+        ])->mapWithKeys(fn (string $name): array => [$name => strpos($content, $name)])->all();
+
+        $this->assertSame($positions, collect($positions)->sort()->all());
+    }
+
+    public function test_cart_merges_items_only_when_variant_and_custom_options_match(): void
+    {
+        $this->assertTrue(Schema::hasColumn('cart_items', 'custom_options'));
+        $this->assertTrue(Schema::hasColumn('cart_items', 'options_hash'));
+
+        $user = User::factory()->create();
+        $product = $this->createCatalogProduct(['slug' => 'custom-option-shirt']);
+        $variant = $product->variants()->firstOrFail();
+
+        $firstOptions = [
+            'collar' => 'french-collar',
+            'cuff' => 'one-button',
+            'pocket' => 'no-pocket',
+        ];
+        $secondOptions = [
+            'collar' => 'button-down',
+            'cuff' => 'one-button',
+            'pocket' => 'no-pocket',
+        ];
+
+        $this->actingAs($user)->post('/th/cart/add', [
+            'variant_id' => $variant->id,
+            'quantity' => 1,
+            'custom_options' => $firstOptions,
+        ])->assertRedirect();
+
+        $this->actingAs($user)->post('/th/cart/add', [
+            'variant_id' => $variant->id,
+            'quantity' => 1,
+            'custom_options' => $secondOptions,
+        ])->assertRedirect();
+
+        $this->actingAs($user)->post('/th/cart/add', [
+            'variant_id' => $variant->id,
+            'quantity' => 2,
+            'custom_options' => $firstOptions,
+        ])->assertRedirect();
+
+        $items = Cart::with('items')->where('user_id', $user->id)->firstOrFail()->items;
+
+        $this->assertCount(2, $items);
+        $this->assertSame([1, 3], $items->sortBy('quantity')->pluck('quantity')->values()->all());
+        $this->assertSame('french-collar', $items->firstWhere('quantity', 3)->custom_options['collar']);
+        $this->assertSame('button-down', $items->firstWhere('quantity', 1)->custom_options['collar']);
+    }
+
+    public function test_checkout_snapshots_custom_options_to_order_items(): void
+    {
+        $this->assertTrue(Schema::hasColumn('order_items', 'custom_options'));
+
+        $user = User::factory()->create(['points' => 0]);
+        $product = $this->createCatalogProduct(['slug' => 'order-custom-shirt']);
+        $variant = $product->variants()->firstOrFail();
+
+        $this->actingAs($user)
+            ->post('/th/cart/add', [
+                'variant_id' => $variant->id,
+                'quantity' => 1,
+                'custom_options' => [
+                    'collar' => 'mandarin-collar',
+                    'cuff' => 'french-cuff',
+                    'pocket' => 'yes-pocket',
+                ],
+            ])->assertRedirect();
+
+        $this->actingAs($user)->post('/th/checkout', [
+            'shipping_name' => 'Chomin Customer',
+            'shipping_phone' => '0812345678',
+            'shipping_address' => '1 Silom Road',
+            'shipping_district' => 'Bang Rak',
+            'shipping_province' => 'Bangkok',
+            'shipping_postal_code' => '10500',
+        ])->assertRedirect();
+
+        $orderItem = DB::table('order_items')->first();
+        $options = json_decode($orderItem->custom_options, true);
+
+        $this->assertSame('mandarin-collar', $options['collar']);
+        $this->assertSame('french-cuff', $options['cuff']);
+        $this->assertSame('yes-pocket', $options['pocket']);
+
+        $savedItem = OrderItem::firstOrFail();
+
+        $this->assertSame([
+            'คอเสื้อ: Mandarin Collar',
+            'ปลายแขน: French Cuff',
+            'กระเป๋า: Yes Pocket',
+        ], $savedItem->custom_option_labels);
+        $this->assertSame(
+            "คอเสื้อ: Mandarin Collar\nปลายแขน: French Cuff\nกระเป๋า: Yes Pocket",
+            $savedItem->custom_options_text,
+        );
+    }
+
+    public function test_imported_facebook_campaign_asset_manifest_has_no_duplicate_hashes(): void
+    {
+        $manifestPath = public_path('images/facebook-campaign/manifest.json');
+
+        $this->assertFileExists($manifestPath);
+
+        $manifest = json_decode(File::get($manifestPath), true);
+        $hashes = collect($manifest['assets'])->pluck('sha256');
+
+        $this->assertSame('https://www.facebook.com/Chominstyle', $manifest['source_page']);
+        $this->assertNotEmpty($hashes);
+        $this->assertSame($hashes->count(), $hashes->unique()->count());
     }
 
     private function createCatalogProduct(array $attributes = []): Product

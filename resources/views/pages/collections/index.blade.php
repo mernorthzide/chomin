@@ -15,7 +15,7 @@
     </section>
 
     <section class="bg-white">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border-t border-brand-gray-border">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 border-t border-brand-gray-border">
             @forelse($collections as $collection)
                 @php
                     $collectionImage = $collection->banner_image
@@ -23,7 +23,7 @@
                         : ($collection->image ? \Illuminate\Support\Facades\Storage::url($collection->image) : null);
                 @endphp
                 <a href="{{ route('collections.show', $collection->slug) }}"
-                   class="group border-b border-r border-brand-gray-border bg-white focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-inset">
+                   class="collection-card group border-b border-r border-brand-gray-border bg-white focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-inset">
                     <div class="aspect-[4/5] bg-brand-gray overflow-hidden">
                         @if($collectionImage)
                             <img src="{{ $collectionImage }}"
@@ -36,10 +36,10 @@
                             </div>
                         @endif
                     </div>
-                    <div class="min-h-[86px] px-3 py-3">
+                    <div class="min-h-[132px] px-4 py-4">
                         <div class="flex items-start justify-between gap-4">
                             <h2 class="text-xs uppercase tracking-[0.08em] leading-snug">{{ $collection->localized_name }}</h2>
-                            <span class="text-[10px] uppercase tracking-[0.12em] text-brand-gray-light whitespace-nowrap">
+                            <span class="collection-count text-[10px] uppercase tracking-[0.08em] text-brand-gray-light whitespace-nowrap">
                                 {{ $collection->products_count }} items
                             </span>
                         </div>
