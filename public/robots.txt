@@ -1,2 +1,17 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /profile
+Disallow: /profile/*
+Disallow: /checkout
+Disallow: /checkout/*
+Disallow: /cart
+Disallow: /orders
+Disallow: /orders/*
+Disallow: /wishlist
+Disallow: /addresses
+Disallow: /addresses/*
+Disallow: /dashboard
+
+Sitemap: https://cho-min.com/sitemap.xml

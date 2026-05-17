@@ -9,6 +9,20 @@ return [
             'en' => 'English',
         ],
     ],
+
+    'newsletter' => [
+        'discount_percent' => env('CHOMIN_NEWSLETTER_DISCOUNT_PERCENT', 10),
+        'discount_max' => env('CHOMIN_NEWSLETTER_DISCOUNT_MAX', 300),
+        'coupon_valid_days' => env('CHOMIN_NEWSLETTER_COUPON_DAYS', 30),
+        'popup_delay_ms' => env('CHOMIN_NEWSLETTER_POPUP_DELAY_MS', 25000),
+    ],
+
+    'shipping' => [
+        'zone_surcharge' => [
+            'south' => 20,
+        ],
+    ],
+
     'custom_options' => [
         'collar' => [
             'label' => 'คอเสื้อ',

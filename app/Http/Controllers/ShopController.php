@@ -46,6 +46,25 @@ class ShopController extends Controller
                 ->where('stock', '>', 0));
         }
 
+        // Filter by price range
+        if ($request->filled('min_price')) {
+            $minPrice = max(0, (float) $request->min_price);
+            $query->where(function ($q) use ($minPrice) {
+                $q->whereRaw('COALESCE(sale_price, price) >= ?', [$minPrice]);
+            });
+        }
+        if ($request->filled('max_price')) {
+            $maxPrice = max(0, (float) $request->max_price);
+            $query->where(function ($q) use ($maxPrice) {
+                $q->whereRaw('COALESCE(sale_price, price) <= ?', [$maxPrice]);
+            });
+        }
+
+        // Filter: in-stock only
+        if ($request->boolean('in_stock')) {
+            $query->whereHas('variants', fn($q) => $q->where('stock', '>', 0));
+        }
+
         // Sort
         $sort = $request->get('sort', 'newest');
         match ($sort) {
@@ -56,6 +75,12 @@ class ShopController extends Controller
         };
 
         $products = $query->paginate(12)->withQueryString();
+
+        // Price range bounds (for slider UI)
+        $priceBounds = Product::active()->selectRaw('
+            MIN(COALESCE(sale_price, price)) as min_price,
+            MAX(COALESCE(sale_price, price)) as max_price
+        ')->first();
 
         $categories   = Category::active()->ordered()->with('translations')->get();
         $collections  = Collection::active()->ordered()->with('translations')->get();
@@ -76,6 +101,6 @@ class ShopController extends Controller
             ->take(10)
             ->values();
 
-        return view('pages.shop', compact('products', 'categories', 'collections', 'sort', 'availableSizes', 'availableColors'));
+        return view('pages.shop', compact('products', 'categories', 'collections', 'sort', 'availableSizes', 'availableColors', 'priceBounds'));
     }
 }

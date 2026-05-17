@@ -1,13 +1,17 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Services\AbandonedCartTracker;
 use App\Services\CartService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class CartController extends Controller
 {
-    public function __construct(private CartService $cartService) {}
+    public function __construct(
+        private CartService $cartService,
+        private AbandonedCartTracker $abandonedCartTracker,
+    ) {}
 
     public function index()
     {
@@ -33,6 +37,10 @@ class CartController extends Controller
             $request->integer('quantity'),
             $request->input('custom_options', []),
         );
+
+        // Track for abandoned cart recovery (no email sent yet — data only)
+        $this->abandonedCartTracker->capture($this->cartService->getCart());
+
         return back()->with('success', 'เพิ่มสินค้าลงตะกร้าแล้ว');
     }
 

@@ -5,6 +5,7 @@ use App\Mail\NewOrderNotification;
 use App\Mail\OrderCreated;
 use App\Models\Coupon;
 use App\Models\SiteSetting;
+use App\Services\AbandonedCartTracker;
 use App\Services\CartService;
 use App\Services\GiftCardService;
 use App\Services\OrderService;
@@ -17,6 +18,7 @@ class CheckoutController extends Controller
     public function __construct(
         private CartService $cartService,
         private OrderService $orderService,
+        private AbandonedCartTracker $abandonedCartTracker,
     ) {}
 
     public function index()
@@ -70,6 +72,9 @@ class CheckoutController extends Controller
         SafeMail::queue($order->user->email, new OrderCreated($order));
         $adminEmail = SiteSetting::get('site_email');
         SafeMail::queue($adminEmail, new NewOrderNotification($order));
+
+        // Mark abandoned cart as recovered
+        $this->abandonedCartTracker->markRecovered($cart);
 
         return redirect()->route('checkout.success', $order)->with('success', 'สั่งซื้อสำเร็จ');
     }

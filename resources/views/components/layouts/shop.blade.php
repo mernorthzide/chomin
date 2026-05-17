@@ -5,28 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ?? config('app.name', 'CHOMIN') }}</title>
-    <meta name="description" content="{{ $description ?? 'CHO.MIN — เชิ้ตดีไซน์ 50+ สี ไซส์ XS–6XL จัดส่งฟรีทั่วประเทศ' }}">
-    <meta property="og:title" content="{{ $title ?? config('app.name', 'CHOMIN') }}">
-    <meta property="og:description" content="{{ $description ?? 'CHO.MIN — เชิ้ตดีไซน์ 50+ สี ไซส์ XS–6XL จัดส่งฟรีทั่วประเทศ' }}">
-    <meta property="og:type" content="website">
-    @php
-        $segments = request()->segments();
-        $currentLocale = in_array($segments[0] ?? null, config('chomin.locales.supported', ['th', 'en']), true)
-            ? array_shift($segments)
-            : app()->getLocale();
-        $localizedPath = implode('/', $segments);
-    @endphp
-    @foreach(config('chomin.locales.supported', ['th', 'en']) as $alternateLocale)
-        <link rel="alternate" hreflang="{{ $alternateLocale }}" href="{{ url($alternateLocale.($localizedPath ? '/'.$localizedPath : '')) }}">
-    @endforeach
-    <link rel="alternate" hreflang="x-default" href="{{ url(config('chomin.locales.default', 'th').($localizedPath ? '/'.$localizedPath : '')) }}">
-    @if(isset($ogImage))
-    <meta property="og:image" content="{{ $ogImage }}">
-    @endif
+    <x-meta
+        :title="$title ?? config('app.name', 'CHOMIN')"
+        :description="$description ?? ''"
+        :image="$image ?? ''"
+        :ogImage="$ogImage ?? ''"
+        :type="$ogType ?? 'website'"
+        :noindex="$noindex ?? false"
+        :jsonLd="$jsonLd ?? []"
+    />
+
+    <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
+    <link rel="icon" href="{{ asset('favicon.ico') }}">
 
     <!-- Scripts & Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <x-analytics />
 </head>
 <body class="storefront font-sans antialiased bg-white text-brand-black">
 
@@ -57,8 +52,9 @@
     <x-footer />
 
     <x-newsletter-popup />
-    <x-live-chat-entry />
+    <x-line-widget />
     <x-cookie-consent />
+    <x-quick-view-modal />
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {

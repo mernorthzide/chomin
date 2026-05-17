@@ -31,6 +31,7 @@
         --type-caption: 0.9375rem;
         --type-ui: 1rem;
         --type-body: 1.0625rem;
+        --nav-height: 60px;
     }
     body {
         @apply font-sans text-brand-black antialiased;
@@ -273,9 +274,11 @@
     white-space: nowrap;
 }
 .filter-field select {
+    -webkit-appearance: none;
+    appearance: none;
     border: 0;
     border-bottom: 1px solid var(--brand-gray-border);
-    background: transparent;
+    background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' viewBox='0 0 10 6'%3E%3Cpath stroke='%231a1a1a' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.4' d='m1 1 4 4 4-4'/%3E%3C/svg%3E") no-repeat right 0.25rem center;
     min-height: 2.75rem;
     min-width: 0;
     width: 100%;
@@ -283,9 +286,11 @@
     font-size: 0.9375rem;
     line-height: 1.45;
     color: var(--brand-black);
+    cursor: pointer;
 }
 .filter-field select:focus {
     border-color: var(--brand-black);
+    outline: none;
     box-shadow: none;
 }
 

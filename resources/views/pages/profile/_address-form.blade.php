@@ -39,25 +39,62 @@
                required>
     </div>
 
-    <div>
-        <label class="block text-xs font-medium tracking-widest uppercase text-brand-gray-dark mb-1">
-            จังหวัด <span class="text-red-400">*</span>
-        </label>
-        <input type="text" name="province"
-               value="{{ old('province', $address->province ?? '') }}"
-               class="w-full border border-brand-gray-border px-3 py-2 text-sm text-brand-black focus:outline-none focus:border-brand-black bg-white"
-               required>
+    <div x-data="thaiAddressLookup({
+            initialPostal: '{{ old('postal_code', $address->postal_code ?? '') }}',
+            initialProvince: '{{ old('province', $address->province ?? '') }}',
+         })" class="contents">
+        <div>
+            <label class="block text-xs font-medium tracking-widest uppercase text-brand-gray-dark mb-1">
+                จังหวัด <span class="text-red-400">*</span>
+            </label>
+            <select name="province" x-model="province"
+                    class="w-full border border-brand-gray-border px-3 py-2 text-sm text-brand-black focus:outline-none focus:border-brand-black bg-white"
+                    required>
+                <option value="">-- เลือกจังหวัด --</option>
+                @foreach(config('thai-locations.provinces') as $province)
+                    <option value="{{ $province }}">{{ $province }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-xs font-medium tracking-widest uppercase text-brand-gray-dark mb-1">
+                รหัสไปรษณีย์ <span class="text-red-400">*</span>
+            </label>
+            <input type="text" inputmode="numeric" maxlength="5" pattern="\d{5}" name="postal_code"
+                   x-model="postalCode" @input="autofill()"
+                   class="w-full border border-brand-gray-border px-3 py-2 text-sm text-brand-black focus:outline-none focus:border-brand-black bg-white"
+                   required>
+            <p class="mt-1 text-[11px] text-brand-gray-light">กรอกรหัสไปรษณีย์แล้วระบบจะกรอกจังหวัดให้อัตโนมัติ</p>
+        </div>
     </div>
 
-    <div>
-        <label class="block text-xs font-medium tracking-widest uppercase text-brand-gray-dark mb-1">
-            รหัสไปรษณีย์ <span class="text-red-400">*</span>
-        </label>
-        <input type="text" name="postal_code"
-               value="{{ old('postal_code', $address->postal_code ?? '') }}"
-               class="w-full border border-brand-gray-border px-3 py-2 text-sm text-brand-black focus:outline-none focus:border-brand-black bg-white"
-               required>
-    </div>
+    <script>
+    function thaiAddressLookup(config) {
+        return {
+            postalCode: config.initialPostal,
+            province: config.initialProvince,
+            timer: null,
+            autofill() {
+                clearTimeout(this.timer);
+                if (!/^\d{5}$/.test(this.postalCode)) return;
+                this.timer = setTimeout(async () => {
+                    try {
+                        const locale = document.documentElement.lang || 'th';
+                        const url = `/${locale}/shipping/lookup?postal_code=${this.postalCode}`;
+                        const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                        const data = await res.json();
+                        if (data.ok && data.province && !this.province) {
+                            this.province = data.province;
+                        } else if (data.ok && data.province) {
+                            this.province = data.province;
+                        }
+                    } catch (e) {}
+                }, 200);
+            }
+        };
+    }
+    </script>
 
     <div class="flex items-center gap-3 sm:col-span-2">
         <input type="checkbox" id="is_default_{{ $address->id ?? 'new' }}" name="is_default" value="1"

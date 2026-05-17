@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\BackInStockController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ColorLibraryController;
@@ -15,15 +16,20 @@ use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\OrderHistoryController;
 use App\Http\Controllers\PaymentSlipController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductReviewController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\ShippingController;
 use App\Http\Controllers\ShopController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StoreLocationController;
 use App\Http\Controllers\StoryController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Middleware\SetLocaleFromRoute;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 
 $localizedRedirect = function (string $path = '') {
     $path = trim($path, '/');
@@ -57,6 +63,21 @@ Route::prefix('{locale}')
         Route::get('/collections/{collection:slug}', [CollectionController::class, 'show'])->name('collections.show');
         Route::get('/shop', ShopController::class)->name('shop.index');
         Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
+        Route::get('/products/{product:slug}/quickview', [ProductController::class, 'quickview'])->name('products.quickview');
+        Route::post('/products/{product:slug}/reviews', [ProductReviewController::class, 'store'])
+            ->middleware('throttle:5,1')
+            ->name('products.reviews.store');
+        Route::post('/products/{product:slug}/back-in-stock', [BackInStockController::class, 'store'])
+            ->middleware('throttle:10,1')
+            ->name('products.back-in-stock');
+
+        // Public shared wishlist (no auth required)
+        Route::get('/wishlists/shared/{token}', [WishlistController::class, 'shared'])->name('wishlists.shared');
+
+        // Shipping calculator + Thai postal lookup
+        Route::get('/shipping/lookup', [ShippingController::class, 'lookup'])
+            ->middleware('throttle:30,1')
+            ->name('shipping.lookup');
         Route::get('/about', AboutController::class)->name('about');
         Route::get('/search', SearchController::class)->name('search');
         Route::get('/sale', SaleController::class)->name('sale');
@@ -116,6 +137,7 @@ Route::prefix('{locale}')
             // Wishlist
             Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
             Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+            Route::post('/wishlist/share-token', [WishlistController::class, 'regenerateShareToken'])->name('wishlist.share-token.regenerate');
 
             // Checkout routes
             Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');

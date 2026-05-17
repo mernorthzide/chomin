@@ -25,6 +25,8 @@ class Product extends Model
     public function images(): HasMany { return $this->hasMany(ProductImage::class); }
     public function variants(): HasMany { return $this->hasMany(ProductVariant::class); }
     public function translations(): HasMany { return $this->hasMany(ProductTranslation::class); }
+    public function reviews(): HasMany { return $this->hasMany(ProductReview::class); }
+    public function approvedReviews(): HasMany { return $this->hasMany(ProductReview::class)->where('status', 'approved')->latest('approved_at'); }
     public function primaryImage() { return $this->hasOne(ProductImage::class)->where('is_primary', true); }
     public function scopeActive($query) { return $query->where('is_active', true); }
     public function scopeFeatured($query) { return $query->where('is_featured', true); }
@@ -45,5 +47,23 @@ class Product extends Model
             && (float) $this->sale_price < (float) $this->price
             && (!$this->sale_starts_at || $this->sale_starts_at->lte(now()))
             && (!$this->sale_ends_at || $this->sale_ends_at->gte(now()));
+    }
+
+    public function getAverageRatingAttribute(): ?float
+    {
+        if (! $this->relationLoaded('approvedReviews')) {
+            $avg = $this->approvedReviews()->avg('rating');
+            return $avg ? round((float) $avg, 1) : null;
+        }
+        return $this->approvedReviews->count() > 0
+            ? round($this->approvedReviews->avg('rating'), 1)
+            : null;
+    }
+
+    public function getReviewCountAttribute(): int
+    {
+        return $this->relationLoaded('approvedReviews')
+            ? $this->approvedReviews->count()
+            : $this->approvedReviews()->count();
     }
 }

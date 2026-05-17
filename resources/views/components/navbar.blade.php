@@ -98,10 +98,15 @@
 
         <a href="{{ route('cart.index') }}"
            class="absolute right-4 top-1/2 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center hover:opacity-60 focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2 md:hidden"
-           aria-label="ตะกร้าสินค้า">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.36-1.99 1.26 12c.07.66-.45 1.24-1.12 1.24H4.25a1.13 1.13 0 0 1-1.12-1.24l1.26-12A1.13 1.13 0 0 1 5.51 7.5h12.98c.57 0 1.06.44 1.12 1.01Z" />
-            </svg>
+           aria-label="ตะกร้าสินค้า {{ $cartCount > 0 ? "($cartCount)" : '' }}">
+            <span class="relative">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.36-1.99 1.26 12c.07.66-.45 1.24-1.12 1.24H4.25a1.13 1.13 0 0 1-1.12-1.24l1.26-12A1.13 1.13 0 0 1 5.51 7.5h12.98c.57 0 1.06.44 1.12 1.01Z" />
+                </svg>
+                @if($cartCount > 0)
+                    <span class="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-brand-black text-white text-[9px] font-medium leading-none">{{ $cartCount > 9 ? '9+' : $cartCount }}</span>
+                @endif
+            </span>
         </a>
 
         <div class="hidden items-center justify-end gap-3 md:flex md:gap-4">
@@ -129,10 +134,15 @@
 
             <a href="{{ route('cart.index') }}"
                class="inline-flex h-11 w-11 items-center justify-center hover:opacity-60 focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2"
-               aria-label="ตะกร้าสินค้า">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.36-1.99 1.26 12c.07.66-.45 1.24-1.12 1.24H4.25a1.13 1.13 0 0 1-1.12-1.24l1.26-12A1.13 1.13 0 0 1 5.51 7.5h12.98c.57 0 1.06.44 1.12 1.01Z" />
-                </svg>
+               aria-label="ตะกร้าสินค้า {{ $cartCount > 0 ? "($cartCount)" : '' }}">
+                <span class="relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.36-1.99 1.26 12c.07.66-.45 1.24-1.12 1.24H4.25a1.13 1.13 0 0 1-1.12-1.24l1.26-12A1.13 1.13 0 0 1 5.51 7.5h12.98c.57 0 1.06.44 1.12 1.01Z" />
+                    </svg>
+                    @if($cartCount > 0)
+                        <span class="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-brand-black text-white text-[9px] font-medium leading-none">{{ $cartCount > 9 ? '9+' : $cartCount }}</span>
+                    @endif
+                </span>
             </a>
         </div>
     </div>

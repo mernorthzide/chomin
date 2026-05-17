@@ -1,4 +1,4 @@
-<x-layouts.shop :title="$title" :description="$description" :ogImage="$ogImage">
+<x-layouts.shop :title="$title" :description="$description" :ogImage="$ogImage" :jsonLd="$jsonLd ?? []" :ogType="$ogType ?? 'product'">
 
     <div
         x-data="productPage()"
@@ -41,13 +41,20 @@
 
                 {{-- ---- LEFT: IMAGE GALLERY ---- --}}
                 <div class="space-y-4">
-                    <!-- Main Image -->
-                    <div class="relative aspect-[3/4] overflow-hidden bg-brand-gray">
+                    <!-- Main Image with hover zoom + click-to-lightbox -->
+                    <div class="relative aspect-[3/4] overflow-hidden bg-brand-gray group/zoom cursor-zoom-in"
+                         @mousemove="zoom($event)"
+                         @mouseleave="resetZoom()"
+                         @click="openLightbox()">
                         <template x-if="currentImages.length > 0">
                             <img
                                 :src="currentImages[activeImageIndex]"
                                 :alt="'{{ $product->name }}'"
-                                class="w-full h-full object-cover transition-opacity duration-300"
+                                class="w-full h-full object-cover transition-transform duration-150"
+                                :style="zoomActive ? `transform: scale(2); transform-origin: ${zoomX}% ${zoomY}%` : ''"
+                                loading="eager"
+                                fetchpriority="high"
+                                decoding="async"
                                 x-transition:enter="transition ease-in duration-200"
                                 x-transition:enter-start="opacity-0"
                                 x-transition:enter-end="opacity-100">
@@ -88,7 +95,7 @@
                                 @click="activeImageIndex = idx"
                                 class="flex-shrink-0 w-16 h-20 overflow-hidden bg-brand-gray border-2 transition-colors duration-200"
                                 :class="activeImageIndex === idx ? 'border-brand-black' : 'border-transparent hover:border-brand-gray-border'">
-                                <img :src="img" class="w-full h-full object-cover" alt="">
+                                <img :src="img" class="w-full h-full object-cover" role="presentation" alt="">
                             </button>
                         </template>
                     </div>
@@ -186,9 +193,13 @@
                     @if($availableSizes->isNotEmpty())
                         <div class="mb-6">
                             <div class="flex items-center justify-between mb-3">
-                                <span class="text-xs font-medium tracking-widest uppercase text-brand-gray-dark">ไซส์</span>
-                                <span class="text-xs text-brand-gray-medium" x-text="selectedSize ? selectedSize : 'กรุณาเลือก'"></span>
+                                <span class="text-xs font-medium tracking-widest uppercase text-brand-gray-dark">{{ app()->getLocale() === 'en' ? 'Size' : 'ไซส์' }}</span>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xs text-brand-gray-medium" x-text="selectedSize ? selectedSize : '{{ app()->getLocale() === 'en' ? 'Select' : 'กรุณาเลือก' }}'"></span>
+                                    <a href="{{ route('pages.size-guide') }}" class="text-xs uppercase tracking-[0.12em] text-brand-gray-light underline underline-offset-2 hover:text-brand-black transition-colors">{{ app()->getLocale() === 'en' ? 'Size Guide' : 'ตารางไซส์' }}</a>
+                                </div>
                             </div>
+                            <x-size-recommender />
                             <div class="flex flex-wrap gap-2">
                                 @foreach($availableSizes as $size)
                                     @php
@@ -213,11 +224,23 @@
 
                     <!-- STOCK INFO -->
                     <div class="mb-6">
-                        <template x-if="selectedVariantStock !== null && selectedVariantStock <= 5 && selectedVariantStock > 0">
-                            <p class="text-xs text-amber-600 tracking-wide">เหลือเพียง <span x-text="selectedVariantStock"></span> ชิ้น</p>
+                        <template x-if="selectedVariantStock !== null && selectedVariantStock <= 3 && selectedVariantStock > 0">
+                            <p class="text-xs uppercase tracking-[0.18em] text-amber-700">
+                                {{ app()->getLocale() === 'en' ? 'Only' : 'เหลือเพียง' }}
+                                <span x-text="selectedVariantStock" class="font-medium"></span>
+                                {{ app()->getLocale() === 'en' ? 'left' : 'ชิ้น' }}
+                            </p>
+                        </template>
+                        <template x-if="selectedVariantStock !== null && selectedVariantStock > 3 && selectedVariantStock <= 10">
+                            <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-medium">
+                                {{ app()->getLocale() === 'en' ? 'Low stock' : 'สต็อกใกล้หมด' }}
+                            </p>
                         </template>
                         <template x-if="selectedVariantStock === 0">
-                            <p class="text-xs text-red-500 tracking-wide">หมดสต็อก</p>
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.18em] text-red-700">{{ app()->getLocale() === 'en' ? 'Out of stock' : 'หมดสต็อก' }}</p>
+                                <x-back-in-stock :product="$product" />
+                            </div>
                         </template>
                     </div>
 
@@ -387,6 +410,11 @@
         </section>
 
         {{-- ============================================================
+             PRODUCT REVIEWS
+        ============================================================ --}}
+        <x-product-reviews :product="$product" />
+
+        {{-- ============================================================
              RELATED PRODUCTS
         ============================================================ --}}
         @if($related->isNotEmpty())
@@ -409,6 +437,64 @@
                 </div>
             </section>
         @endif
+
+        {{-- ============================================================
+             COMPLETE THE LOOK
+        ============================================================ --}}
+        @if(isset($completeTheLook) && $completeTheLook->isNotEmpty())
+            <section class="bg-white border-b border-brand-gray-border" aria-label="Complete the look">
+                <div class="px-6 md:px-12 py-8 md:py-10">
+                    <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-3">Complete the look</p>
+                    <h2 class="font-serif uppercase leading-none text-3xl md:text-5xl text-brand-black">
+                        จับคู่เซตของคุณ
+                    </h2>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 border-t border-brand-gray-border">
+                    @foreach($completeTheLook as $ctl)
+                        <x-product-card :product="$ctl" />
+                    @endforeach
+                </div>
+            </section>
+        @endif
+
+        {{-- ============================================================
+             LIGHTBOX (fullscreen image viewer) — inside x-data scope
+        ============================================================ --}}
+        <div x-show="lightboxOpen" x-cloak
+             class="fixed inset-0 z-[90] flex items-center justify-center bg-black"
+             x-transition.opacity
+             @keydown.escape.window="closeLightbox()"
+             @keydown.arrow-left.window="prevImage()"
+             @keydown.arrow-right.window="nextImage()"
+             @click.self="closeLightbox()">
+            <button type="button" @click="closeLightbox()"
+                    class="absolute right-4 top-4 z-10 flex h-12 w-12 items-center justify-center bg-white/10 text-white hover:bg-white/20"
+                    aria-label="Close">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <template x-if="currentImages.length > 1">
+                <button @click.stop="prevImage()"
+                        class="absolute left-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center bg-white/10 text-white hover:bg-white/20"
+                        aria-label="Previous">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+                </button>
+            </template>
+            <template x-if="currentImages.length > 1">
+                <button @click.stop="nextImage()"
+                        class="absolute right-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center bg-white/10 text-white hover:bg-white/20"
+                        aria-label="Next">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                </button>
+            </template>
+            <img :src="currentImages[activeImageIndex]"
+                 alt=""
+                 class="max-h-[90vh] max-w-[90vw] object-contain">
+            <div class="absolute bottom-6 left-1/2 -translate-x-1/2 text-xs uppercase tracking-[0.2em] text-white/70">
+                <span x-text="activeImageIndex + 1"></span> / <span x-text="currentImages.length"></span>
+            </div>
+        </div>
 
     </div>
 
@@ -455,6 +541,30 @@
             currentImages: allImages.length > 0 ? allImages : [],
             quantity: 1,
             showAllColors: false,
+            zoomActive: false,
+            zoomX: 50,
+            zoomY: 50,
+            lightboxOpen: false,
+
+            zoom(event) {
+                if (window.innerWidth < 1024) return; // disable on mobile
+                const r = event.currentTarget.getBoundingClientRect();
+                this.zoomX = ((event.clientX - r.left) / r.width) * 100;
+                this.zoomY = ((event.clientY - r.top) / r.height) * 100;
+                this.zoomActive = true;
+            },
+            resetZoom() {
+                this.zoomActive = false;
+            },
+            openLightbox() {
+                if (this.currentImages.length === 0) return;
+                this.lightboxOpen = true;
+                document.body.style.overflow = 'hidden';
+            },
+            closeLightbox() {
+                this.lightboxOpen = false;
+                document.body.style.overflow = '';
+            },
 
             init() {
                 // Auto-select first color if available
@@ -523,5 +633,8 @@
         };
     }
     </script>
+
+    {{-- Recently viewed (outside x-data scope is fine since it's a server-rendered component) --}}
+    <x-recently-viewed :exclude-id="$product->id" />
 
 </x-layouts.shop>

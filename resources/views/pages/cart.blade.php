@@ -232,6 +232,11 @@
 
                         <div class="border-t border-brand-gray-border my-5"></div>
 
+                        {{-- Shipping calculator --}}
+                        <div class="mb-5">
+                            <x-shipping-calculator :subtotal="$cart->subtotal" />
+                        </div>
+
                         {{-- Total --}}
                         <div class="flex justify-between items-center mb-6">
                             <span class="text-sm font-medium text-brand-black">ยอดรวม</span>

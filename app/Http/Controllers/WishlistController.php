@@ -2,19 +2,59 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class WishlistController extends Controller
 {
     public function index()
     {
-        $wishlists = auth()->user()
+        $user = auth()->user();
+
+        // Lazily generate share token on first view
+        if (! $user->wishlist_share_token) {
+            $user->wishlist_share_token = Str::random(32);
+            $user->save();
+        }
+
+        $wishlists = $user
             ->wishlists()
-            ->with('product.primaryImage')
+            ->with('product.primaryImage', 'product.translations', 'product.variants', 'product.collection.translations', 'product.colors.translations')
             ->get();
 
-        return view('pages.profile.wishlist', compact('wishlists'));
+        $shareUrl = route('wishlists.shared', ['locale' => app()->getLocale(), 'token' => $user->wishlist_share_token]);
+
+        return view('pages.profile.wishlist', compact('wishlists', 'shareUrl'));
+    }
+
+    public function shared(string $locale, string $token)
+    {
+        $user = User::where('wishlist_share_token', $token)->firstOrFail();
+
+        $wishlists = $user->wishlists()
+            ->with('product.primaryImage', 'product.translations', 'product.variants', 'product.collection.translations', 'product.colors.translations')
+            ->get()
+            ->filter(fn ($w) => $w->product && $w->product->is_active)
+            ->values();
+
+        return view('pages.profile.wishlist-shared', [
+            'wishlists' => $wishlists,
+            'ownerName' => $user->name,
+        ]);
+    }
+
+    public function regenerateShareToken(Request $request)
+    {
+        $user = auth()->user();
+        $user->wishlist_share_token = Str::random(32);
+        $user->save();
+
+        return back()->with('flash', [
+            'type' => 'success',
+            'message' => app()->getLocale() === 'en' ? 'Share link regenerated.' : 'สร้างลิงก์ใหม่แล้ว',
+        ]);
     }
 
     public function toggle(Request $request)

@@ -16,14 +16,17 @@
     $colorPreview = $product->colors ?? collect();
 @endphp
 
+<div class="product-card-wrapper group relative {{ $dark ? 'product-card-dark' : '' }}">
 <a href="{{ route('products.show', $product->slug) }}"
-   class="product-card group focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-inset {{ $dark ? 'product-card-dark' : '' }}">
+   class="product-card block focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-inset">
     <div class="relative aspect-[3/4] overflow-hidden bg-brand-gray">
         @if($primaryImage)
             <img src="{{ \Illuminate\Support\Facades\Storage::url($primaryImage->image_path) }}"
                  alt="{{ $product->localized_name }}"
                  class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                 loading="lazy">
+                 loading="lazy"
+                 decoding="async"
+                 sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw">
         @else
             <div class="h-full w-full flex items-center justify-center">
                 <span class="font-serif text-5xl text-brand-gray-border">CHO</span>
@@ -84,3 +87,10 @@
         </div>
     </div>
 </a>
+<button type="button"
+        @click.prevent="$dispatch('open-quick-view', { slug: '{{ $product->slug }}' })"
+        class="absolute left-1/2 top-[36%] z-10 -translate-x-1/2 -translate-y-1/2 opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100 bg-white px-5 py-2.5 text-[11px] uppercase tracking-[0.14em] text-brand-black shadow-sm hover:bg-brand-black hover:text-white"
+        aria-label="Quick view {{ $product->localized_name }}">
+    {{ app()->getLocale() === 'en' ? 'Quick View' : 'ดูเร็ว' }}
+</button>
+</div>

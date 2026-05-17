@@ -55,7 +55,7 @@
                         <a href="{{ route('stories.index') }}" class="hover:text-brand-black transition-colors duration-200 focus:outline-none focus:underline">บทความ</a>
                     </li>
                     <li>
-                        <a href="{{ route('stores') }}" class="hover:text-brand-black transition-colors duration-200 focus:outline-none focus:underline">Store Locator</a>
+                        <a href="{{ route('stores') }}" class="hover:text-brand-black transition-colors duration-200 focus:outline-none focus:underline">{{ app()->getLocale() === 'en' ? 'Store Locator' : 'หาร้านค้า' }}</a>
                     </li>
                     <li>
                         <a href="{{ route('pages.member') }}" class="hover:text-brand-black transition-colors duration-200 focus:outline-none focus:underline">Member Program</a>
@@ -150,7 +150,7 @@
             <h4 class="text-xs font-bold uppercase tracking-widest mb-4">รับข่าวสารจาก CHOMIN</h4>
             <form method="POST" action="{{ route('newsletter.store') }}" class="flex gap-2">
                 @csrf
-                <input type="email" name="email" required placeholder="Email" class="min-h-[44px] min-w-0 flex-1 border-brand-gray-border text-sm focus:border-brand-black focus:ring-brand-black">
+                <input type="email" name="email" required placeholder="{{ app()->getLocale() === 'en' ? 'Email address' : 'อีเมลของคุณ' }}" class="min-h-[44px] min-w-0 flex-1 border-brand-gray-border text-sm focus:border-brand-black focus:ring-brand-black">
                 <button type="submit" class="min-h-[44px] bg-brand-black px-5 text-xs uppercase tracking-[0.15em] text-white transition-colors hover:bg-brand-gray-dark">Join</button>
             </form>
         </div>

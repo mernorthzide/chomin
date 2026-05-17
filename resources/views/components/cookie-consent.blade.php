@@ -4,6 +4,7 @@
         save(categories) {
             const payload = { necessary: true, analytics: !!categories.analytics, marketing: !!categories.marketing, embeds: !!categories.embeds };
             localStorage.setItem('chomin_cookie_consent', JSON.stringify(payload));
+            window.dispatchEvent(new CustomEvent('chomin:consent-updated', { detail: payload }));
             fetch('{{ route('cookies.consent') }}', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },

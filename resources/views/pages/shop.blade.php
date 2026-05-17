@@ -10,10 +10,12 @@
                 <div class="w-full">
                     <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-4">Products</p>
                     <h1 class="font-serif uppercase leading-none text-5xl md:text-7xl">
-                        {{ app()->getLocale() === 'en' ? 'Design Your Own Shirt' : 'Design Your Own Shirt' }}
+                        {{ app()->getLocale() === 'en' ? 'Design Your Own Shirt' : 'ออกแบบเชิ้ตของคุณเอง' }}
                     </h1>
                     <p class="mt-6 max-w-md text-sm text-brand-gray-medium leading-relaxed">
-                        เลือกจาก 5 shirt lines ที่ต่อยอดจาก Facebook campaign: classic, workday, pastel, statement color และ mandarin minimal ราคาโปร 999 บาท พร้อมปรับคอเสื้อ ปลายแขน และกระเป๋าได้
+                        {{ app()->getLocale() === 'en'
+                            ? 'Choose from 5 shirt lines. Select your color from 50+ shades, pick your collar, cuff and pocket — priced at ฿999.'
+                            : 'เลือกจาก 5 ไลน์เชิ้ต กว่า 50 สี ปรับคอเสื้อ ปลายแขน และกระเป๋าให้เป็นแบบที่คุณต้องการ ในราคา 999 บาท' }}
                     </p>
                 </div>
             </div>
@@ -26,7 +28,7 @@
         </div>
     </section>
 
-    <section class="shop-filter-bar sticky z-30 border-b border-brand-gray-border bg-white" style="top: 60px;">
+    <section class="shop-filter-bar sticky z-30 border-b border-brand-gray-border bg-white" style="top: var(--nav-height, 60px);">
         <div class="px-6 md:px-12 py-4">
             <form method="GET" action="{{ route('shop.index') }}" class="grid grid-cols-2 items-end gap-4 md:flex md:flex-wrap md:items-center md:gap-6">
                 <div class="filter-field">
@@ -75,11 +77,44 @@
                     </select>
                 </div>
 
+                @php
+                    $minBound = (int) floor((float) ($priceBounds->min_price ?? 0));
+                    $maxBound = (int) ceil((float) ($priceBounds->max_price ?? 9999));
+                    $minSelected = (int) request('min_price', $minBound);
+                    $maxSelected = (int) request('max_price', $maxBound);
+                @endphp
+                <div class="filter-field" x-data="{
+                    min: {{ $minSelected }},
+                    max: {{ $maxSelected }},
+                    open: false,
+                }">
+                    <label>ช่วงราคา</label>
+                    <button type="button" @click="open = !open" class="w-full text-left border border-brand-gray-border px-3 py-2 text-xs">
+                        ฿<span x-text="min.toLocaleString()"></span> – ฿<span x-text="max.toLocaleString()"></span>
+                    </button>
+                    <div x-show="open" x-cloak @click.outside="open = false"
+                         class="absolute z-40 mt-2 w-72 border border-brand-gray-border bg-white p-4 shadow-lg">
+                        <div class="flex items-center justify-between text-[11px] uppercase tracking-[0.14em] text-brand-gray-medium mb-2">
+                            <span>฿<span x-text="min.toLocaleString()"></span></span>
+                            <span>฿<span x-text="max.toLocaleString()"></span></span>
+                        </div>
+                        <input type="range" name="min_price" :min="{{ $minBound }}" :max="{{ $maxBound }}" x-model.number="min"
+                               @change="if (min > max) min = max"
+                               class="w-full accent-black">
+                        <input type="range" name="max_price" :min="{{ $minBound }}" :max="{{ $maxBound }}" x-model.number="max"
+                               @change="if (max < min) max = min"
+                               class="w-full accent-black mt-2">
+                        <button type="submit" class="mt-3 w-full bg-brand-black px-3 py-2 text-[11px] uppercase tracking-[0.14em] text-white">
+                            ใช้ช่วงราคา
+                        </button>
+                    </div>
+                </div>
+
                 <div class="col-span-2 text-xs uppercase tracking-[0.14em] text-brand-gray-light md:ml-auto md:col-span-1">
                     {{ $products->total() }} รายการ
                 </div>
 
-                @if(request()->hasAny(['category', 'collection', 'color', 'size']))
+                @if(request()->hasAny(['category', 'collection', 'color', 'size', 'min_price', 'max_price', 'in_stock']))
                     <a href="{{ route('shop.index') }}" class="text-xs uppercase tracking-[0.14em] border-b border-brand-black pb-1">
                         ล้างตัวกรอง
                     </a>
