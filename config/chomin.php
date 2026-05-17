@@ -58,6 +58,60 @@ return [
         ],
     ],
 
+    'referral' => [
+        'cookie_name' => 'chomin_referral',
+        'cookie_ttl_minutes' => (int) env('CHOMIN_REFERRAL_COOKIE_TTL_MINUTES', 60 * 24 * 30),
+        'referrer_bonus_points' => (int) env('CHOMIN_REFERRAL_REFERRER_BONUS', 200),
+        'referee_bonus_points' => (int) env('CHOMIN_REFERRAL_REFEREE_BONUS', 100),
+    ],
+
+    'gift_cards' => [
+        'denominations' => [500, 1000, 2000, 5000],
+    ],
+
+    'returns' => [
+        'eligible_days' => (int) env('CHOMIN_RETURN_ELIGIBLE_DAYS', 30),
+    ],
+
+    'tiers' => [
+        'bronze' => [
+            'min_spend' => 0,
+            'name_th' => 'Bronze',
+            'name_en' => 'Bronze',
+            'points_multiplier' => 1.0,
+            'shipping_perk' => null,
+            'early_access_days' => 0,
+            'birthday_bonus' => 100,
+        ],
+        'silver' => [
+            'min_spend' => 5000,
+            'name_th' => 'Silver',
+            'name_en' => 'Silver',
+            'points_multiplier' => 1.25,
+            'shipping_perk' => null,
+            'early_access_days' => 1,
+            'birthday_bonus' => 250,
+        ],
+        'gold' => [
+            'min_spend' => 15000,
+            'name_th' => 'Gold',
+            'name_en' => 'Gold',
+            'points_multiplier' => 1.5,
+            'shipping_perk' => 'priority',
+            'early_access_days' => 3,
+            'birthday_bonus' => 500,
+        ],
+        'platinum' => [
+            'min_spend' => 40000,
+            'name_th' => 'Platinum',
+            'name_en' => 'Platinum',
+            'points_multiplier' => 2.0,
+            'shipping_perk' => 'express',
+            'early_access_days' => 7,
+            'birthday_bonus' => 1000,
+        ],
+    ],
+
     'social' => [
         'instagram_handle' => env('CHOMIN_IG_HANDLE', 'chomin.th'),
         'instagram_url' => env('CHOMIN_IG_URL', 'https://www.instagram.com/chomin.th/'),

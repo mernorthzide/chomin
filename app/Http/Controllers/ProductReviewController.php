@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductReview;
@@ -26,7 +27,7 @@ class ProductReviewController extends Controller
 
         $verifiedOrder = $user ? Order::query()
             ->where('user_id', $user->id)
-            ->whereIn('status', ['paid', 'shipping', 'completed'])
+            ->whereIn('status', OrderStatus::paidStatuses())
             ->whereHas('items', fn ($q) => $q->where('product_id', $product->id))
             ->latest()
             ->first() : null;

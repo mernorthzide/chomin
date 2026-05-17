@@ -20,6 +20,7 @@ class OrderHistoryController extends Controller
     {
         abort_unless($order->user_id === auth()->id(), 403);
         $order->load('items.product', 'items.variant.color', 'paymentSlip');
+
         return view('pages.profile.order-detail', compact('order'));
     }
 }

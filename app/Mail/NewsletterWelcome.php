@@ -16,13 +16,13 @@ class NewsletterWelcome extends Mailable implements ShouldQueue
 
     public function __construct(
         public string $email,
-        public string $locale,
+        public string $localeCode,
         public ?Coupon $coupon = null,
     ) {}
 
     public function envelope(): Envelope
     {
-        $subject = $this->locale === 'en'
+        $subject = $this->localeCode === 'en'
             ? 'Welcome to CHOMIN'
             : 'ยินดีต้อนรับสู่ CHOMIN';
 
@@ -35,7 +35,7 @@ class NewsletterWelcome extends Mailable implements ShouldQueue
             markdown: 'emails.newsletter-welcome',
             with: [
                 'email' => $this->email,
-                'locale' => $this->locale,
+                'locale' => $this->localeCode,
                 'coupon' => $this->coupon,
             ],
         );

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Cart;
@@ -13,6 +14,7 @@ class CartService
         if (Auth::check()) {
             return Cart::firstOrCreate(['user_id' => Auth::id()], ['session_id' => null]);
         }
+
         return Cart::firstOrCreate(['session_id' => session()->getId()], ['user_id' => null]);
     }
 
@@ -31,10 +33,12 @@ class CartService
             $newQty = $existing->quantity + $quantity;
             abort_if($newQty > $variant->stock, 422, 'สินค้าในสต็อกไม่เพียงพอ');
             $existing->update(['quantity' => $newQty]);
+
             return $existing->fresh();
         }
 
         abort_if($quantity > $variant->stock, 422, 'สินค้าในสต็อกไม่เพียงพอ');
+
         return $cart->items()->create([
             'product_id' => $variant->product_id,
             'product_variant_id' => $variantId,
@@ -48,7 +52,11 @@ class CartService
     {
         $cart = $this->getCart();
         $item = $cart->items()->findOrFail($itemId);
-        if ($quantity <= 0) { $item->delete(); return; }
+        if ($quantity <= 0) {
+            $item->delete();
+
+            return;
+        }
         abort_if($quantity > $item->variant->stock, 422, 'สินค้าในสต็อกไม่เพียงพอ');
         $item->update(['quantity' => $quantity]);
     }
@@ -60,9 +68,13 @@ class CartService
 
     public function mergeSessionCart(): void
     {
-        if (!Auth::check()) return;
+        if (! Auth::check()) {
+            return;
+        }
         $sessionCart = Cart::where('session_id', session()->getId())->first();
-        if (!$sessionCart || $sessionCart->items->isEmpty()) return;
+        if (! $sessionCart || $sessionCart->items->isEmpty()) {
+            return;
+        }
         $userCart = Cart::firstOrCreate(['user_id' => Auth::id()], ['session_id' => null]);
         foreach ($sessionCart->items as $item) {
             $existing = $userCart->items()
@@ -86,7 +98,7 @@ class CartService
 
     public function getItemCount(): int
     {
-        return $this->getCart()->items->sum('quantity');
+        return (int) $this->getCart()->items()->sum('quantity');
     }
 
     private function normalizeCustomOptions(array $customOptions): array

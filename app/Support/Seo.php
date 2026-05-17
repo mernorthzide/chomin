@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Models\Product;
 use Illuminate\Support\Facades\Request;
 
 class Seo
@@ -105,7 +106,7 @@ class Seo
         ];
     }
 
-    public static function productJsonLd(\App\Models\Product $product, ?string $image = null): array
+    public static function productJsonLd(Product $product, ?string $image = null): array
     {
         $base = rtrim(config('app.url'), '/');
         $totalStock = (int) $product->variants->sum('stock');

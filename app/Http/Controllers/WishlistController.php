@@ -72,14 +72,14 @@ class WishlistController extends Controller
             $message = 'ลบออกจาก Wishlist แล้ว';
         } else {
             Wishlist::create([
-                'user_id'    => auth()->id(),
+                'user_id' => auth()->id(),
                 'product_id' => $request->product_id,
             ]);
             $message = 'เพิ่มใน Wishlist แล้ว';
         }
 
         if ($request->expectsJson()) {
-            return response()->json(['message' => $message, 'in_wishlist' => !$existing]);
+            return response()->json(['message' => $message, 'in_wishlist' => ! $existing]);
         }
 
         return back()->with('success', $message);

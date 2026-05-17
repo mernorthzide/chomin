@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\NewsletterSubscribers;
 
-use App\Filament\Resources\NewsletterSubscribers\Pages\ListNewsletterSubscribers;
 use App\Filament\Resources\NewsletterSubscribers\Pages\EditNewsletterSubscriber;
+use App\Filament\Resources\NewsletterSubscribers\Pages\ListNewsletterSubscribers;
 use App\Models\NewsletterSubscriber;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;

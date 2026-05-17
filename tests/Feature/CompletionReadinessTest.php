@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Exports\TopProductsExport;
 use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Collection;
@@ -16,6 +17,8 @@ use App\Models\SiteSetting;
 use App\Models\Story;
 use App\Models\User;
 use App\Services\PointsService;
+use Database\Seeders\AdminUserSeeder;
+use Database\Seeders\ContentSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -40,7 +43,7 @@ class CompletionReadinessTest extends TestCase
 
     public function test_contact_style_content_pages_render_clear_form_controls(): void
     {
-        $this->seed(\Database\Seeders\ContentSeeder::class);
+        $this->seed(ContentSeeder::class);
 
         $this->get('/th/contact')
             ->assertOk()
@@ -263,6 +266,7 @@ class CompletionReadinessTest extends TestCase
                 'shipping_district' => 'Bang Rak',
                 'shipping_province' => 'Bangkok',
                 'shipping_postal_code' => '10500',
+                'payment_method' => 'promptpay_slip',
             ])
             ->assertRedirect();
 
@@ -451,9 +455,9 @@ class CompletionReadinessTest extends TestCase
             'quantity' => 3,
         ]);
 
-        $this->assertTrue(class_exists(\App\Exports\TopProductsExport::class));
+        $this->assertTrue(class_exists(TopProductsExport::class));
 
-        $rows = (new \App\Exports\TopProductsExport(
+        $rows = (new TopProductsExport(
             now()->subDay()->toDateTimeString(),
             now()->addDay()->toDateTimeString(),
         ))->collection();
@@ -466,7 +470,7 @@ class CompletionReadinessTest extends TestCase
     {
         app()->detectEnvironment(fn () => 'production');
 
-        (new \Database\Seeders\AdminUserSeeder())->run();
+        (new AdminUserSeeder)->run();
 
         $this->assertDatabaseMissing('users', [
             'email' => 'admin@chomin.com',

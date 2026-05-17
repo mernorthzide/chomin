@@ -14,9 +14,10 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -51,7 +52,7 @@ class ContentPageResource extends Resource
                         ->required()
                         ->unique(ignoreRecord: true)
                         ->live(onBlur: true)
-                        ->afterStateUpdated(fn ($state, \Filament\Forms\Set $set) => $set('slug', Str::slug((string) $state))),
+                        ->afterStateUpdated(fn ($state, Set $set) => $set('slug', Str::slug((string) $state))),
                     Select::make('template')
                         ->label('Template')
                         ->options([

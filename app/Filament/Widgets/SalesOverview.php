@@ -27,16 +27,16 @@ class SalesOverview extends StatsOverviewWidget
             ->count();
 
         return [
-            Stat::make('ยอดขายวันนี้', '฿' . number_format($todaysSales, 2))
+            Stat::make('ยอดขายวันนี้', '฿'.number_format($todaysSales, 2))
                 ->icon('heroicon-o-banknotes')
                 ->color('success'),
-            Stat::make('ยอดขายเดือนนี้', '฿' . number_format($monthlySales, 2))
+            Stat::make('ยอดขายเดือนนี้', '฿'.number_format($monthlySales, 2))
                 ->icon('heroicon-o-chart-bar')
                 ->color('primary'),
-            Stat::make('รอตรวจสลิป', $awaitingPayment . ' ออเดอร์')
+            Stat::make('รอตรวจสลิป', $awaitingPayment.' ออเดอร์')
                 ->icon('heroicon-o-document-magnifying-glass')
                 ->color('warning'),
-            Stat::make('สมาชิกใหม่เดือนนี้', $newMembers . ' คน')
+            Stat::make('สมาชิกใหม่เดือนนี้', $newMembers.' คน')
                 ->icon('heroicon-o-user-plus')
                 ->color('info'),
         ];

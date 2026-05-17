@@ -6,9 +6,10 @@ use App\Models\Collection;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 
@@ -22,8 +23,7 @@ class CollectionForm
                     ->label('ชื่อคอลเล็คชัน')
                     ->required()
                     ->live(onBlur: true)
-                    ->afterStateUpdated(fn (string $operation, $state, \Filament\Forms\Set $set) =>
-                        $operation === 'create' ? $set('slug', Str::slug($state)) : null
+                    ->afterStateUpdated(fn (string $operation, $state, Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null
                     ),
                 TextInput::make('slug')
                     ->label('Slug')

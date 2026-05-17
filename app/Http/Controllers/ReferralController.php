@@ -2,22 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\OrderStatus;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Cookie;
 
 class ReferralController extends Controller
 {
-    public const COOKIE_NAME = 'chomin_referral';
-
-    public const COOKIE_TTL_MINUTES = 60 * 24 * 30;
-
-    public const REFERRER_BONUS_POINTS = 200;
-
-    public const REFEREE_BONUS_POINTS = 100;
-
     public function index(string $locale)
     {
         $user = Auth::user();
@@ -42,9 +36,9 @@ class ReferralController extends Controller
 
         if ($exists) {
             $response->withCookie(new Cookie(
-                self::COOKIE_NAME,
+                config('chomin.referral.cookie_name'),
                 strtoupper($code),
-                now()->addMinutes(self::COOKIE_TTL_MINUTES)->getTimestamp(),
+                now()->addMinutes((int) config('chomin.referral.cookie_ttl_minutes'))->getTimestamp(),
                 '/',
                 null,
                 request()->isSecure(),
@@ -57,7 +51,7 @@ class ReferralController extends Controller
 
     public static function applyToNewUser(User $newUser, Request $request): void
     {
-        $code = strtoupper((string) $request->cookie(self::COOKIE_NAME, ''));
+        $code = strtoupper((string) $request->cookie(config('chomin.referral.cookie_name'), ''));
         if (! $code) {
             return;
         }
@@ -67,7 +61,7 @@ class ReferralController extends Controller
             return;
         }
 
-        $newUser->update(['referred_by_user_id' => $referrer->id]);
+        $newUser->forceFill(['referred_by_user_id' => $referrer->id])->save();
     }
 
     public static function creditFirstOrder(User $buyer): void
@@ -76,11 +70,11 @@ class ReferralController extends Controller
             return;
         }
 
-        $hasPriorOrders = $buyer->orders()
-            ->whereIn('status', ['paid', 'shipping', 'completed'])
-            ->count() > 1;
+        $paidOrderCount = $buyer->orders()
+            ->whereIn('status', OrderStatus::paidStatuses())
+            ->count();
 
-        if ($hasPriorOrders) {
+        if ($paidOrderCount !== 1) {
             return;
         }
 
@@ -89,20 +83,25 @@ class ReferralController extends Controller
             return;
         }
 
-        $referrer->increment('points', self::REFERRER_BONUS_POINTS);
-        $referrer->pointTransactions()->create([
-            'points' => self::REFERRER_BONUS_POINTS,
-            'type' => 'referral',
-            'note' => "Referral bonus from {$buyer->email}",
-        ]);
+        $referrerBonus = (int) config('chomin.referral.referrer_bonus_points');
+        $refereeBonus = (int) config('chomin.referral.referee_bonus_points');
 
-        $buyer->increment('points', self::REFEREE_BONUS_POINTS);
-        $buyer->pointTransactions()->create([
-            'points' => self::REFEREE_BONUS_POINTS,
-            'type' => 'referral',
-            'note' => "Referral bonus from {$referrer->email}",
-        ]);
+        DB::transaction(function () use ($buyer, $referrer, $referrerBonus, $refereeBonus) {
+            $referrer->increment('points', $referrerBonus);
+            $referrer->pointTransactions()->create([
+                'points' => $referrerBonus,
+                'type' => 'referral',
+                'description' => "Referral bonus from {$buyer->email}",
+            ]);
 
-        $buyer->update(['referral_credited_at' => now()]);
+            $buyer->increment('points', $refereeBonus);
+            $buyer->pointTransactions()->create([
+                'points' => $refereeBonus,
+                'type' => 'referral',
+                'description' => "Referral bonus from {$referrer->email}",
+            ]);
+
+            $buyer->forceFill(['referral_credited_at' => now()])->save();
+        });
     }
 }

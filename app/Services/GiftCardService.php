@@ -13,18 +13,19 @@ class GiftCardService
         $errors = [];
 
         foreach ($codes as $index => $code) {
-            if (!is_string($code) || trim($code) === '') {
+            if (! is_string($code) || trim($code) === '') {
                 continue;
             }
 
             $card = GiftCard::findRedeemable($code);
 
-            if (!$card) {
+            if (! $card) {
                 $errors["gift_card_codes.{$index}"] = __('รหัสบัตรของขวัญไม่ถูกต้อง');
+
                 continue;
             }
 
-            if (!$card->isRedeemable()) {
+            if (! $card->isRedeemable()) {
                 $errors["gift_card_codes.{$index}"] = __('บัตรของขวัญนี้หมดอายุ ถูกปิดใช้งาน หรือใช้หมดแล้ว');
             }
         }
@@ -39,6 +40,25 @@ class GiftCardService
             ->map(fn ($code) => GiftCard::findRedeemable($code))
             ->filter(fn (?GiftCard $card) => $card && $card->isRedeemable())
             ->unique('id')
+            ->values();
+    }
+
+    public function lockRedeemableCards(array $codes): Collection
+    {
+        $hashes = collect($codes)
+            ->filter(fn ($code) => is_string($code) && trim($code) !== '')
+            ->map(fn ($code) => GiftCard::hashCode($code))
+            ->unique()
+            ->values();
+
+        if ($hashes->isEmpty()) {
+            return collect();
+        }
+
+        return GiftCard::whereIn('code_hash', $hashes)
+            ->lockForUpdate()
+            ->get()
+            ->filter(fn (GiftCard $card) => $card->isRedeemable())
             ->values();
     }
 

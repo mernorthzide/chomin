@@ -1,6 +1,6 @@
 @php
-    $navCollections = \App\Models\Collection::active()->ordered()->with('translations')->limit(8)->get();
-    $navCategories = \App\Models\Category::active()->ordered()->with('translations')->limit(8)->get();
+    $navCollections = $navCollections ?? [];
+    $navCategories = $navCategories ?? [];
     $segments = request()->segments();
     if (in_array($segments[0] ?? null, config('chomin.locales.supported', ['th', 'en']), true)) {
         array_shift($segments);
@@ -68,7 +68,7 @@
                                 <h3 class="mb-4 text-[11px] uppercase tracking-[0.18em] text-brand-gray-light">Collections</h3>
                                 <ul class="space-y-3 text-xs uppercase tracking-[0.12em]">
                                     @forelse($navCollections as $collection)
-                                        <li><a href="{{ route('collections.show', $collection->slug) }}" class="hover:opacity-60">{{ $collection->localized_name }}</a></li>
+                                        <li><a href="{{ route('collections.show', $collection['slug']) }}" class="hover:opacity-60">{{ $collection['name'] }}</a></li>
                                     @empty
                                         <li><a href="{{ route('collections.index') }}" class="hover:opacity-60">Collections</a></li>
                                     @endforelse
@@ -78,7 +78,7 @@
                                 <h3 class="mb-4 text-[11px] uppercase tracking-[0.18em] text-brand-gray-light">Categories</h3>
                                 <ul class="space-y-3 text-xs uppercase tracking-[0.12em]">
                                     @forelse($navCategories as $category)
-                                        <li><a href="{{ route('shop.index', ['category' => $category->slug]) }}" class="hover:opacity-60">{{ $category->localized_name }}</a></li>
+                                        <li><a href="{{ route('shop.index', ['category' => $category['slug']]) }}" class="hover:opacity-60">{{ $category['name'] }}</a></li>
                                     @empty
                                         <li><a href="{{ route('shop.index') }}" class="hover:opacity-60">Shirts</a></li>
                                     @endforelse

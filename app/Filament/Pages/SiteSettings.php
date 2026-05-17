@@ -4,15 +4,14 @@ namespace App\Filament\Pages;
 
 use App\Models\ShippingSetting;
 use App\Models\SiteSetting;
-use BackedEnum;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Schemas\Components\Section;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class SiteSettings extends Page implements HasForms
@@ -174,8 +173,8 @@ class SiteSettings extends Page implements HasForms
             SiteSetting::set($key, $data[$key] ?? null);
         }
 
-        SiteSetting::set('newsletter_popup_enabled', !empty($data['newsletter_popup_enabled']) ? '1' : '0');
-        SiteSetting::set('external_embeds_enabled', !empty($data['external_embeds_enabled']) ? '1' : '0');
+        SiteSetting::set('newsletter_popup_enabled', ! empty($data['newsletter_popup_enabled']) ? '1' : '0');
+        SiteSetting::set('external_embeds_enabled', ! empty($data['external_embeds_enabled']) ? '1' : '0');
 
         // Save shipping settings
         $shipping = ShippingSetting::current();

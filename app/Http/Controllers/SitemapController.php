@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Collection;
-use App\Models\ContentPage;
 use App\Models\Product;
 use App\Models\Story;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
 
 class SitemapController extends Controller
 {

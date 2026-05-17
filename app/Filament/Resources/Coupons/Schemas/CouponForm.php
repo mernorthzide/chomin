@@ -6,6 +6,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Get;
 use Filament\Schemas\Schema;
 
 class CouponForm
@@ -31,11 +32,11 @@ class CouponForm
                     ->label('มูลค่า')
                     ->required()
                     ->numeric()
-                    ->suffix(fn (\Filament\Forms\Get $get) => $get('type') === 'percent' ? '%' : 'บาท'),
+                    ->suffix(fn (Get $get) => $get('type') === 'percent' ? '%' : 'บาท'),
                 TextInput::make('max_discount')
                     ->label('ส่วนลดสูงสุด (บาท)')
                     ->numeric()
-                    ->visible(fn (\Filament\Forms\Get $get) => $get('type') === 'percent'),
+                    ->visible(fn (Get $get) => $get('type') === 'percent'),
                 TextInput::make('min_order_amount')
                     ->label('ยอดขั้นต่ำ')
                     ->numeric()

@@ -15,9 +15,9 @@ class AboutController extends Controller
     public function __invoke(Request $request)
     {
         $aboutContent = SiteSetting::get('about_content', '');
-        $aboutTitle   = SiteSetting::get('about_title', 'เกี่ยวกับ CHOMIN');
-        $aboutImage   = SiteSetting::get('about_image', '');
-        $description  = Str::of($aboutContent)
+        $aboutTitle = SiteSetting::get('about_title', 'เกี่ยวกับ CHOMIN');
+        $aboutImage = SiteSetting::get('about_image', '');
+        $description = Str::of($aboutContent)
             ->stripTags()
             ->squish()
             ->limit(160)

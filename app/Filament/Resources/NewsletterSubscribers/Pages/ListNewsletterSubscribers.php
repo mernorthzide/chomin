@@ -18,7 +18,7 @@ class ListNewsletterSubscribers extends ListRecords
             Action::make('export')
                 ->label('Export Excel')
                 ->icon('heroicon-o-arrow-down-tray')
-                ->action(fn () => Excel::download(new NewsletterSubscribersExport(), 'newsletter-subscribers.xlsx')),
+                ->action(fn () => Excel::download(new NewsletterSubscribersExport, 'newsletter-subscribers.xlsx')),
         ];
     }
 }

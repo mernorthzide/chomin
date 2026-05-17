@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\OrderReturnStatus;
+use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\OrderReturn;
 use Illuminate\Http\RedirectResponse;
@@ -10,9 +12,15 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderReturnController extends Controller
 {
-    private const ELIGIBLE_DAYS = 30;
+    private function eligibleDays(): int
+    {
+        return (int) config('chomin.returns.eligible_days', 30);
+    }
 
-    private const ELIGIBLE_STATUSES = ['paid', 'shipping', 'completed'];
+    private function eligibleStatuses(): array
+    {
+        return OrderStatus::paidStatuses();
+    }
 
     public function index(string $locale)
     {
@@ -32,7 +40,7 @@ class OrderReturnController extends Controller
         $order->load('items.product.primaryImage', 'items.variant.color.translations');
 
         $hasExistingReturn = OrderReturn::where('order_id', $order->id)
-            ->whereNotIn('status', ['rejected', 'cancelled'])
+            ->whereNotIn('status', OrderReturnStatus::closedStatuses())
             ->exists();
 
         if ($hasExistingReturn) {
@@ -126,9 +134,9 @@ class OrderReturnController extends Controller
     public function cancel(string $locale, OrderReturn $return): RedirectResponse
     {
         abort_unless($return->user_id === Auth::id(), 403);
-        abort_unless(in_array($return->status, ['requested', 'approved']), 422);
+        abort_unless(in_array($return->status, OrderReturnStatus::openStatuses()), 422);
 
-        $return->update(['status' => 'cancelled']);
+        $return->update(['status' => OrderReturnStatus::Cancelled->value]);
 
         return back()->with('flash', [
             'type' => 'success',
@@ -138,12 +146,12 @@ class OrderReturnController extends Controller
 
     public static function isEligible(Order $order): bool
     {
-        if (! in_array($order->status, self::ELIGIBLE_STATUSES)) {
+        if (! in_array($order->status, OrderStatus::paidStatuses())) {
             return false;
         }
 
         $anchor = $order->shipped_at ?? $order->created_at;
 
-        return $anchor->gte(now()->subDays(self::ELIGIBLE_DAYS));
+        return $anchor->gte(now()->subDays((int) config('chomin.returns.eligible_days', 30)));
     }
 }

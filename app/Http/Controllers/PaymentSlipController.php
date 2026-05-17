@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Mail\NewSlipNotification;
@@ -6,6 +7,7 @@ use App\Models\Order;
 use App\Models\SiteSetting;
 use App\Support\SafeMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PaymentSlipController extends Controller
 {
@@ -14,7 +16,9 @@ class PaymentSlipController extends Controller
         abort_unless($order->user_id === auth()->id(), 403);
         abort_unless(in_array($order->status, ['pending', 'awaiting_payment']), 422, 'ไม่สามารถแนบสลิปได้');
 
-        $request->validate(['slip' => 'required|image|max:5120']);
+        $request->validate([
+            'slip' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+        ]);
 
         $path = $request->file('slip')->store('payment-slips', 'public');
 
@@ -30,6 +34,13 @@ class PaymentSlipController extends Controller
         );
 
         $order->update(['status' => 'awaiting_payment']);
+
+        Log::info('Payment slip uploaded', [
+            'order_id' => $order->id,
+            'order_number' => $order->order_number,
+            'user_id' => auth()->id(),
+            'ip' => $request->ip(),
+        ]);
 
         // Notify admin
         $adminEmail = SiteSetting::get('site_email');

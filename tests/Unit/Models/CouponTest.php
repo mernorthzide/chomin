@@ -1,5 +1,7 @@
 <?php
+
 namespace Tests\Unit\Models;
+
 use App\Models\Coupon;
 use PHPUnit\Framework\TestCase;
 

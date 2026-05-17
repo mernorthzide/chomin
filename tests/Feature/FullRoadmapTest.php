@@ -12,6 +12,8 @@ use App\Models\ProductImage;
 use App\Models\ProductVariant;
 use App\Models\User;
 use App\Services\GiftCardService;
+use Database\Seeders\ContentSeeder;
+use Database\Seeders\ProductSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -30,7 +32,7 @@ class FullRoadmapTest extends TestCase
 
     public function test_localized_content_pages_render_seeded_translations_and_hreflang(): void
     {
-        $this->seed(\Database\Seeders\ContentSeeder::class);
+        $this->seed(ContentSeeder::class);
 
         $this->get('/en/privacy')
             ->assertOk()
@@ -142,6 +144,7 @@ class FullRoadmapTest extends TestCase
             'shipping_district' => 'Bang Rak',
             'shipping_province' => 'Bangkok',
             'shipping_postal_code' => '10500',
+            'payment_method' => 'promptpay_slip',
             'gift_card_codes' => ['GIFT-500'],
         ])->assertRedirect();
 
@@ -190,6 +193,7 @@ class FullRoadmapTest extends TestCase
             'shipping_district' => 'Bang Rak',
             'shipping_province' => 'Bangkok',
             'shipping_postal_code' => '10500',
+            'payment_method' => 'promptpay_slip',
         ])->assertRedirect();
 
         $this->assertDatabaseHas('orders', [
@@ -219,6 +223,7 @@ class FullRoadmapTest extends TestCase
             'shipping_district' => 'Bang Rak',
             'shipping_province' => 'Bangkok',
             'shipping_postal_code' => '10500',
+            'payment_method' => 'promptpay_slip',
             'gift_card_codes' => ['NOT-A-CARD'],
         ])->assertRedirect('/th/checkout')
             ->assertSessionHasErrors('gift_card_codes.0');
@@ -258,6 +263,7 @@ class FullRoadmapTest extends TestCase
             'shipping_district' => 'Bang Rak',
             'shipping_province' => 'Bangkok',
             'shipping_postal_code' => '10500',
+            'payment_method' => 'promptpay_slip',
             'gift_card_codes' => ['REFUND-500'],
         ]);
 
@@ -287,7 +293,7 @@ class FullRoadmapTest extends TestCase
 
     public function test_homepage_surfaces_campaign_first_storefront_sections(): void
     {
-        $this->seed(\Database\Seeders\ProductSeeder::class);
+        $this->seed(ProductSeeder::class);
 
         $this->get('/th')
             ->assertOk()
@@ -401,7 +407,7 @@ class FullRoadmapTest extends TestCase
             'slug' => 'cm-classic-french-collar-1-button-no-pocket',
         ]);
 
-        $this->seed(\Database\Seeders\ProductSeeder::class);
+        $this->seed(ProductSeeder::class);
 
         $canonical = Product::where('slug', 'cm-classic-custom-shirt')->firstOrFail();
         $activeProducts = Product::active()->orderBy('sort_order')->pluck('slug')->all();
@@ -446,7 +452,7 @@ class FullRoadmapTest extends TestCase
 
     public function test_collections_page_surfaces_each_seeded_shirt_line_collection(): void
     {
-        $this->seed(\Database\Seeders\ProductSeeder::class);
+        $this->seed(ProductSeeder::class);
 
         $activeCollections = Collection::active()->orderBy('sort_order')->pluck('slug')->all();
 
@@ -487,7 +493,7 @@ class FullRoadmapTest extends TestCase
 
     public function test_seeded_facebook_product_lines_keep_custom_options_on_each_product_page(): void
     {
-        $this->seed(\Database\Seeders\ProductSeeder::class);
+        $this->seed(ProductSeeder::class);
 
         foreach ([
             'cm-classic-custom-shirt',
@@ -506,7 +512,7 @@ class FullRoadmapTest extends TestCase
 
     public function test_product_page_related_lines_use_full_sized_editorial_grid(): void
     {
-        $this->seed(\Database\Seeders\ProductSeeder::class);
+        $this->seed(ProductSeeder::class);
 
         $response = $this->get('/th/products/cm-classic-custom-shirt')
             ->assertOk()
@@ -602,6 +608,7 @@ class FullRoadmapTest extends TestCase
             'shipping_district' => 'Bang Rak',
             'shipping_province' => 'Bangkok',
             'shipping_postal_code' => '10500',
+            'payment_method' => 'promptpay_slip',
         ])->assertRedirect();
 
         $orderItem = DB::table('order_items')->first();

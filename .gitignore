@@ -40,3 +40,4 @@ Thumbs.db
 !storage/app/public/products/chomin-imagen/*.jpg
 .claude/
 .playwright-mcp/
+.serena/

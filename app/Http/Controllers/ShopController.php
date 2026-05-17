@@ -21,18 +21,18 @@ class ShopController extends Controller
 
         // Filter by category
         if ($request->filled('category')) {
-            $query->whereHas('category', fn($q) => $q->where('slug', $request->category));
+            $query->whereHas('category', fn ($q) => $q->where('slug', $request->category));
         }
 
         // Filter by collection
         if ($request->filled('collection')) {
-            $query->whereHas('collection', fn($q) => $q->where('slug', $request->collection));
+            $query->whereHas('collection', fn ($q) => $q->where('slug', $request->collection));
         }
 
         // Filter by color
         if ($request->filled('color')) {
             $color = (string) $request->color;
-            $query->whereHas('colors', fn($q) => $q
+            $query->whereHas('colors', fn ($q) => $q
                 ->where('slug', $color)
                 ->orWhere('name', $color)
                 ->orWhereHas('images', fn ($imageQuery) => $imageQuery
@@ -41,7 +41,7 @@ class ShopController extends Controller
 
         // Filter by stocked size
         if ($request->filled('size')) {
-            $query->whereHas('variants', fn($q) => $q
+            $query->whereHas('variants', fn ($q) => $q
                 ->where('size', $request->size)
                 ->where('stock', '>', 0));
         }
@@ -62,16 +62,16 @@ class ShopController extends Controller
 
         // Filter: in-stock only
         if ($request->boolean('in_stock')) {
-            $query->whereHas('variants', fn($q) => $q->where('stock', '>', 0));
+            $query->whereHas('variants', fn ($q) => $q->where('stock', '>', 0));
         }
 
         // Sort
         $sort = $request->get('sort', 'newest');
         match ($sort) {
-            'price_asc'  => $query->orderBy('price', 'asc'),
+            'price_asc' => $query->orderBy('price', 'asc'),
             'price_desc' => $query->orderBy('price', 'desc'),
-            'name_asc'   => $query->orderBy('name', 'asc'),
-            default      => $query->orderBy('sort_order')->orderBy('created_at', 'desc'),
+            'name_asc' => $query->orderBy('name', 'asc'),
+            default => $query->orderBy('sort_order')->orderBy('created_at', 'desc'),
         };
 
         $products = $query->paginate(12)->withQueryString();
@@ -82,8 +82,8 @@ class ShopController extends Controller
             MAX(COALESCE(sale_price, price)) as max_price
         ')->first();
 
-        $categories   = Category::active()->ordered()->with('translations')->get();
-        $collections  = Collection::active()->ordered()->with('translations')->get();
+        $categories = Category::active()->ordered()->with('translations')->get();
+        $collections = Collection::active()->ordered()->with('translations')->get();
         $availableSizes = ProductVariant::query()
             ->where('stock', '>', 0)
             ->select('size')

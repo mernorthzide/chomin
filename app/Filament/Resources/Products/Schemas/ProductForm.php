@@ -2,14 +2,14 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
+use App\Filament\Components\TranslationsRepeater;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Set;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 
@@ -25,8 +25,7 @@ class ProductForm
                             ->label('ชื่อสินค้า')
                             ->required()
                             ->live(onBlur: true)
-                            ->afterStateUpdated(fn (string $operation, $state, \Filament\Forms\Set $set) =>
-                                $operation === 'create' ? $set('slug', Str::slug($state)) : null
+                            ->afterStateUpdated(fn (string $operation, $state, Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null
                             ),
                         TextInput::make('slug')
                             ->label('Slug')
@@ -66,29 +65,7 @@ class ProductForm
                     ->columns(2),
                 Section::make('ภาษาและ SEO')
                     ->schema([
-                        Repeater::make('translations')
-                            ->label('Translations')
-                            ->relationship()
-                            ->schema([
-                                Select::make('locale')
-                                    ->label('ภาษา')
-                                    ->options(config('chomin.locales.labels'))
-                                    ->required(),
-                                TextInput::make('name')
-                                    ->label('ชื่อสินค้า')
-                                    ->required(),
-                                Textarea::make('description')
-                                    ->label('คำอธิบาย')
-                                    ->columnSpanFull(),
-                                TextInput::make('seo_title')
-                                    ->label('SEO title'),
-                                Textarea::make('seo_description')
-                                    ->label('SEO description')
-                                    ->columnSpanFull(),
-                            ])
-                            ->columns(2)
-                            ->defaultItems(2)
-                            ->columnSpanFull(),
+                        TranslationsRepeater::make(['name', 'description', 'seo_title', 'seo_description']),
                     ]),
                 Section::make('ตั้งค่า')
                     ->schema([

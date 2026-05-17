@@ -7,6 +7,9 @@ use App\Models\Order;
 use App\Services\GiftCardService;
 use App\Support\SafeMail;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class CancelExpiredOrders extends Command
 {
@@ -18,32 +21,60 @@ class CancelExpiredOrders extends Command
     {
         $orders = Order::where('status', 'pending')
             ->where('created_at', '<', now()->subHours(48))
-            ->get();
+            ->pluck('id');
 
-        foreach ($orders as $order) {
-            foreach ($order->items as $item) {
-                $item->variant->increment('stock', $item->quantity);
-            }
+        $processed = 0;
+        $failed = 0;
 
-            if ($order->points_used > 0) {
-                $order->user->increment('points', $order->points_used);
-                $order->user->pointTransactions()->create([
-                    'order_id' => $order->id,
-                    'points' => $order->points_used,
-                    'type' => 'adjust',
-                    'description' => "คืนแต้ม — ยกเลิกออเดอร์ {$order->order_number}",
+        foreach ($orders as $orderId) {
+            try {
+                DB::transaction(function () use ($orderId) {
+                    $order = Order::with(['items.variant', 'user', 'giftCardRedemptions.giftCard'])
+                        ->lockForUpdate()
+                        ->find($orderId);
+
+                    if (! $order || $order->status !== 'pending') {
+                        return;
+                    }
+
+                    foreach ($order->items as $item) {
+                        $item->variant->increment('stock', $item->quantity);
+                    }
+
+                    if ($order->points_used > 0 && $order->user) {
+                        $order->user->increment('points', $order->points_used);
+                        $order->user->pointTransactions()->create([
+                            'order_id' => $order->id,
+                            'points' => $order->points_used,
+                            'type' => 'adjust',
+                            'description' => "คืนแต้ม — ยกเลิกออเดอร์ {$order->order_number}",
+                        ]);
+                    }
+
+                    if ($order->gift_card_discount > 0) {
+                        app(GiftCardService::class)->refundOrder($order);
+                    }
+
+                    $order->update(['status' => 'cancelled', 'cancelled_at' => now()]);
+
+                    if ($order->user?->email) {
+                        SafeMail::queue($order->user->email, new OrderCancelled($order));
+                    }
+
+                    $this->info("Cancelled order {$order->order_number}");
+                });
+
+                $processed++;
+            } catch (Throwable $e) {
+                $failed++;
+                Log::error('CancelExpiredOrders failed', [
+                    'order_id' => $orderId,
+                    'message' => $e->getMessage(),
                 ]);
+                $this->error("Failed to cancel order id {$orderId}: {$e->getMessage()}");
             }
-
-            if ($order->gift_card_discount > 0) {
-                app(GiftCardService::class)->refundOrder($order->load('giftCardRedemptions.giftCard'));
-            }
-
-            $order->update(['status' => 'cancelled', 'cancelled_at' => now()]);
-            SafeMail::queue($order->user->email, new OrderCancelled($order));
-            $this->info("Cancelled order {$order->order_number}");
         }
 
-        $this->info("Processed {$orders->count()} expired orders.");
+        $this->info("Processed {$processed} expired orders ({$failed} failed).");
     }
 }

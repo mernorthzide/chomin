@@ -17,7 +17,7 @@ class CollectionController extends Controller
         $collections = Collection::active()
             ->ordered()
             ->with('translations')
-            ->withCount(['products' => fn($q) => $q->active()])
+            ->withCount(['products' => fn ($q) => $q->active()])
             ->get();
 
         return view('pages.collections.index', compact('collections'));
@@ -38,16 +38,16 @@ class CollectionController extends Controller
 
         // Filter by category
         if ($request->filled('category')) {
-            $query->whereHas('category', fn($q) => $q->where('slug', $request->category));
+            $query->whereHas('category', fn ($q) => $q->where('slug', $request->category));
         }
 
         // Sort
         $sort = $request->get('sort', 'newest');
         match ($sort) {
-            'price_asc'  => $query->orderBy('price', 'asc'),
+            'price_asc' => $query->orderBy('price', 'asc'),
             'price_desc' => $query->orderBy('price', 'desc'),
-            'name_asc'   => $query->orderBy('name', 'asc'),
-            default      => $query->orderBy('created_at', 'desc'),
+            'name_asc' => $query->orderBy('name', 'asc'),
+            default => $query->orderBy('created_at', 'desc'),
         };
 
         $products = $query->paginate(12)->withQueryString();

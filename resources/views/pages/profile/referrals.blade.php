@@ -72,8 +72,8 @@
                     </h2>
                     <p class="text-sm text-brand-gray-medium">
                         {{ $isEn
-                            ? 'You earn '.\App\Http\Controllers\ReferralController::REFERRER_BONUS_POINTS.' points when a friend makes their first purchase. They get '.\App\Http\Controllers\ReferralController::REFEREE_BONUS_POINTS.' points to start.'
-                            : 'เมื่อเพื่อนสั่งซื้อครั้งแรก คุณจะได้ '.\App\Http\Controllers\ReferralController::REFERRER_BONUS_POINTS.' แต้ม เพื่อนได้ '.\App\Http\Controllers\ReferralController::REFEREE_BONUS_POINTS.' แต้ม' }}
+                            ? 'You earn '.config('chomin.referral.referrer_bonus_points').' points when a friend makes their first purchase. They get '.config('chomin.referral.referee_bonus_points').' points to start.'
+                            : 'เมื่อเพื่อนสั่งซื้อครั้งแรก คุณจะได้ '.config('chomin.referral.referrer_bonus_points').' แต้ม เพื่อนได้ '.config('chomin.referral.referee_bonus_points').' แต้ม' }}
                     </p>
 
                     <div class="mt-5 flex flex-col sm:flex-row gap-2">
@@ -89,13 +89,13 @@
                     </div>
 
                     <div class="mt-3 flex gap-2 text-xs">
-                        <a href="https://line.me/R/msg/text/?{{ urlencode($isEn ? 'Get '.\App\Http\Controllers\ReferralController::REFEREE_BONUS_POINTS.' CHOMIN points: '.$shareUrl : 'รับ '.\App\Http\Controllers\ReferralController::REFEREE_BONUS_POINTS.' แต้มจาก CHOMIN: '.$shareUrl) }}"
+                        <a href="https://line.me/R/msg/text/?{{ urlencode($isEn ? 'Get '.config('chomin.referral.referee_bonus_points').' CHOMIN points: '.$shareUrl : 'รับ '.config('chomin.referral.referee_bonus_points').' แต้มจาก CHOMIN: '.$shareUrl) }}"
                            target="_blank" rel="noopener"
                            class="border border-brand-black px-3 py-1.5 uppercase tracking-[0.12em] hover:bg-brand-black hover:text-white">LINE</a>
                         <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode($shareUrl) }}"
                            target="_blank" rel="noopener"
                            class="border border-brand-black px-3 py-1.5 uppercase tracking-[0.12em] hover:bg-brand-black hover:text-white">Facebook</a>
-                        <a href="https://twitter.com/intent/tweet?text={{ urlencode($isEn ? 'Get '.\App\Http\Controllers\ReferralController::REFEREE_BONUS_POINTS.' CHOMIN points: ' : 'รับ '.\App\Http\Controllers\ReferralController::REFEREE_BONUS_POINTS.' แต้มจาก CHOMIN: ') }}&url={{ urlencode($shareUrl) }}"
+                        <a href="https://twitter.com/intent/tweet?text={{ urlencode($isEn ? 'Get '.config('chomin.referral.referee_bonus_points').' CHOMIN points: ' : 'รับ '.config('chomin.referral.referee_bonus_points').' แต้มจาก CHOMIN: ') }}&url={{ urlencode($shareUrl) }}"
                            target="_blank" rel="noopener"
                            class="border border-brand-black px-3 py-1.5 uppercase tracking-[0.12em] hover:bg-brand-black hover:text-white">X</a>
                     </div>

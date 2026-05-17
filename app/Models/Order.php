@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\OrderStatus;
+use App\Enums\PaymentMethod;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -72,19 +74,18 @@ class Order extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        return match ($this->status) {
-            'pending' => 'รอชำระเงิน', 'awaiting_payment' => 'รอตรวจสอบ', 'paid' => 'ชำระเงินแล้ว',
-            'shipping' => 'กำลังจัดส่ง', 'completed' => 'สำเร็จ', 'cancelled' => 'ยกเลิก', default => $this->status,
-        };
+        $status = OrderStatus::tryFrom((string) $this->status);
+
+        return $status?->labelTh() ?? (string) $this->status;
     }
 
     public function getPaymentMethodLabelAttribute(): string
     {
-        return match ($this->payment_method) {
-            'promptpay_slip' => 'PromptPay (อัปโหลดสลิป)',
-            'cod' => 'เก็บเงินปลายทาง (COD)',
-            'bank_transfer' => 'โอนผ่านธนาคาร',
-            default => $this->payment_method ?: '-',
-        };
+        $method = PaymentMethod::tryFrom((string) $this->payment_method);
+        if (! $method) {
+            return $this->payment_method ?: '-';
+        }
+
+        return (string) config($method->configKey().'.label_th', $this->payment_method);
     }
 }

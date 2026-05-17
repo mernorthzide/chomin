@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\OrderStatus;
 use App\Services\TierService;
 use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Database\Factories\UserFactory;
@@ -31,11 +32,6 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'password',
         'phone',
-        'points',
-        'referral_code',
-        'referred_by_user_id',
-        'referral_credited_at',
-        'wishlist_share_token',
     ];
 
     /**
@@ -87,7 +83,7 @@ class User extends Authenticatable implements FilamentUser
     public function getLifetimeSpendAttribute(): float
     {
         return (float) $this->orders()
-            ->whereIn('status', ['paid', 'shipping', 'completed'])
+            ->whereIn('status', OrderStatus::paidStatuses())
             ->sum('total');
     }
 
