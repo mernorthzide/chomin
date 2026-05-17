@@ -9,9 +9,10 @@
 ])
 
 @php
-    $resolvedTitle = $title === 'CHOMIN' ? $title : trim($title);
-    if (! str_contains($resolvedTitle, 'CHOMIN') && $resolvedTitle !== 'CHOMIN') {
-        $resolvedTitle = $resolvedTitle.' | CHOMIN';
+    $resolvedTitle = trim((string) $title);
+    $hasBrand = preg_match('/CHO\.?MIN/i', $resolvedTitle) === 1;
+    if (! $hasBrand) {
+        $resolvedTitle = ($resolvedTitle !== '' ? $resolvedTitle.' | ' : '').'CHOMIN';
     }
     $resolvedDescription = $description ?: 'CHO.MIN — เชิ้ตดีไซน์ 50+ สี ไซส์ XS-6XL ออกแบบให้คุณเลือกได้ทุกดีเทล';
     $resolvedImage = $ogImage ?: ($image ?: url('/images/og-default.jpg'));
