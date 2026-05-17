@@ -1,4 +1,4 @@
-<x-layouts.shop>
+<x-layouts.shop :title="app()->getLocale() === 'en' ? 'Checkout' : 'ชำระเงิน'" :noindex="true">
 
     <div class="px-6 md:px-12 py-10 md:py-14">
 

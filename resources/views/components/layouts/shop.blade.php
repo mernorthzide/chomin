@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <x-meta
-        :title="$title ?? config('app.name', 'CHOMIN')"
+        :title="$title ?? 'CHOMIN'"
         :description="$description ?? ''"
         :image="$image ?? ''"
         :ogImage="$ogImage ?? ''"

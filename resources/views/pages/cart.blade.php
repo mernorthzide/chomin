@@ -1,4 +1,4 @@
-<x-layouts.shop>
+<x-layouts.shop :title="app()->getLocale() === 'en' ? 'Shopping Cart' : 'ตะกร้าสินค้า'">
 
     <div class="px-6 md:px-12 py-10 md:py-14">
 

@@ -1,4 +1,4 @@
-<x-layouts.shop>
+<x-layouts.shop :title="app()->getLocale() === 'en' ? 'Order Detail' : 'รายละเอียดคำสั่งซื้อ'" :noindex="true">
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
 
