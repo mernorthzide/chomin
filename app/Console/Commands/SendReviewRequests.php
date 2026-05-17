@@ -18,8 +18,11 @@ class SendReviewRequests extends Command
         $dryRun = $this->option('dry-run');
         $dispatched = 0;
 
+        $minDays = (int) config('chomin.reviews.request_window_days.min', 7);
+        $maxDays = (int) config('chomin.reviews.request_window_days.max', 8);
+
         $orders = Order::where('status', 'completed')
-            ->whereBetween('completed_at', [now()->subDays(8), now()->subDays(7)])
+            ->whereBetween('completed_at', [now()->subDays($maxDays), now()->subDays($minDays)])
             ->whereNull('review_request_sent_at')
             ->with(['user', 'items'])
             ->get();

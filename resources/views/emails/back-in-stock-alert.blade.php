@@ -25,9 +25,11 @@
 ![{{ $notification->product->name }}]({{ $notification->product->primaryImage->url }})
 @endif
 
-<x-mail::button :url="route('shop.product', ['slug' => $notification->product->slug ?? ''])">
+@if($notification->product)
+<x-mail::button :url="route('shop.product', ['slug' => $notification->product->slug])">
 ซื้อเลยก่อนหมด
 </x-mail::button>
+@endif
 
 ขอบคุณที่ไว้วางใจ **{{ config('app.name') }}**
 </x-mail::message>

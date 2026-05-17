@@ -18,10 +18,13 @@ class SendAbandonedCartEmails extends Command
         $dryRun = $this->option('dry-run');
         $dispatched = 0;
 
-        // First reminder: reminder_count=0, updated more than 4 hours ago
+        $firstHours = (int) config('chomin.abandoned_cart.first_reminder_hours', 4);
+        $secondHours = (int) config('chomin.abandoned_cart.second_reminder_hours', 24);
+
+        // First reminder: reminder_count=0, updated more than first_hours ago
         $firstReminders = AbandonedCart::pending()
             ->where('reminder_count', 0)
-            ->where('updated_at', '<', now()->subHours(4))
+            ->where('updated_at', '<', now()->subHours($firstHours))
             ->whereNotNull('email')
             ->get();
 
@@ -39,10 +42,10 @@ class SendAbandonedCartEmails extends Command
             $dispatched++;
         }
 
-        // Second reminder: reminder_count=1, last_reminder_at more than 24 hours ago
+        // Second reminder: reminder_count=1, last_reminder_at more than second_hours ago
         $secondReminders = AbandonedCart::pending()
             ->where('reminder_count', 1)
-            ->where('last_reminder_at', '<', now()->subHours(24))
+            ->where('last_reminder_at', '<', now()->subHours($secondHours))
             ->whereNotNull('email')
             ->get();
 

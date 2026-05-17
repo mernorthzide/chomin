@@ -17,6 +17,7 @@ class ProductReviewsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['product', 'user']))
             ->columns([
                 TextColumn::make('product.name')
                     ->label('สินค้า')

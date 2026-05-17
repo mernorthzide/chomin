@@ -17,6 +17,7 @@ class BackInStockNotificationsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['product', 'variant', 'user']))
             ->columns([
                 TextColumn::make('product.name')
                     ->label('สินค้า')

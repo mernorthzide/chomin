@@ -13,7 +13,7 @@
 
 @foreach($order->items as $item)
 <x-mail::panel>
-**{{ $item->product_name ?? ($item->variant->product->name ?? 'สินค้า') }}**
+**{{ $item->product_name ?? $item->variant?->product?->name ?? 'สินค้า' }}**
 @if($item->size ?? ($item->options['size'] ?? null))
 ขนาด: {{ $item->size ?? $item->options['size'] }}
 @endif

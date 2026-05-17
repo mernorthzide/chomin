@@ -23,6 +23,18 @@ return [
         ],
     ],
 
+    'abandoned_cart' => [
+        'first_reminder_hours' => env('CHOMIN_ABANDONED_CART_FIRST_HOURS', 4),
+        'second_reminder_hours' => env('CHOMIN_ABANDONED_CART_SECOND_HOURS', 24),
+    ],
+
+    'reviews' => [
+        'request_window_days' => [
+            'min' => env('CHOMIN_REVIEW_REQUEST_MIN_DAYS', 7),
+            'max' => env('CHOMIN_REVIEW_REQUEST_MAX_DAYS', 8),
+        ],
+    ],
+
     'social' => [
         'instagram_handle' => env('CHOMIN_IG_HANDLE', 'chomin.th'),
         'instagram_url' => env('CHOMIN_IG_URL', 'https://www.instagram.com/chomin.th/'),
