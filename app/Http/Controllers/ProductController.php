@@ -62,7 +62,6 @@ class ProductController extends Controller
         ]);
     }
 
-
     /**
      * Display a specific product.
      */

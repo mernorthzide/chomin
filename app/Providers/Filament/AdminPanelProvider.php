@@ -2,8 +2,12 @@
 
 namespace App\Providers\Filament;
 
-use Filament\Http\Middleware\Authenticate;
+use App\Filament\Widgets\PendingReturns;
+use App\Filament\Widgets\SalesChart;
+use App\Filament\Widgets\SalesOverview;
+use App\Filament\Widgets\TopProducts;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -45,10 +49,10 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                \App\Filament\Widgets\SalesOverview::class,
-                \App\Filament\Widgets\SalesChart::class,
-                \App\Filament\Widgets\TopProducts::class,
-                \App\Filament\Widgets\PendingReturns::class,
+                SalesOverview::class,
+                SalesChart::class,
+                TopProducts::class,
+                PendingReturns::class,
                 AccountWidget::class,
                 FilamentInfoWidget::class,
             ])

@@ -1,11 +1,12 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Mail\NewOrderNotification;
 use App\Mail\OrderCreated;
 use App\Models\Coupon;
+use App\Models\Order;
 use App\Models\SiteSetting;
-use App\Http\Controllers\ReferralController;
 use App\Services\AbandonedCartTracker;
 use App\Services\CartService;
 use App\Services\GiftCardService;
@@ -28,6 +29,7 @@ class CheckoutController extends Controller
         $cart->load('items.product.translations', 'items.product.primaryImage', 'items.variant.color.translations');
         abort_if($cart->items->isEmpty(), 404, 'ตะกร้าว่าง');
         $addresses = auth()->user()->addresses()->orderByDesc('is_default')->get();
+
         return view('pages.checkout', compact('cart', 'addresses'));
     }
 
@@ -87,7 +89,7 @@ class CheckoutController extends Controller
         return redirect()->route('checkout.success', $order)->with('success', 'สั่งซื้อสำเร็จ');
     }
 
-    public function success(string $locale, \App\Models\Order $order)
+    public function success(string $locale, Order $order)
     {
         abort_unless($order->user_id === auth()->id(), 403);
         $promptpay = [
@@ -95,6 +97,7 @@ class CheckoutController extends Controller
             'name' => SiteSetting::get('promptpay_name'),
             'qr' => SiteSetting::get('promptpay_qr'),
         ];
+
         return view('pages.checkout-success', compact('order', 'promptpay'));
     }
 }

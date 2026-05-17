@@ -6,7 +6,6 @@ use App\Models\OrderItem;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 class TopProducts extends BaseWidget

@@ -3,20 +3,23 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Services\TierService;
 use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasRoles, HasPanelShield;
+    use HasFactory, HasPanelShield, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -62,7 +65,7 @@ class User extends Authenticatable implements FilamentUser
     {
         if (! $this->referral_code) {
             do {
-                $code = strtoupper(\Illuminate\Support\Str::random(8));
+                $code = strtoupper(Str::random(8));
             } while (static::where('referral_code', $code)->exists());
             $this->forceFill(['referral_code' => $code])->save();
         }
@@ -89,7 +92,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function getTierAttribute(): array
     {
-        return \App\Services\TierService::resolve($this->lifetime_spend);
+        return TierService::resolve($this->lifetime_spend);
     }
 
     public function addresses(): HasMany
@@ -122,7 +125,7 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasOne(Cart::class);
     }
 
-    public function canAccessPanel(\Filament\Panel $panel): bool
+    public function canAccessPanel(Panel $panel): bool
     {
         return $this->hasRole(['super_admin', 'staff']);
     }

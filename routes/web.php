@@ -5,19 +5,22 @@ use App\Http\Controllers\AddressController;
 use App\Http\Controllers\BackInStockController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\ColorLibraryController;
 use App\Http\Controllers\CollectionController;
+use App\Http\Controllers\ColorLibraryController;
 use App\Http\Controllers\ContentPageController;
 use App\Http\Controllers\CookieConsentController;
 use App\Http\Controllers\CustomerInquiryController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\GiftCardPurchaseController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\OrderHistoryController;
+use App\Http\Controllers\OrderReturnController;
 use App\Http\Controllers\PaymentSlipController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductReviewController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReferralController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ShippingController;
@@ -27,6 +30,9 @@ use App\Http\Controllers\StoreLocationController;
 use App\Http\Controllers\StoryController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Middleware\SetLocaleFromRoute;
+use App\Models\Collection;
+use App\Models\Product;
+use App\Models\Story;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
@@ -49,9 +55,9 @@ foreach ([
     Route::match(['get', 'post'], "/{$legacyPath}", fn () => $localizedRedirect($legacyPath));
 }
 
-Route::get('/collections/{collection:slug}', fn (\App\Models\Collection $collection) => $localizedRedirect("collections/{$collection->slug}"));
-Route::get('/products/{product:slug}', fn (\App\Models\Product $product) => $localizedRedirect("products/{$product->slug}"));
-Route::get('/stories/{story:slug}', fn (\App\Models\Story $story) => $localizedRedirect("stories/{$story->slug}"));
+Route::get('/collections/{collection:slug}', fn (Collection $collection) => $localizedRedirect("collections/{$collection->slug}"));
+Route::get('/products/{product:slug}', fn (Product $product) => $localizedRedirect("products/{$product->slug}"));
+Route::get('/stories/{story:slug}', fn (Story $story) => $localizedRedirect("stories/{$story->slug}"));
 
 Route::prefix('{locale}')
     ->where(['locale' => 'th|en'])
@@ -75,7 +81,7 @@ Route::prefix('{locale}')
         Route::get('/wishlists/shared/{token}', [WishlistController::class, 'shared'])->name('wishlists.shared');
 
         // Referral capture (cookie-based, no auth)
-        Route::get('/r/{code}', [\App\Http\Controllers\ReferralController::class, 'capture'])
+        Route::get('/r/{code}', [ReferralController::class, 'capture'])
             ->where('code', '[A-Z0-9]{6,12}')
             ->name('referral.capture');
 
@@ -102,8 +108,8 @@ Route::prefix('{locale}')
         }
 
         // Gift card storefront (replaces content-page version)
-        Route::get('/gift-cards', [\App\Http\Controllers\GiftCardPurchaseController::class, 'index'])->name('pages.gift-cards');
-        Route::post('/gift-cards', [\App\Http\Controllers\GiftCardPurchaseController::class, 'store'])
+        Route::get('/gift-cards', [GiftCardPurchaseController::class, 'index'])->name('pages.gift-cards');
+        Route::post('/gift-cards', [GiftCardPurchaseController::class, 'store'])
             ->middleware('throttle:5,1')
             ->name('gift-cards.store');
 
@@ -149,14 +155,14 @@ Route::prefix('{locale}')
             Route::get('/orders/{order}', [OrderHistoryController::class, 'show'])->name('orders.show');
 
             // Referral dashboard
-            Route::get('/referrals', [\App\Http\Controllers\ReferralController::class, 'index'])->name('referrals.index');
+            Route::get('/referrals', [ReferralController::class, 'index'])->name('referrals.index');
 
             // Returns / Exchanges (customer dashboard — path differs from /returns content page)
-            Route::get('/my-returns', [\App\Http\Controllers\OrderReturnController::class, 'index'])->name('returns.index');
-            Route::get('/my-returns/{return}', [\App\Http\Controllers\OrderReturnController::class, 'show'])->name('returns.show');
-            Route::post('/my-returns/{return}/cancel', [\App\Http\Controllers\OrderReturnController::class, 'cancel'])->name('returns.cancel');
-            Route::get('/orders/{order}/returns/create', [\App\Http\Controllers\OrderReturnController::class, 'create'])->name('returns.create');
-            Route::post('/orders/{order}/returns', [\App\Http\Controllers\OrderReturnController::class, 'store'])->name('returns.store');
+            Route::get('/my-returns', [OrderReturnController::class, 'index'])->name('returns.index');
+            Route::get('/my-returns/{return}', [OrderReturnController::class, 'show'])->name('returns.show');
+            Route::post('/my-returns/{return}/cancel', [OrderReturnController::class, 'cancel'])->name('returns.cancel');
+            Route::get('/orders/{order}/returns/create', [OrderReturnController::class, 'create'])->name('returns.create');
+            Route::post('/orders/{order}/returns', [OrderReturnController::class, 'store'])->name('returns.store');
 
             // Wishlist
             Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');

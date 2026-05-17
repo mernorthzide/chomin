@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Coupon;
@@ -90,7 +91,9 @@ class OrderService
                 ]);
             }
 
-            if ($coupon) $coupon->increment('used_count');
+            if ($coupon) {
+                $coupon->increment('used_count');
+            }
 
             if ($giftCardDiscount > 0) {
                 app(GiftCardService::class)->redeemForOrder($order, $giftCards, $giftCardDiscount);

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 class OrderReturnController extends Controller
 {
     private const ELIGIBLE_DAYS = 30;
+
     private const ELIGIBLE_STATUSES = ['paid', 'shipping', 'completed'];
 
     public function index(string $locale)

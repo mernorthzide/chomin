@@ -11,8 +11,11 @@ use Symfony\Component\HttpFoundation\Cookie;
 class ReferralController extends Controller
 {
     public const COOKIE_NAME = 'chomin_referral';
+
     public const COOKIE_TTL_MINUTES = 60 * 24 * 30;
+
     public const REFERRER_BONUS_POINTS = 200;
+
     public const REFEREE_BONUS_POINTS = 100;
 
     public function index(string $locale)

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Collection;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -38,7 +39,7 @@ class SearchController extends Controller
                 'url' => route('products.show', ['locale' => $locale, 'product' => $p->slug]),
             ]);
 
-        $collections = \App\Models\Collection::active()
+        $collections = Collection::active()
             ->with('translations')
             ->where(function ($query) use ($like) {
                 $query->where('name', 'like', $like)
