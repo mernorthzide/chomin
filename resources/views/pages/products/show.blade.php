@@ -638,7 +638,8 @@
          FREQUENTLY BOUGHT TOGETHER (collaborative filtering)
     ============================================================ --}}
     @if(isset($frequentlyBought) && $frequentlyBought->isNotEmpty())
-        <section class="bg-white border-b border-brand-gray-border" aria-label="Frequently bought together">
+        <section class="bg-white border-b border-brand-gray-border" aria-label="Frequently bought together"
+                 x-data="fbtBundle({{ $product->id }}, {{ (float) $product->display_price }})">
             <div class="px-6 md:px-12 py-8 md:py-10">
                 <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-3">
                     {{ app()->getLocale() === 'en' ? 'Frequently bought together' : 'มักซื้อพร้อมกัน' }}
@@ -647,8 +648,7 @@
                     {{ app()->getLocale() === 'en' ? 'Complete the bundle' : 'จัดเซตคู่กัน' }}
                 </h2>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-0 border-t border-brand-gray-border"
-                 x-data="fbtBundle({{ $product->id }}, {{ (float) $product->display_price }})">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-0 border-t border-brand-gray-border">
                 <div class="border-r border-brand-gray-border p-6 flex flex-col">
                     <div class="aspect-[3/4] bg-brand-gray overflow-hidden">
                         @if($product->primaryImage)
@@ -686,11 +686,10 @@
                     </div>
                 @endforeach
             </div>
-            <div class="px-6 md:px-12 py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-brand-gray-border"
-                 x-data="{}">
+            <div class="px-6 md:px-12 py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-brand-gray-border">
                 <p class="text-sm">
                     {{ app()->getLocale() === 'en' ? 'Bundle total' : 'รวมเซต' }}:
-                    <span class="font-medium" x-text="'฿' + Math.round($root.bundleTotal).toLocaleString()"></span>
+                    <span class="font-medium" x-text="'฿' + Math.round(bundleTotal).toLocaleString()"></span>
                 </p>
                 <p class="text-xs uppercase tracking-[0.14em] text-brand-gray-light">
                     {{ app()->getLocale() === 'en' ? 'Tap items above to view details' : 'แตะรูปด้านบนเพื่อดูรายละเอียด' }}

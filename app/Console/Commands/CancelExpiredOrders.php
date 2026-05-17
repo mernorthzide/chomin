@@ -1,14 +1,17 @@
 <?php
+
 namespace App\Console\Commands;
 
 use App\Mail\OrderCancelled;
 use App\Models\Order;
+use App\Services\GiftCardService;
 use App\Support\SafeMail;
 use Illuminate\Console\Command;
 
 class CancelExpiredOrders extends Command
 {
     protected $signature = 'orders:cancel-expired';
+
     protected $description = 'Cancel orders pending payment for more than 48 hours';
 
     public function handle(): void
@@ -33,7 +36,7 @@ class CancelExpiredOrders extends Command
             }
 
             if ($order->gift_card_discount > 0) {
-                app(\App\Services\GiftCardService::class)->refundOrder($order->load('giftCardRedemptions.giftCard'));
+                app(GiftCardService::class)->refundOrder($order->load('giftCardRedemptions.giftCard'));
             }
 
             $order->update(['status' => 'cancelled', 'cancelled_at' => now()]);

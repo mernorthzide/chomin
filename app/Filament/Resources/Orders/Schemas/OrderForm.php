@@ -4,8 +4,9 @@ namespace App\Filament\Resources\Orders\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
 class OrderForm
@@ -21,13 +22,13 @@ class OrderForm
                     ->required(),
                 Select::make('status')
                     ->options([
-            'pending' => 'Pending',
-            'awaiting_payment' => 'Awaiting payment',
-            'paid' => 'Paid',
-            'shipping' => 'Shipping',
-            'completed' => 'Completed',
-            'cancelled' => 'Cancelled',
-        ])
+                        'pending' => 'Pending',
+                        'awaiting_payment' => 'Awaiting payment',
+                        'paid' => 'Paid',
+                        'shipping' => 'Shipping',
+                        'completed' => 'Completed',
+                        'cancelled' => 'Cancelled',
+                    ])
                     ->default('pending')
                     ->required(),
                 TextInput::make('subtotal')
@@ -78,6 +79,20 @@ class OrderForm
                 DateTimePicker::make('completed_at'),
                 DateTimePicker::make('cancelled_at'),
                 Textarea::make('note')
+                    ->columnSpanFull(),
+                Toggle::make('gift_wrap')
+                    ->label('Gift wrap')
+                    ->inline(false),
+                TextInput::make('gift_wrap_fee')
+                    ->label('Gift wrap fee')
+                    ->numeric()
+                    ->default(0.0),
+                TextInput::make('gift_message_to')
+                    ->label('Gift message to'),
+                TextInput::make('gift_message_from')
+                    ->label('Gift message from'),
+                Textarea::make('gift_message')
+                    ->label('Gift message')
                     ->columnSpanFull(),
             ]);
     }

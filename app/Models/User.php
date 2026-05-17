@@ -35,6 +35,7 @@ class User extends Authenticatable implements FilamentUser
         'referral_code',
         'referred_by_user_id',
         'referral_credited_at',
+        'wishlist_share_token',
     ];
 
     /**

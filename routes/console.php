@@ -9,3 +9,6 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('orders:cancel-expired')->hourly();
+Schedule::command('carts:send-recovery')->hourly();
+Schedule::command('stock:send-alerts')->everyFifteenMinutes();
+Schedule::command('reviews:request')->dailyAt('10:00');

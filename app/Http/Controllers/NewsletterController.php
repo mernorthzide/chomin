@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewsletterWelcome;
 use App\Models\Coupon;
 use App\Models\NewsletterSubscriber;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class NewsletterController extends Controller
@@ -34,6 +36,10 @@ class NewsletterController extends Controller
         $coupon = null;
         if ($isNew && $request->boolean('with_coupon')) {
             $coupon = $this->generateWelcomeCoupon();
+        }
+
+        if ($isNew) {
+            Mail::to($email)->queue(new NewsletterWelcome($email, $locale, $coupon));
         }
 
         if ($request->wantsJson() || $request->ajax()) {

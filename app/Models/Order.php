@@ -19,6 +19,7 @@ class Order extends Model
         'shipping_province', 'shipping_postal_code',
         'tracking_number', 'carrier_name', 'shipped_at', 'completed_at', 'cancelled_at', 'note',
         'gift_wrap', 'gift_wrap_fee', 'gift_message_to', 'gift_message_from', 'gift_message',
+        'review_request_sent_at',
     ];
 
     protected $casts = [
@@ -26,6 +27,7 @@ class Order extends Model
         'gift_card_discount' => 'decimal:2', 'total' => 'decimal:2',
         'gift_wrap' => 'boolean', 'gift_wrap_fee' => 'decimal:2',
         'shipped_at' => 'datetime', 'completed_at' => 'datetime', 'cancelled_at' => 'datetime',
+        'review_request_sent_at' => 'datetime',
     ];
 
     public function user(): BelongsTo
@@ -51,6 +53,11 @@ class Order extends Model
     public function giftCardRedemptions(): HasMany
     {
         return $this->hasMany(OrderGiftCardRedemption::class);
+    }
+
+    public function returns(): HasMany
+    {
+        return $this->hasMany(OrderReturn::class);
     }
 
     public static function generateOrderNumber(): string
