@@ -33,17 +33,7 @@ jobs:
           npm ci
           npm run build
 
-      - name: Upload built assets
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: 151.106.116.52
-          username: u700921586
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 65002
-          source: public/build
-          target: domains/moccasin-dogfish-924842.hostingersite.com/chomin
-
-      - name: Deploy via SSH
+      - name: Pull latest code on server
         uses: appleboy/ssh-action@v1
         with:
           host: 151.106.116.52
@@ -54,7 +44,32 @@ jobs:
           script: |
             set -e
             cd domains/moccasin-dogfish-924842.hostingersite.com/chomin
+            git checkout -- public/build || true
+            rm -rf public/build/assets
             git pull origin main
+
+      - name: Upload built assets
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: 151.106.116.52
+          username: u700921586
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 65002
+          source: public/build
+          target: domains/moccasin-dogfish-924842.hostingersite.com/chomin
+          overwrite: true
+
+      - name: Run migrations and cache config
+        uses: appleboy/ssh-action@v1
+        with:
+          host: 151.106.116.52
+          username: u700921586
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 65002
+          timeout: 30s
+          script: |
+            set -e
+            cd domains/moccasin-dogfish-924842.hostingersite.com/chomin
             composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
             php artisan migrate --force
             php artisan storage:link
