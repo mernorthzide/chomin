@@ -87,20 +87,35 @@ function newsletterPopup() {
             if (localStorage.getItem('chomin_newsletter_dismissed') || localStorage.getItem('chomin_newsletter_subscribed')) return;
 
             const delay = {{ (int) config('chomin.newsletter.popup_delay_ms', 25000) }};
+            const exitIntentGrace = 8000; // require dwell + user interaction before exit-intent
+            const pageLoadAt = Date.now();
+            let hasInteracted = false;
+
+            const onFirstInteraction = () => { hasInteracted = true; };
             const timer = setTimeout(() => { this.show(); cleanup(); }, delay);
             const onScroll = () => {
                 const percent = (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight;
                 if (percent > 0.5) { this.show(); cleanup(); }
             };
-            const onExit = (e) => { if (e.clientY < 10) { this.show(); cleanup(); } };
+            const onExit = (e) => {
+                if (e.clientY >= 10) return;
+                if (!hasInteracted) return;
+                if (Date.now() - pageLoadAt < exitIntentGrace) return;
+                this.show();
+                cleanup();
+            };
             const cleanup = () => {
                 clearTimeout(timer);
                 window.removeEventListener('scroll', onScroll);
                 document.removeEventListener('mouseleave', onExit);
+                document.removeEventListener('mousemove', onFirstInteraction);
+                document.removeEventListener('touchstart', onFirstInteraction);
                 window.removeEventListener('pagehide', cleanup);
             };
             window.addEventListener('scroll', onScroll, { passive: true });
             document.addEventListener('mouseleave', onExit);
+            document.addEventListener('mousemove', onFirstInteraction, { once: true });
+            document.addEventListener('touchstart', onFirstInteraction, { once: true, passive: true });
             window.addEventListener('pagehide', cleanup);
         },
         show() {
