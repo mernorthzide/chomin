@@ -32,6 +32,8 @@ Thumbs.db
 *.jpeg
 !public/images/facebook-campaign/
 !public/images/facebook-campaign/*.jpg
+!public/images/pwa/
+!public/images/pwa/*.png
 !storage/app/public/collections/banners/
 !storage/app/public/collections/banners/cm-classic-imagen-hero.jpg
 !storage/app/public/products/chomin-imagen/
