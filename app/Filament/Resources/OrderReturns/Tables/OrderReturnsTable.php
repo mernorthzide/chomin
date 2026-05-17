@@ -11,12 +11,14 @@ use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class OrderReturnsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['order', 'user']))
             ->columns([
                 TextColumn::make('rma_number')
                     ->label('RMA')
@@ -92,7 +94,7 @@ class OrderReturnsTable
                     ->label('ออกเงินคืน')
                     ->icon('heroicon-o-banknotes')
                     ->color('success')
-                    ->visible(fn ($record) => $record && in_array($record->status, ['approved', 'received']) && $record->status !== 'refunded')
+                    ->visible(fn ($record) => $record && in_array($record->status, ['approved', 'received']))
                     ->form([
                         TextInput::make('refund_amount')
                             ->label('จำนวนเงินคืน (฿)')

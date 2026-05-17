@@ -84,7 +84,18 @@ class CheckoutController extends Controller
 
         $pointsUsed = min($request->points_used ?? 0, auth()->user()->points);
 
-        $codFee = $paymentMethod === 'cod' ? (float) config('chomin.payment.methods.cod.fee', 30) : 0.0;
+        $codFee = 0.0;
+        if ($paymentMethod === 'cod') {
+            $minOrder = (float) config('chomin.payment.methods.cod.min_order', 0);
+            $maxOrder = (float) config('chomin.payment.methods.cod.max_order', PHP_INT_MAX);
+            $subtotal = (float) $cart->subtotal;
+            if ($subtotal < $minOrder || $subtotal > $maxOrder) {
+                throw ValidationException::withMessages([
+                    'payment_method' => sprintf('COD ใช้ได้กับยอดสั่งซื้อ ฿%s - ฿%s', number_format($minOrder), number_format($maxOrder)),
+                ]);
+            }
+            $codFee = (float) config('chomin.payment.methods.cod.fee', 30);
+        }
 
         $order = $this->orderService->createOrder(
             $request->only(['shipping_name', 'shipping_phone', 'shipping_address', 'shipping_district', 'shipping_province', 'shipping_postal_code', 'note', 'gift_wrap', 'gift_message_to', 'gift_message_from', 'gift_message']),
