@@ -2,9 +2,12 @@
 
 namespace App\Filament\Resources\OrderReturns\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -85,6 +88,34 @@ class OrderReturnsTable
             ])
             ->recordActions([
                 EditAction::make(),
+                Action::make('markRefunded')
+                    ->label('ออกเงินคืน')
+                    ->icon('heroicon-o-banknotes')
+                    ->color('success')
+                    ->visible(fn ($record) => $record && in_array($record->status, ['approved', 'received']) && $record->status !== 'refunded')
+                    ->form([
+                        TextInput::make('refund_amount')
+                            ->label('จำนวนเงินคืน (฿)')
+                            ->numeric()
+                            ->required()
+                            ->default(fn ($record) => $record?->refund_amount ?? 0),
+                        TextInput::make('admin_note')
+                            ->label('หมายเหตุ (เช่น เลขอ้างอิงการโอน)'),
+                    ])
+                    ->action(function ($record, array $data): void {
+                        $record->update([
+                            'status' => 'refunded',
+                            'refund_amount' => (float) $data['refund_amount'],
+                            'refunded_at' => now(),
+                            'admin_note' => trim(($record->admin_note ? $record->admin_note."\n" : '').($data['admin_note'] ?? '')),
+                        ]);
+
+                        Notification::make()
+                            ->title('บันทึกการคืนเงินเรียบร้อย')
+                            ->success()
+                            ->send();
+                    })
+                    ->requiresConfirmation(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([DeleteBulkAction::make()]),

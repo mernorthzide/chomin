@@ -380,13 +380,42 @@
                             </div>
                         </div>
 
+                        {{-- Payment Method --}}
+                        <div class="border-t border-brand-gray-border mt-4 pt-4">
+                            <p class="text-xs font-medium tracking-widest uppercase text-brand-black mb-3">
+                                วิธีการชำระเงิน
+                            </p>
+                            <div class="space-y-2">
+                                @foreach(config('chomin.payment.methods') as $key => $method)
+                                    @if($method['enabled'])
+                                        <label class="flex items-center gap-3 p-3 border cursor-pointer transition-colors duration-200"
+                                               x-data
+                                               :class="$el.querySelector('input').checked ? 'border-brand-black bg-white' : 'border-brand-gray-border hover:border-brand-gray-dark'">
+                                            <input type="radio" name="payment_method" value="{{ $key }}"
+                                                   {{ $loop->first ? 'checked' : '' }}
+                                                   class="text-brand-black focus:ring-brand-black"
+                                                   @change="$el.closest('.space-y-2').querySelectorAll('label').forEach(l => l.classList.remove('border-brand-black', 'bg-white'));;$el.closest('label').classList.add('border-brand-black', 'bg-white')">
+                                            <div class="flex-1 min-w-0">
+                                                <span class="text-sm text-brand-black">
+                                                    {{ app()->getLocale() === 'en' ? $method['label_en'] : $method['label_th'] }}
+                                                </span>
+                                                @if($key === 'cod' && !empty($method['fee']))
+                                                    <span class="ml-1 text-xs text-brand-gray-medium">(+฿{{ number_format($method['fee'], 0) }})</span>
+                                                @endif
+                                            </div>
+                                        </label>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+
                         <button type="submit"
                                 class="mt-6 w-full py-4 text-sm font-medium tracking-[0.15em] uppercase bg-brand-black text-white hover:bg-brand-gray-dark transition-colors duration-300">
                             ยืนยันสั่งซื้อ
                         </button>
 
                         <p class="mt-3 text-center text-xs text-brand-gray-medium">
-                            ชำระเงินผ่าน PromptPay หลังยืนยันออเดอร์
+                            ชำระเงินหลังยืนยันออเดอร์
                         </p>
 
                         {{-- Trust signals --}}

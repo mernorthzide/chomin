@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
-    public function createOrder(array $data, $cart, ?Coupon $coupon = null, int $pointsUsed = 0, array $giftCardCodes = []): Order
+    public function createOrder(array $data, $cart, ?Coupon $coupon = null, int $pointsUsed = 0, array $giftCardCodes = [], string $paymentMethod = 'promptpay_slip', float $codFee = 0.0): Order
     {
-        return DB::transaction(function () use ($data, $cart, $coupon, $pointsUsed, $giftCardCodes) {
+        return DB::transaction(function () use ($data, $cart, $coupon, $pointsUsed, $giftCardCodes, $paymentMethod, $codFee) {
             $cart->load('items.product', 'items.variant.color');
 
             foreach ($cart->items as $item) {
@@ -37,17 +37,21 @@ class OrderService
             $giftWrapFee = $giftWrap ? (float) SiteSetting::get('gift_wrap_fee', 50) : 0;
 
             $discount = $couponDiscount + $pointsDiscount;
-            $preGiftCardTotal = max(0, $subtotal - $discount + $shippingFee + $giftWrapFee);
+            $preGiftCardTotal = max(0, $subtotal - $discount + $shippingFee + $giftWrapFee + $codFee);
             $giftCards = app(GiftCardService::class)->resolveRedeemableCards($giftCardCodes);
             $giftCardDiscount = min($preGiftCardTotal, (float) $giftCards->sum(fn ($card) => (float) $card->balance));
             $total = max(0, $preGiftCardTotal - $giftCardDiscount);
 
+            $orderStatus = $paymentMethod === 'cod' ? 'awaiting_payment' : 'pending';
+
             $order = Order::create([
                 'user_id' => auth()->id(),
                 'order_number' => Order::generateOrderNumber(),
-                'status' => 'pending',
+                'status' => $orderStatus,
+                'payment_method' => $paymentMethod,
                 'subtotal' => $subtotal,
                 'shipping_fee' => $shippingFee,
+                'cod_fee' => $codFee,
                 'discount' => $discount,
                 'gift_card_discount' => $giftCardDiscount,
                 'total' => $total,

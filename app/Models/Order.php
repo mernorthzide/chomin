@@ -13,7 +13,8 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'order_number', 'status', 'subtotal', 'shipping_fee', 'discount', 'gift_card_discount', 'total',
+        'user_id', 'order_number', 'status', 'payment_method', 'payment_gateway_ref',
+        'subtotal', 'shipping_fee', 'cod_fee', 'discount', 'gift_card_discount', 'total',
         'points_earned', 'points_used', 'coupon_id',
         'shipping_name', 'shipping_phone', 'shipping_address', 'shipping_district',
         'shipping_province', 'shipping_postal_code',
@@ -23,8 +24,8 @@ class Order extends Model
     ];
 
     protected $casts = [
-        'subtotal' => 'decimal:2', 'shipping_fee' => 'decimal:2', 'discount' => 'decimal:2',
-        'gift_card_discount' => 'decimal:2', 'total' => 'decimal:2',
+        'subtotal' => 'decimal:2', 'shipping_fee' => 'decimal:2', 'cod_fee' => 'decimal:2',
+        'discount' => 'decimal:2', 'gift_card_discount' => 'decimal:2', 'total' => 'decimal:2',
         'gift_wrap' => 'boolean', 'gift_wrap_fee' => 'decimal:2',
         'shipped_at' => 'datetime', 'completed_at' => 'datetime', 'cancelled_at' => 'datetime',
         'review_request_sent_at' => 'datetime',
@@ -74,6 +75,16 @@ class Order extends Model
         return match ($this->status) {
             'pending' => 'รอชำระเงิน', 'awaiting_payment' => 'รอตรวจสอบ', 'paid' => 'ชำระเงินแล้ว',
             'shipping' => 'กำลังจัดส่ง', 'completed' => 'สำเร็จ', 'cancelled' => 'ยกเลิก', default => $this->status,
+        };
+    }
+
+    public function getPaymentMethodLabelAttribute(): string
+    {
+        return match ($this->payment_method) {
+            'promptpay_slip' => 'PromptPay (อัปโหลดสลิป)',
+            'cod' => 'เก็บเงินปลายทาง (COD)',
+            'bank_transfer' => 'โอนผ่านธนาคาร',
+            default => $this->payment_method ?: '-',
         };
     }
 }

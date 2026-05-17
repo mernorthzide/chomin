@@ -2,7 +2,10 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\AbandonedCartsStats;
+use App\Filament\Widgets\LowStockAlerts;
 use App\Filament\Widgets\PendingReturns;
+use App\Filament\Widgets\PendingReviewsCount;
 use App\Filament\Widgets\SalesChart;
 use App\Filament\Widgets\SalesOverview;
 use App\Filament\Widgets\TopProducts;
@@ -53,6 +56,9 @@ class AdminPanelProvider extends PanelProvider
                 SalesChart::class,
                 TopProducts::class,
                 PendingReturns::class,
+                LowStockAlerts::class,
+                AbandonedCartsStats::class,
+                PendingReviewsCount::class,
                 AccountWidget::class,
                 FilamentInfoWidget::class,
             ])

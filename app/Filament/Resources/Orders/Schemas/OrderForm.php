@@ -31,12 +31,24 @@ class OrderForm
                     ])
                     ->default('pending')
                     ->required(),
+                Select::make('payment_method')
+                    ->label('วิธีชำระเงิน')
+                    ->options(
+                        collect(config('chomin.payment.methods', []))
+                            ->mapWithKeys(fn ($m, $k) => [$k => $m['label_th'] ?? $k])
+                            ->all()
+                    )
+                    ->nullable(),
                 TextInput::make('subtotal')
                     ->required()
                     ->numeric(),
                 TextInput::make('shipping_fee')
                     ->required()
                     ->numeric(),
+                TextInput::make('cod_fee')
+                    ->label('ค่าธรรมเนียม COD')
+                    ->numeric()
+                    ->default(0.0),
                 TextInput::make('discount')
                     ->required()
                     ->numeric()

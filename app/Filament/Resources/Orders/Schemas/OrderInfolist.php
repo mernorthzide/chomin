@@ -65,12 +65,19 @@ class OrderInfolist
                     ->columns(2),
                 Section::make('ยอดรวม')
                     ->schema([
+                        TextEntry::make('payment_method_label')
+                            ->label('วิธีชำระเงิน')
+                            ->placeholder('-'),
                         TextEntry::make('subtotal')
                             ->label('ยอดสินค้า')
                             ->money('THB'),
                         TextEntry::make('shipping_fee')
                             ->label('ค่าส่ง')
                             ->money('THB'),
+                        TextEntry::make('cod_fee')
+                            ->label('ค่าธรรมเนียม COD')
+                            ->money('THB')
+                            ->visible(fn ($record): bool => $record !== null && (float) $record->cod_fee > 0),
                         TextEntry::make('discount')
                             ->label('ส่วนลด')
                             ->money('THB'),

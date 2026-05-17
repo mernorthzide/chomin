@@ -116,114 +116,178 @@
 
             </div>
 
-            {{-- Right: PromptPay + Slip Upload --}}
+            {{-- Right: Payment Info + Slip Upload --}}
             <div class="space-y-6">
 
-                {{-- PromptPay Info --}}
-                @if($promptpay['id'] || $promptpay['qr'])
+                @if($order->payment_method === 'cod')
+                    {{-- COD: ขอบคุณ + ข้อมูล COD --}}
                     <div class="border border-brand-gray-border p-5">
                         <h2 class="text-xs font-medium tracking-widest uppercase text-brand-gray-dark mb-4">
-                            ชำระเงินผ่าน PromptPay
+                            เก็บเงินปลายทาง (COD)
+                        </h2>
+                        <div class="flex items-start gap-3 mb-4">
+                            <div class="flex-shrink-0 w-10 h-10 bg-amber-50 border border-amber-200 rounded-full flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-brand-black">ขอบคุณที่สั่งซื้อ!</p>
+                                <p class="text-xs text-brand-gray-medium mt-1 leading-relaxed">
+                                    พนักงานส่งของจะติดต่อกลับเพื่อนัดเวลาส่งสินค้าและรับชำระเงินเมื่อถึงมือคุณ
+                                </p>
+                            </div>
+                        </div>
+                        <div class="border-t border-brand-gray-border pt-4 space-y-2 text-sm">
+                            <div class="flex justify-between text-brand-gray-medium">
+                                <span>ยอดสินค้า</span>
+                                <span>฿{{ number_format($order->subtotal, 0) }}</span>
+                            </div>
+                            <div class="flex justify-between text-brand-gray-medium">
+                                <span>ค่าจัดส่ง</span>
+                                <span>฿{{ number_format($order->shipping_fee, 0) }}</span>
+                            </div>
+                            @if($order->cod_fee > 0)
+                                <div class="flex justify-between text-brand-gray-medium">
+                                    <span>ค่าธรรมเนียม COD</span>
+                                    <span>฿{{ number_format($order->cod_fee, 0) }}</span>
+                                </div>
+                            @endif
+                            @if($order->discount > 0)
+                                <div class="flex justify-between text-green-600">
+                                    <span>ส่วนลด</span>
+                                    <span>-฿{{ number_format($order->discount, 0) }}</span>
+                                </div>
+                            @endif
+                            <div class="flex justify-between font-medium text-brand-black border-t border-brand-gray-border pt-2">
+                                <span>ยอดที่ต้องชำระ (ปลายทาง)</span>
+                                <span class="text-lg">฿{{ number_format($order->total, 0) }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Actions COD --}}
+                    <div class="flex gap-3">
+                        <a href="{{ route('home') }}"
+                           class="flex-1 py-3 text-center text-xs font-medium tracking-widest uppercase border border-brand-gray-border text-brand-gray-dark hover:border-brand-black hover:text-brand-black transition-colors duration-200">
+                            กลับหน้าแรก
+                        </a>
+                        <a href="{{ route('shop.index') }}"
+                           class="flex-1 py-3 text-center text-xs font-medium tracking-widest uppercase bg-brand-black text-white hover:bg-brand-gray-dark transition-colors duration-200">
+                            ช้อปต่อ
+                        </a>
+                    </div>
+
+                @else
+                    {{-- PromptPay / default: QR + Slip Upload --}}
+
+                    {{-- PromptPay Info --}}
+                    @if($promptpay['id'] || $promptpay['qr'])
+                        <div class="border border-brand-gray-border p-5">
+                            <h2 class="text-xs font-medium tracking-widest uppercase text-brand-gray-dark mb-4">
+                                ชำระเงินผ่าน PromptPay
+                            </h2>
+
+                            @if($promptpay['qr'])
+                                <div class="flex justify-center mb-4">
+                                    <img src="{{ \Illuminate\Support\Facades\Storage::url($promptpay['qr']) }}"
+                                         alt="QR Code PromptPay"
+                                         class="w-48 h-48 object-contain border border-brand-gray-border p-2">
+                                </div>
+                            @endif
+
+                            <div class="text-center space-y-1">
+                                @if($promptpay['name'])
+                                    <p class="text-sm font-medium text-brand-black">{{ $promptpay['name'] }}</p>
+                                @endif
+                                @if($promptpay['id'])
+                                    <p class="text-sm text-brand-gray-medium">{{ $promptpay['id'] }}</p>
+                                @endif
+                                <div class="mt-3 pt-3 border-t border-brand-gray-border">
+                                    <p class="text-xs text-brand-gray-medium">ยอดที่ต้องโอน</p>
+                                    <p class="text-2xl font-medium text-brand-black mt-1">฿{{ number_format($order->total, 2) }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        <div class="border border-brand-gray-border p-5">
+                            <h2 class="text-xs font-medium tracking-widest uppercase text-brand-gray-dark mb-2">
+                                ข้อมูลการชำระเงิน
+                            </h2>
+                            <p class="text-sm text-brand-gray-medium">กรุณาติดต่อร้านค้าเพื่อรับข้อมูลการชำระเงิน</p>
+                        </div>
+                    @endif
+
+                    {{-- Slip Upload --}}
+                    <div class="border border-brand-gray-border p-5">
+                        <h2 class="text-xs font-medium tracking-widest uppercase text-brand-gray-dark mb-4">
+                            แนบสลิปการโอนเงิน
                         </h2>
 
-                        @if($promptpay['qr'])
-                            <div class="flex justify-center mb-4">
-                                <img src="{{ \Illuminate\Support\Facades\Storage::url($promptpay['qr']) }}"
-                                     alt="QR Code PromptPay"
-                                     class="w-48 h-48 object-contain border border-brand-gray-border p-2">
+                        @if(session('success') && str_contains(session('success'), 'สลิป'))
+                            <div class="mb-4 px-3 py-2 bg-green-50 border border-green-200 text-green-700 text-xs">
+                                {{ session('success') }}
                             </div>
                         @endif
 
-                        <div class="text-center space-y-1">
-                            @if($promptpay['name'])
-                                <p class="text-sm font-medium text-brand-black">{{ $promptpay['name'] }}</p>
-                            @endif
-                            @if($promptpay['id'])
-                                <p class="text-sm text-brand-gray-medium">{{ $promptpay['id'] }}</p>
-                            @endif
-                            <div class="mt-3 pt-3 border-t border-brand-gray-border">
-                                <p class="text-xs text-brand-gray-medium">ยอดที่ต้องโอน</p>
-                                <p class="text-2xl font-medium text-brand-black mt-1">฿{{ number_format($order->total, 2) }}</p>
+                        @if($order->paymentSlip)
+                            <div class="mb-4">
+                                <p class="text-xs text-brand-gray-medium mb-2">สลิปที่อัปโหลดล่าสุด:</p>
+                                <img src="{{ \Illuminate\Support\Facades\Storage::url($order->paymentSlip->image_path) }}"
+                                     alt="สลิปการโอนเงิน"
+                                     class="w-full max-w-xs border border-brand-gray-border object-contain">
+
+                                @if($order->paymentSlip->isConfirmed())
+                                    <p class="mt-2 text-xs text-green-600 font-medium">ยืนยันแล้ว</p>
+                                @elseif($order->paymentSlip->isRejected())
+                                    <p class="mt-2 text-xs text-red-500">ถูกปฏิเสธ: {{ $order->paymentSlip->rejection_reason }}</p>
+                                @else
+                                    <p class="mt-2 text-xs text-amber-600">รอตรวจสอบ...</p>
+                                @endif
                             </div>
-                        </div>
+                        @endif
+
+                        @if(in_array($order->status, ['pending', 'awaiting_payment']))
+                            <form action="{{ route('orders.slip.store', $order) }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                @error('slip')
+                                    <p class="mb-2 text-xs text-red-500">{{ $message }}</p>
+                                @enderror
+                                <div x-data="{ fileName: '' }">
+                                    <label class="block w-full cursor-pointer">
+                                        <div class="border-2 border-dashed border-brand-gray-border hover:border-brand-gray-dark transition-colors duration-200 p-6 text-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-8 w-8 text-brand-gray-border mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                            </svg>
+                                            <p class="text-xs text-brand-gray-medium" x-text="fileName || 'คลิกเพื่อเลือกไฟล์สลิป'"></p>
+                                            <p class="text-xs text-brand-gray-border mt-1">PNG, JPG ไม่เกิน 5MB</p>
+                                        </div>
+                                        <input type="file" name="slip" accept="image/*" class="sr-only"
+                                               @change="fileName = $event.target.files[0]?.name || ''">
+                                    </label>
+                                </div>
+
+                                <button type="submit"
+                                        class="mt-4 w-full py-3 text-sm font-medium tracking-[0.15em] uppercase bg-brand-black text-white hover:bg-brand-gray-dark transition-colors duration-300">
+                                    อัปโหลดสลิป
+                                </button>
+                            </form>
+                        @endif
                     </div>
-                @else
-                    <div class="border border-brand-gray-border p-5">
-                        <h2 class="text-xs font-medium tracking-widest uppercase text-brand-gray-dark mb-2">
-                            ข้อมูลการชำระเงิน
-                        </h2>
-                        <p class="text-sm text-brand-gray-medium">กรุณาติดต่อร้านค้าเพื่อรับข้อมูลการชำระเงิน</p>
+
+                    {{-- Actions PromptPay --}}
+                    <div class="flex gap-3">
+                        <a href="{{ route('home') }}"
+                           class="flex-1 py-3 text-center text-xs font-medium tracking-widest uppercase border border-brand-gray-border text-brand-gray-dark hover:border-brand-black hover:text-brand-black transition-colors duration-200">
+                            กลับหน้าแรก
+                        </a>
+                        <a href="{{ route('shop.index') }}"
+                           class="flex-1 py-3 text-center text-xs font-medium tracking-widest uppercase bg-brand-black text-white hover:bg-brand-gray-dark transition-colors duration-200">
+                            ช้อปต่อ
+                        </a>
                     </div>
+
                 @endif
-
-                {{-- Slip Upload --}}
-                <div class="border border-brand-gray-border p-5">
-                    <h2 class="text-xs font-medium tracking-widest uppercase text-brand-gray-dark mb-4">
-                        แนบสลิปการโอนเงิน
-                    </h2>
-
-                    @if(session('success') && str_contains(session('success'), 'สลิป'))
-                        <div class="mb-4 px-3 py-2 bg-green-50 border border-green-200 text-green-700 text-xs">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
-                    @if($order->paymentSlip)
-                        <div class="mb-4">
-                            <p class="text-xs text-brand-gray-medium mb-2">สลิปที่อัปโหลดล่าสุด:</p>
-                            <img src="{{ \Illuminate\Support\Facades\Storage::url($order->paymentSlip->image_path) }}"
-                                 alt="สลิปการโอนเงิน"
-                                 class="w-full max-w-xs border border-brand-gray-border object-contain">
-
-                            @if($order->paymentSlip->isConfirmed())
-                                <p class="mt-2 text-xs text-green-600 font-medium">ยืนยันแล้ว</p>
-                            @elseif($order->paymentSlip->isRejected())
-                                <p class="mt-2 text-xs text-red-500">ถูกปฏิเสธ: {{ $order->paymentSlip->rejection_reason }}</p>
-                            @else
-                                <p class="mt-2 text-xs text-amber-600">รอตรวจสอบ...</p>
-                            @endif
-                        </div>
-                    @endif
-
-                    @if(in_array($order->status, ['pending', 'awaiting_payment']))
-                        <form action="{{ route('orders.slip.store', $order) }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            @error('slip')
-                                <p class="mb-2 text-xs text-red-500">{{ $message }}</p>
-                            @enderror
-                            <div x-data="{ fileName: '' }">
-                                <label class="block w-full cursor-pointer">
-                                    <div class="border-2 border-dashed border-brand-gray-border hover:border-brand-gray-dark transition-colors duration-200 p-6 text-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-8 w-8 text-brand-gray-border mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                                        </svg>
-                                        <p class="text-xs text-brand-gray-medium" x-text="fileName || 'คลิกเพื่อเลือกไฟล์สลิป'"></p>
-                                        <p class="text-xs text-brand-gray-border mt-1">PNG, JPG ไม่เกิน 5MB</p>
-                                    </div>
-                                    <input type="file" name="slip" accept="image/*" class="sr-only"
-                                           @change="fileName = $event.target.files[0]?.name || ''">
-                                </label>
-                            </div>
-
-                            <button type="submit"
-                                    class="mt-4 w-full py-3 text-sm font-medium tracking-[0.15em] uppercase bg-brand-black text-white hover:bg-brand-gray-dark transition-colors duration-300">
-                                อัปโหลดสลิป
-                            </button>
-                        </form>
-                    @endif
-                </div>
-
-                {{-- Actions --}}
-                <div class="flex gap-3">
-                    <a href="{{ route('home') }}"
-                       class="flex-1 py-3 text-center text-xs font-medium tracking-widest uppercase border border-brand-gray-border text-brand-gray-dark hover:border-brand-black hover:text-brand-black transition-colors duration-200">
-                        กลับหน้าแรก
-                    </a>
-                    <a href="{{ route('shop.index') }}"
-                       class="flex-1 py-3 text-center text-xs font-medium tracking-widest uppercase bg-brand-black text-white hover:bg-brand-gray-dark transition-colors duration-200">
-                        ช้อปต่อ
-                    </a>
-                </div>
 
             </div>
         </div>

@@ -23,6 +23,29 @@ return [
         ],
     ],
 
+    'payment' => [
+        'methods' => [
+            'promptpay_slip' => [
+                'enabled' => env('CHOMIN_PAYMENT_PROMPTPAY_ENABLED', true),
+                'label_th' => 'PromptPay (อัปโหลดสลิป)',
+                'label_en' => 'PromptPay (slip upload)',
+            ],
+            'cod' => [
+                'enabled' => env('CHOMIN_PAYMENT_COD_ENABLED', true),
+                'fee' => (float) env('CHOMIN_PAYMENT_COD_FEE', 30),
+                'label_th' => 'เก็บเงินปลายทาง (COD)',
+                'label_en' => 'Cash on delivery',
+                'min_order' => (float) env('CHOMIN_PAYMENT_COD_MIN_ORDER', 0),
+                'max_order' => (float) env('CHOMIN_PAYMENT_COD_MAX_ORDER', 50000),
+            ],
+            'bank_transfer' => [
+                'enabled' => env('CHOMIN_PAYMENT_BANK_TRANSFER_ENABLED', false),
+                'label_th' => 'โอนผ่านธนาคาร',
+                'label_en' => 'Bank transfer',
+            ],
+        ],
+    ],
+
     'abandoned_cart' => [
         'first_reminder_hours' => env('CHOMIN_ABANDONED_CART_FIRST_HOURS', 4),
         'second_reminder_hours' => env('CHOMIN_ABANDONED_CART_SECOND_HOURS', 24),

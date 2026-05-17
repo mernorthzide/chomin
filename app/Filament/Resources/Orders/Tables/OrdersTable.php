@@ -6,11 +6,12 @@ use App\Mail\OrderCompleted;
 use App\Mail\OrderShipped;
 use App\Mail\PaymentConfirmed;
 use App\Mail\PaymentRejected;
+use App\Services\PointsService;
 use App\Support\SafeMail;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
-use Filament\Actions\Action;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
@@ -34,6 +35,22 @@ class OrdersTable
                     ->label('ยอดรวม')
                     ->money('THB')
                     ->sortable(),
+                TextColumn::make('payment_method')
+                    ->label('ชำระเงิน')
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state): string => match ($state) {
+                        'promptpay_slip' => 'PromptPay',
+                        'cod' => 'COD',
+                        'bank_transfer' => 'โอนธนาคาร',
+                        default => $state ?? '-',
+                    })
+                    ->color(fn (?string $state): string => match ($state) {
+                        'promptpay_slip' => 'info',
+                        'cod' => 'warning',
+                        'bank_transfer' => 'primary',
+                        default => 'gray',
+                    })
+                    ->toggleable(),
                 TextColumn::make('status')
                     ->label('สถานะ')
                     ->badge()
@@ -148,7 +165,7 @@ class OrdersTable
                         ]);
                         $record->load('user');
                         SafeMail::queue($record->user->email, new OrderCompleted($record));
-                        app(\App\Services\PointsService::class)->earnPoints($record);
+                        app(PointsService::class)->earnPoints($record);
                     }),
             ])
             ->toolbarActions([

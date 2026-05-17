@@ -13,6 +13,7 @@ use App\Services\GiftCardService;
 use App\Services\OrderService;
 use App\Support\SafeMail;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class CheckoutController extends Controller
@@ -35,6 +36,11 @@ class CheckoutController extends Controller
 
     public function store(Request $request)
     {
+        $enabledMethods = collect(config('chomin.payment.methods', []))
+            ->filter(fn ($m) => $m['enabled'] ?? false)
+            ->keys()
+            ->all();
+
         $request->validate([
             'shipping_name' => 'required|string|max:255',
             'shipping_phone' => 'required|string|max:20',
@@ -50,7 +56,16 @@ class CheckoutController extends Controller
             'gift_message_to' => 'nullable|string|max:120',
             'gift_message_from' => 'nullable|string|max:120',
             'gift_message' => 'nullable|string|max:500',
+            'payment_method' => ['required', Rule::in($enabledMethods)],
         ]);
+
+        $paymentMethod = $request->input('payment_method', 'promptpay_slip');
+        $methodConfig = config("chomin.payment.methods.{$paymentMethod}", []);
+        if (empty($methodConfig['enabled'])) {
+            throw ValidationException::withMessages([
+                'payment_method' => 'วิธีการชำระเงินที่เลือกไม่สามารถใช้งานได้ในขณะนี้',
+            ]);
+        }
 
         $cart = $this->cartService->getCart();
         abort_if($cart->items->isEmpty(), 422, 'ตะกร้าว่าง');
@@ -69,9 +84,12 @@ class CheckoutController extends Controller
 
         $pointsUsed = min($request->points_used ?? 0, auth()->user()->points);
 
+        $codFee = $paymentMethod === 'cod' ? (float) config('chomin.payment.methods.cod.fee', 30) : 0.0;
+
         $order = $this->orderService->createOrder(
             $request->only(['shipping_name', 'shipping_phone', 'shipping_address', 'shipping_district', 'shipping_province', 'shipping_postal_code', 'note', 'gift_wrap', 'gift_message_to', 'gift_message_from', 'gift_message']),
             $cart, $coupon, $pointsUsed, $giftCardCodes,
+            $paymentMethod, $codFee,
         );
 
         // Dispatch email notifications

@@ -33,6 +33,15 @@ class UsersTable
                     ->label('ออเดอร์')
                     ->counts('orders')
                     ->sortable(),
+                TextColumn::make('referral_code')
+                    ->label('รหัสแนะนำ')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable(),
+                TextColumn::make('referrals_count')
+                    ->label('แนะนำมา')
+                    ->counts('referrals')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->label('สมัครเมื่อ')
                     ->dateTime('d/m/Y')
