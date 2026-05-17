@@ -90,7 +90,7 @@
 
                     <!-- Thumbnail Row -->
                     <div class="flex gap-2 overflow-x-auto pb-1">
-                        <template x-for="(img, idx) in currentImages" :key="idx">
+                        <template x-for="(img, idx) in currentImages" :key="img">
                             <button
                                 @click="activeImageIndex = idx"
                                 class="flex-shrink-0 w-16 h-20 overflow-hidden bg-brand-gray border-2 transition-colors duration-200"
@@ -633,6 +633,106 @@
         };
     }
     </script>
+
+    {{-- ============================================================
+         FREQUENTLY BOUGHT TOGETHER (collaborative filtering)
+    ============================================================ --}}
+    @if(isset($frequentlyBought) && $frequentlyBought->isNotEmpty())
+        <section class="bg-white border-b border-brand-gray-border" aria-label="Frequently bought together">
+            <div class="px-6 md:px-12 py-8 md:py-10">
+                <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-3">
+                    {{ app()->getLocale() === 'en' ? 'Frequently bought together' : 'มักซื้อพร้อมกัน' }}
+                </p>
+                <h2 class="font-serif uppercase leading-none text-3xl md:text-5xl text-brand-black">
+                    {{ app()->getLocale() === 'en' ? 'Complete the bundle' : 'จัดเซตคู่กัน' }}
+                </h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-0 border-t border-brand-gray-border"
+                 x-data="fbtBundle({{ $product->id }}, {{ (float) $product->display_price }})">
+                <div class="border-r border-brand-gray-border p-6 flex flex-col">
+                    <div class="aspect-[3/4] bg-brand-gray overflow-hidden">
+                        @if($product->primaryImage)
+                            <img src="{{ Storage::url($product->primaryImage->image_path) }}"
+                                 alt="{{ $product->localized_name }}"
+                                 class="w-full h-full object-cover" loading="lazy">
+                        @endif
+                    </div>
+                    <p class="mt-3 text-xs uppercase tracking-[0.14em] text-brand-gray-light">{{ app()->getLocale() === 'en' ? 'This item' : 'รายการนี้' }}</p>
+                    <p class="mt-1 text-sm">{{ $product->localized_name }}</p>
+                    <p class="mt-1 text-sm font-medium">฿{{ number_format($product->display_price, 0) }}</p>
+                </div>
+                @foreach($frequentlyBought as $fbtItem)
+                    <div class="border-r border-brand-gray-border last:border-r-0 p-6 flex flex-col">
+                        <a href="{{ route('products.show', ['locale' => app()->getLocale(), 'product' => $fbtItem->slug]) }}" class="block">
+                            <div class="aspect-[3/4] bg-brand-gray overflow-hidden">
+                                @if($fbtItem->primaryImage)
+                                    <img src="{{ Storage::url($fbtItem->primaryImage->image_path) }}"
+                                         alt="{{ $fbtItem->localized_name }}"
+                                         class="w-full h-full object-cover" loading="lazy">
+                                @endif
+                            </div>
+                        </a>
+                        <label class="mt-3 flex items-start gap-2 cursor-pointer">
+                            <input type="checkbox"
+                                   @change="togglePick({{ $fbtItem->id }}, {{ (float) $fbtItem->display_price }})"
+                                   checked
+                                   class="mt-1 accent-brand-black">
+                            <span>
+                                <span class="block text-xs uppercase tracking-[0.14em] text-brand-gray-light">{{ app()->getLocale() === 'en' ? 'Add' : 'เพิ่ม' }}</span>
+                                <span class="block mt-1 text-sm">{{ $fbtItem->localized_name }}</span>
+                                <span class="block mt-1 text-sm font-medium">฿{{ number_format($fbtItem->display_price, 0) }}</span>
+                            </span>
+                        </label>
+                    </div>
+                @endforeach
+            </div>
+            <div class="px-6 md:px-12 py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-brand-gray-border"
+                 x-data="{}">
+                <p class="text-sm">
+                    {{ app()->getLocale() === 'en' ? 'Bundle total' : 'รวมเซต' }}:
+                    <span class="font-medium" x-text="'฿' + Math.round($root.bundleTotal).toLocaleString()"></span>
+                </p>
+                <p class="text-xs uppercase tracking-[0.14em] text-brand-gray-light">
+                    {{ app()->getLocale() === 'en' ? 'Tap items above to view details' : 'แตะรูปด้านบนเพื่อดูรายละเอียด' }}
+                </p>
+            </div>
+        </section>
+        <script>
+        function fbtBundle(thisProductId, thisPrice) {
+            return {
+                picked: { [thisProductId]: thisPrice },
+                togglePick(id, price) {
+                    if (this.picked[id] !== undefined) delete this.picked[id];
+                    else this.picked[id] = price;
+                },
+                get bundleTotal() {
+                    return Object.values(this.picked).reduce((a, b) => a + b, 0);
+                }
+            };
+        }
+        </script>
+    @endif
+
+    {{-- ============================================================
+         CUSTOMERS ALSO BOUGHT
+    ============================================================ --}}
+    @if(isset($customersAlsoBought) && $customersAlsoBought->isNotEmpty())
+        <section class="bg-white border-b border-brand-gray-border" aria-label="Customers also bought">
+            <div class="px-6 md:px-12 py-8 md:py-10">
+                <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-3">
+                    {{ app()->getLocale() === 'en' ? 'Customers also bought' : 'ลูกค้าที่ซื้อสินค้านี้ ยังซื้อ' }}
+                </p>
+                <h2 class="font-serif uppercase leading-none text-3xl md:text-5xl text-brand-black">
+                    {{ app()->getLocale() === 'en' ? 'You might also like' : 'คุณอาจชอบ' }}
+                </h2>
+            </div>
+            <div class="commerce-grid">
+                @foreach($customersAlsoBought as $alsoBought)
+                    <x-product-card :product="$alsoBought" />
+                @endforeach
+            </div>
+        </section>
+    @endif
 
     {{-- Recently viewed (outside x-data scope is fine since it's a server-rendered component) --}}
     <x-recently-viewed :exclude-id="$product->id" />

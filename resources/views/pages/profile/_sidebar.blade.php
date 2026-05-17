@@ -33,6 +33,24 @@
             </a>
         </li>
         <li>
+            <a href="{{ route('returns.index') }}"
+               class="flex items-center gap-3 px-4 py-3 text-sm transition-colors duration-150 {{ request()->routeIs('returns.*') ? 'text-brand-black font-medium bg-brand-gray' : 'text-brand-gray-dark hover:bg-brand-gray' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h13a3 3 0 0 1 3 3v3M3 10l4-4M3 10l4 4" />
+                </svg>
+                คืน / เปลี่ยนสินค้า
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('referrals.index') }}"
+               class="flex items-center gap-3 px-4 py-3 text-sm transition-colors duration-150 {{ request()->routeIs('referrals.*') ? 'text-brand-black font-medium bg-brand-gray' : 'text-brand-gray-dark hover:bg-brand-gray' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zM3 20.5a9 9 0 1 1 18 0v.5H3v-.5z"/>
+                </svg>
+                แนะนำเพื่อน / ระดับสมาชิก
+            </a>
+        </li>
+        <li>
             <a href="{{ route('profile.points') }}"
                class="flex items-center gap-3 px-4 py-3 text-sm transition-colors duration-150 {{ request()->routeIs('profile.points') ? 'text-brand-black font-medium bg-brand-gray' : 'text-brand-gray-dark hover:bg-brand-gray' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">

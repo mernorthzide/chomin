@@ -191,4 +191,6 @@
         </div>
     </section>
 
+    <x-instagram-feed />
+
 </x-layouts.shop>

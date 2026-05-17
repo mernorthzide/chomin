@@ -166,4 +166,6 @@
         @endif
     </section>
 
+    <x-recently-viewed />
+
 </x-layouts.shop>

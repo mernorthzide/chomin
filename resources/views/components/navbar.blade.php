@@ -11,8 +11,8 @@
 @endphp
 
 <nav class="sticky top-0 z-50 border-b border-brand-gray-border bg-white"
-     x-data="{ mobileMenu: false, shopMega: false, mobileSection: null }"
-     @keydown.escape.window="shopMega = false; mobileMenu = false">
+     x-data="{ mobileMenu: false, shopMega: false, mobileSection: null, searchOpen: false }"
+     @keydown.escape.window="shopMega = false; mobileMenu = false; searchOpen = false">
     <div class="relative flex items-center justify-between px-4 md:px-8 py-3">
         <div class="flex items-center gap-5">
             <button type="button"
@@ -28,13 +28,14 @@
                 </svg>
             </button>
 
-            <a href="{{ route('search') }}"
-               class="inline-flex h-11 w-11 items-center justify-center hover:opacity-60 focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2"
-               aria-label="ค้นหา">
+            <button type="button"
+                    @click="searchOpen = true; $nextTick(() => $refs.searchInput?.focus())"
+                    class="inline-flex h-11 w-11 items-center justify-center hover:opacity-60 focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2"
+                    aria-label="{{ app()->getLocale() === 'en' ? 'Search' : 'ค้นหา' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.2-5.2m0 0A7.5 7.5 0 1 0 5.2 5.2a7.5 7.5 0 0 0 10.6 10.6Z" />
                 </svg>
-            </a>
+            </button>
 
             <div class="hidden lg:flex items-center gap-5 text-xs uppercase tracking-[0.14em]">
                 <div class="relative"
@@ -169,4 +170,133 @@
             </div>
         </div>
     </div>
+
+    {{-- ============================================================
+         SEARCH OVERLAY w/ AUTOCOMPLETE
+    ============================================================ --}}
+    <div x-show="searchOpen" x-cloak
+         x-transition.opacity
+         class="fixed inset-0 z-[70] bg-black/40"
+         @click.self="searchOpen = false"></div>
+
+    <div x-show="searchOpen" x-cloak
+         x-transition.opacity
+         class="fixed top-0 left-0 right-0 z-[71] border-b border-brand-gray-border bg-white"
+         x-data="searchAutocomplete()"
+         @keydown.escape.window="searchOpen = false">
+        <form :action="'/' + (document.documentElement.lang || 'th') + '/search'" method="GET"
+              class="max-w-5xl mx-auto px-4 md:px-8 py-4 flex items-center gap-3">
+            <svg class="h-5 w-5 text-brand-gray-medium shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.2-5.2m0 0A7.5 7.5 0 1 0 5.2 5.2a7.5 7.5 0 0 0 10.6 10.6Z"/>
+            </svg>
+            <input type="search" name="q" x-ref="searchInput" x-model="query"
+                   @input.debounce.250ms="fetchResults()"
+                   placeholder="{{ app()->getLocale() === 'en' ? 'Search shirts, colors, collections…' : 'ค้นหาเชิ้ต สี คอลเลกชัน…' }}"
+                   class="w-full border-0 bg-transparent text-base focus:outline-none focus:ring-0"
+                   autocomplete="off">
+            <button type="button" @click="searchOpen = false"
+                    class="text-xs uppercase tracking-[0.14em] text-brand-gray-medium hover:text-brand-black">
+                {{ app()->getLocale() === 'en' ? 'Close' : 'ปิด' }}
+            </button>
+        </form>
+
+        <div x-show="query.length >= 2" class="max-w-5xl mx-auto px-4 md:px-8 pb-6 border-t border-brand-gray-border">
+            <template x-if="loading">
+                <p class="py-6 text-xs uppercase tracking-[0.14em] text-brand-gray-light">{{ app()->getLocale() === 'en' ? 'Searching…' : 'กำลังค้นหา…' }}</p>
+            </template>
+
+            <template x-if="!loading && products.length === 0 && collections.length === 0">
+                <p class="py-6 text-xs uppercase tracking-[0.14em] text-brand-gray-light">
+                    {{ app()->getLocale() === 'en' ? 'No matches. Try another keyword.' : 'ไม่พบผลลัพธ์ ลองคำอื่น' }}
+                </p>
+            </template>
+
+            <template x-if="!loading && collections.length > 0">
+                <div class="pt-5">
+                    <p class="text-[10px] uppercase tracking-[0.18em] text-brand-gray-light mb-3">{{ app()->getLocale() === 'en' ? 'Collections' : 'คอลเลกชัน' }}</p>
+                    <div class="flex flex-wrap gap-2">
+                        <template x-for="c in collections" :key="'c-'+c.id">
+                            <a :href="c.url" class="border border-brand-gray-border px-3 py-2 text-xs uppercase tracking-[0.14em] hover:bg-brand-black hover:text-white hover:border-brand-black" x-text="c.name"></a>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <template x-if="!loading && products.length > 0">
+                <div class="pt-5">
+                    <p class="text-[10px] uppercase tracking-[0.18em] text-brand-gray-light mb-3">{{ app()->getLocale() === 'en' ? 'Products' : 'สินค้า' }}</p>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        <template x-for="p in products" :key="'p-'+p.id">
+                            <a :href="p.url" class="flex items-center gap-3 border border-brand-gray-border p-2 hover:border-brand-black">
+                                <div class="w-14 h-16 bg-brand-gray shrink-0 overflow-hidden">
+                                    <template x-if="p.image">
+                                        <img :src="p.image" :alt="p.name" class="w-full h-full object-cover">
+                                    </template>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-[10px] uppercase tracking-[0.14em] text-brand-gray-light truncate" x-text="p.collection || ''"></p>
+                                    <p class="text-sm truncate" x-text="p.name"></p>
+                                    <p class="text-xs font-medium mt-0.5" x-text="'฿' + Math.round(p.price).toLocaleString()"></p>
+                                </div>
+                            </a>
+                        </template>
+                    </div>
+                    <a :href="viewAllUrl" class="mt-4 inline-block text-xs uppercase tracking-[0.14em] underline">
+                        {{ app()->getLocale() === 'en' ? 'See all results' : 'ดูผลทั้งหมด' }}
+                    </a>
+                </div>
+            </template>
+        </div>
+
+        <div x-show="query.length < 2" class="max-w-5xl mx-auto px-4 md:px-8 pb-6 border-t border-brand-gray-border">
+            <p class="pt-5 text-[10px] uppercase tracking-[0.18em] text-brand-gray-light mb-3">{{ app()->getLocale() === 'en' ? 'Popular' : 'ยอดนิยม' }}</p>
+            <div class="flex flex-wrap gap-2">
+                @foreach(['ขาว', 'ดำ', 'Classic', 'Oversize', 'Linen', 'Bestseller'] as $term)
+                    <button type="button" @click="query = '{{ $term }}'; $refs.searchInput.focus(); fetchResults()"
+                            class="border border-brand-gray-border px-3 py-2 text-xs uppercase tracking-[0.14em] hover:bg-brand-black hover:text-white hover:border-brand-black">
+                        {{ $term }}
+                    </button>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function searchAutocomplete() {
+        return {
+            query: '',
+            loading: false,
+            products: [],
+            collections: [],
+            viewAllUrl: '',
+            abortController: null,
+            async fetchResults() {
+                if (this.query.length < 2) {
+                    this.products = []; this.collections = []; this.loading = false;
+                    return;
+                }
+                if (this.abortController) this.abortController.abort();
+                this.abortController = new AbortController();
+                this.loading = true;
+                try {
+                    const locale = document.documentElement.lang || 'th';
+                    const url = `/${locale}/search/autocomplete?q=${encodeURIComponent(this.query)}`;
+                    const res = await fetch(url, {
+                        headers: { 'Accept': 'application/json' },
+                        signal: this.abortController.signal
+                    });
+                    if (!res.ok) throw new Error('Search failed');
+                    const data = await res.json();
+                    this.products = data.products || [];
+                    this.collections = data.collections || [];
+                    this.viewAllUrl = data.view_all_url || `/${locale}/search?q=${encodeURIComponent(this.query)}`;
+                } catch (e) {
+                    if (e.name !== 'AbortError') console.error(e);
+                } finally {
+                    this.loading = false;
+                }
+            }
+        };
+    }
+    </script>
 </nav>

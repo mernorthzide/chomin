@@ -29,6 +29,9 @@ class User extends Authenticatable implements FilamentUser
         'password',
         'phone',
         'points',
+        'referral_code',
+        'referred_by_user_id',
+        'referral_credited_at',
     ];
 
     /**
@@ -50,8 +53,43 @@ class User extends Authenticatable implements FilamentUser
     {
         return [
             'email_verified_at' => 'datetime',
+            'referral_credited_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function ensureReferralCode(): string
+    {
+        if (! $this->referral_code) {
+            do {
+                $code = strtoupper(\Illuminate\Support\Str::random(8));
+            } while (static::where('referral_code', $code)->exists());
+            $this->forceFill(['referral_code' => $code])->save();
+        }
+
+        return $this->referral_code;
+    }
+
+    public function referrer()
+    {
+        return $this->belongsTo(self::class, 'referred_by_user_id');
+    }
+
+    public function referrals(): HasMany
+    {
+        return $this->hasMany(self::class, 'referred_by_user_id');
+    }
+
+    public function getLifetimeSpendAttribute(): float
+    {
+        return (float) $this->orders()
+            ->whereIn('status', ['paid', 'shipping', 'completed'])
+            ->sum('total');
+    }
+
+    public function getTierAttribute(): array
+    {
+        return \App\Services\TierService::resolve($this->lifetime_spend);
     }
 
     public function addresses(): HasMany

@@ -32,8 +32,11 @@ class OrderService
             $pointsToBaht = (int) SiteSetting::get('points_to_baht', 10);
             $pointsDiscount = $pointsUsed > 0 ? floor($pointsUsed / $pointsToBaht) : 0;
 
+            $giftWrap = (bool) ($data['gift_wrap'] ?? false);
+            $giftWrapFee = $giftWrap ? (float) SiteSetting::get('gift_wrap_fee', 50) : 0;
+
             $discount = $couponDiscount + $pointsDiscount;
-            $preGiftCardTotal = max(0, $subtotal - $discount + $shippingFee);
+            $preGiftCardTotal = max(0, $subtotal - $discount + $shippingFee + $giftWrapFee);
             $giftCards = app(GiftCardService::class)->resolveRedeemableCards($giftCardCodes);
             $giftCardDiscount = min($preGiftCardTotal, (float) $giftCards->sum(fn ($card) => (float) $card->balance));
             $total = max(0, $preGiftCardTotal - $giftCardDiscount);
@@ -56,6 +59,11 @@ class OrderService
                 'shipping_province' => $data['shipping_province'],
                 'shipping_postal_code' => $data['shipping_postal_code'],
                 'note' => $data['note'] ?? null,
+                'gift_wrap' => $giftWrap,
+                'gift_wrap_fee' => $giftWrapFee,
+                'gift_message_to' => $data['gift_message_to'] ?? null,
+                'gift_message_from' => $data['gift_message_from'] ?? null,
+                'gift_message' => $data['gift_message'] ?? null,
             ]);
 
             foreach ($cart->items as $item) {

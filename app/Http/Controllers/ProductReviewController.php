@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\ProductReview;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductReviewController extends Controller
 {
@@ -18,6 +19,8 @@ class ProductReviewController extends Controller
             'body' => ['nullable', 'string', 'max:2000'],
             'name' => ['required_without:user_id', 'nullable', 'string', 'max:120'],
             'email' => ['required_without:user_id', 'nullable', 'email', 'max:160'],
+            'photos' => ['nullable', 'array', 'max:4'],
+            'photos.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ]);
 
         $user = $request->user();
@@ -29,6 +32,13 @@ class ProductReviewController extends Controller
             ->latest()
             ->first() : null;
 
+        $photoPaths = [];
+        if ($request->hasFile('photos')) {
+            foreach ($request->file('photos') as $photo) {
+                $photoPaths[] = $photo->store('reviews/'.$product->id, 'public');
+            }
+        }
+
         ProductReview::create([
             'product_id' => $product->id,
             'user_id' => $user?->id,
@@ -38,6 +48,7 @@ class ProductReviewController extends Controller
             'rating' => $data['rating'],
             'title' => $data['title'] ?? null,
             'body' => $data['body'] ?? null,
+            'photos' => $photoPaths ?: null,
             'is_verified_purchase' => (bool) $verifiedOrder,
             'status' => 'pending',
         ]);

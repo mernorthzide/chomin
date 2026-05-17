@@ -8,6 +8,9 @@
     ]);
     $total = $reviews->count();
     $isEn = app()->getLocale() === 'en';
+    $photoGallery = $reviews
+        ->flatMap(fn ($r) => collect($r->photos ?? [])->map(fn ($p) => ['path' => $p, 'review' => $r]))
+        ->take(8);
 @endphp
 
 <section id="reviews" class="border-t border-brand-gray-border bg-white py-12 md:py-16">
@@ -61,6 +64,40 @@
 
             {{-- Review list --}}
             <div class="md:col-span-2">
+                {{-- UGC photo gallery (above reviews) --}}
+                @if($photoGallery->isNotEmpty())
+                    <div x-data="{ lightbox: null }" class="mb-6">
+                        <p class="text-[11px] uppercase tracking-[0.14em] text-brand-gray-light mb-3">
+                            {{ $isEn ? 'From real customers' : 'รูปจริงจากลูกค้า' }}
+                        </p>
+                        <div class="grid grid-cols-4 gap-2 md:grid-cols-8">
+                            @foreach($photoGallery as $photo)
+                                <button type="button"
+                                        @click="lightbox = '{{ Storage::url($photo['path']) }}'"
+                                        class="aspect-square overflow-hidden bg-brand-gray hover:opacity-80">
+                                    <img src="{{ Storage::url($photo['path']) }}"
+                                         alt="Customer photo"
+                                         class="w-full h-full object-cover"
+                                         loading="lazy">
+                                </button>
+                            @endforeach
+                        </div>
+                        <div x-show="lightbox" x-cloak
+                             @click="lightbox = null"
+                             @keydown.escape.window="lightbox = null"
+                             class="fixed inset-0 z-[80] flex items-center justify-center bg-black/90 p-6"
+                             x-transition.opacity>
+                            <img :src="lightbox" alt="Customer photo" class="max-h-[90vh] max-w-[90vw] object-contain">
+                            <button type="button" @click.stop="lightbox = null"
+                                    class="absolute right-4 top-4 text-white">
+                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                @endif
+
                 @forelse($reviews as $review)
                     <article class="border-b border-brand-gray-border py-5 first:pt-0">
                         <header class="flex items-start justify-between gap-4">
@@ -85,6 +122,16 @@
                         @if($review->body)
                             <p class="mt-3 text-sm leading-relaxed text-brand-gray-dark whitespace-pre-line">{{ $review->body }}</p>
                         @endif
+                        @if(!empty($review->photos))
+                            <div class="mt-3 flex gap-2 flex-wrap">
+                                @foreach($review->photos as $photo)
+                                    <a href="{{ Storage::url($photo) }}" target="_blank" rel="noopener"
+                                       class="w-20 h-20 overflow-hidden bg-brand-gray block">
+                                        <img src="{{ Storage::url($photo) }}" alt="" class="w-full h-full object-cover" loading="lazy">
+                                    </a>
+                                @endforeach
+                            </div>
+                        @endif
                         <footer class="mt-3 text-[11px] uppercase tracking-[0.12em] text-brand-gray-light">
                             {{ $review->name ?: ($isEn ? 'Customer' : 'ลูกค้า') }} · {{ $review->created_at->isoFormat('LL') }}
                         </footer>
@@ -104,7 +151,7 @@
         {{-- Review form --}}
         <div x-data="{ open: false }" @open-review-form.window="open = true" class="mt-8">
             <div x-show="open" x-cloak x-transition class="border border-brand-gray-border bg-white p-6 md:p-8">
-                <form method="POST" action="{{ route('products.reviews.store', $product->slug) }}" class="space-y-4">
+                <form method="POST" action="{{ route('products.reviews.store', $product->slug) }}" enctype="multipart/form-data" class="space-y-4">
                     @csrf
                     <div>
                         <label class="text-[11px] uppercase tracking-[0.14em] text-brand-gray-light">{{ $isEn ? 'Rating' : 'ให้คะแนน' }}</label>
@@ -134,6 +181,14 @@
                     <div>
                         <label class="text-[11px] uppercase tracking-[0.14em] text-brand-gray-light">{{ $isEn ? 'Your review' : 'รายละเอียดรีวิว' }}</label>
                         <textarea name="body" rows="4" maxlength="2000" class="mt-1 w-full border border-brand-gray-border px-3 py-2 text-sm"></textarea>
+                    </div>
+                    <div>
+                        <label class="text-[11px] uppercase tracking-[0.14em] text-brand-gray-light">
+                            {{ $isEn ? 'Photos (optional, up to 4)' : 'รูปภาพ (ถ้ามี ไม่เกิน 4 รูป)' }}
+                        </label>
+                        <input type="file" name="photos[]" multiple accept="image/jpeg,image/png,image/webp"
+                               class="mt-1 w-full border border-brand-gray-border px-3 py-2 text-xs file:mr-3 file:border-0 file:bg-brand-black file:text-white file:px-3 file:py-1 file:text-[11px] file:uppercase">
+                        <p class="mt-1 text-[10px] text-brand-gray-light">{{ $isEn ? 'JPG, PNG or WEBP, max 4MB each.' : 'รับไฟล์ JPG/PNG/WEBP ขนาดไม่เกิน 4MB ต่อรูป' }}</p>
                     </div>
                     <div class="flex gap-3">
                         <button type="submit" class="bg-brand-black px-5 py-2.5 text-xs uppercase tracking-[0.16em] text-white">

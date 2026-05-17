@@ -74,12 +74,20 @@ Route::prefix('{locale}')
         // Public shared wishlist (no auth required)
         Route::get('/wishlists/shared/{token}', [WishlistController::class, 'shared'])->name('wishlists.shared');
 
+        // Referral capture (cookie-based, no auth)
+        Route::get('/r/{code}', [\App\Http\Controllers\ReferralController::class, 'capture'])
+            ->where('code', '[A-Z0-9]{6,12}')
+            ->name('referral.capture');
+
         // Shipping calculator + Thai postal lookup
         Route::get('/shipping/lookup', [ShippingController::class, 'lookup'])
             ->middleware('throttle:30,1')
             ->name('shipping.lookup');
         Route::get('/about', AboutController::class)->name('about');
         Route::get('/search', SearchController::class)->name('search');
+        Route::get('/search/autocomplete', [SearchController::class, 'autocomplete'])
+            ->middleware('throttle:60,1')
+            ->name('search.autocomplete');
         Route::get('/sale', SaleController::class)->name('sale');
         Route::get('/color-library', ColorLibraryController::class)->name('color-library');
         Route::get('/faq', FaqController::class)->name('faq');
@@ -87,11 +95,17 @@ Route::prefix('{locale}')
         Route::get('/stories', [StoryController::class, 'index'])->name('stories.index');
         Route::get('/stories/{story:slug}', [StoryController::class, 'show'])->name('stories.show');
 
-        foreach (['privacy', 'terms', 'shipping', 'returns', 'size-guide', 'member', 'gift-cards', 'contact', 'careers', 'partnerships', 'wholesale'] as $pageSlug) {
+        foreach (['privacy', 'terms', 'shipping', 'returns', 'size-guide', 'member', 'contact', 'careers', 'partnerships', 'wholesale'] as $pageSlug) {
             Route::get("/{$pageSlug}", [ContentPageController::class, 'show'])
                 ->defaults('slug', $pageSlug)
                 ->name("pages.{$pageSlug}");
         }
+
+        // Gift card storefront (replaces content-page version)
+        Route::get('/gift-cards', [\App\Http\Controllers\GiftCardPurchaseController::class, 'index'])->name('pages.gift-cards');
+        Route::post('/gift-cards', [\App\Http\Controllers\GiftCardPurchaseController::class, 'store'])
+            ->middleware('throttle:5,1')
+            ->name('gift-cards.store');
 
         Route::post('/newsletter', [NewsletterController::class, 'store'])
             ->middleware('throttle:6,1')
@@ -133,6 +147,16 @@ Route::prefix('{locale}')
             // Order history
             Route::get('/orders', [OrderHistoryController::class, 'index'])->name('orders.index');
             Route::get('/orders/{order}', [OrderHistoryController::class, 'show'])->name('orders.show');
+
+            // Referral dashboard
+            Route::get('/referrals', [\App\Http\Controllers\ReferralController::class, 'index'])->name('referrals.index');
+
+            // Returns / Exchanges (customer dashboard — path differs from /returns content page)
+            Route::get('/my-returns', [\App\Http\Controllers\OrderReturnController::class, 'index'])->name('returns.index');
+            Route::get('/my-returns/{return}', [\App\Http\Controllers\OrderReturnController::class, 'show'])->name('returns.show');
+            Route::post('/my-returns/{return}/cancel', [\App\Http\Controllers\OrderReturnController::class, 'cancel'])->name('returns.cancel');
+            Route::get('/orders/{order}/returns/create', [\App\Http\Controllers\OrderReturnController::class, 'create'])->name('returns.create');
+            Route::post('/orders/{order}/returns', [\App\Http\Controllers\OrderReturnController::class, 'store'])->name('returns.store');
 
             // Wishlist
             Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');

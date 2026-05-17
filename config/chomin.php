@@ -23,6 +23,12 @@ return [
         ],
     ],
 
+    'social' => [
+        'instagram_handle' => env('CHOMIN_IG_HANDLE', 'chomin.th'),
+        'instagram_url' => env('CHOMIN_IG_URL', 'https://www.instagram.com/chomin.th/'),
+        'instagram_token' => env('CHOMIN_IG_TOKEN'),
+    ],
+
     'custom_options' => [
         'collar' => [
             'label' => 'คอเสื้อ',

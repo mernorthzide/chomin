@@ -262,6 +262,22 @@
                     </div>
                 @endif
 
+                {{-- Request return / exchange --}}
+                @if(\App\Http\Controllers\OrderReturnController::isEligible($order))
+                    <div class="bg-white border border-brand-gray-border p-6">
+                        <h3 class="text-xs font-medium tracking-widest uppercase text-brand-black mb-2">
+                            {{ app()->getLocale() === 'en' ? 'Return or exchange' : 'คืน / เปลี่ยนสินค้า' }}
+                        </h3>
+                        <p class="text-xs text-brand-gray-medium mb-4">
+                            {{ app()->getLocale() === 'en' ? 'Within 30 days of delivery.' : 'ภายใน 30 วันนับจากวันที่จัดส่ง' }}
+                        </p>
+                        <a href="{{ route('returns.create', ['locale' => app()->getLocale(), 'order' => $order->id]) }}"
+                           class="inline-block border border-brand-black px-5 py-2 text-xs uppercase tracking-[0.16em] hover:bg-brand-black hover:text-white">
+                            {{ app()->getLocale() === 'en' ? 'Request return' : 'แจ้งคืน / เปลี่ยน' }}
+                        </a>
+                    </div>
+                @endif
+
                 {{-- Upload Slip --}}
                 @if(in_array($order->status, ['pending', 'awaiting_payment']))
                     <div class="bg-white border border-brand-gray-border p-6">

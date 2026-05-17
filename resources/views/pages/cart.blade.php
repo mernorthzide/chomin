@@ -278,4 +278,6 @@
 
     </div>
 
+    <x-recently-viewed />
+
 </x-layouts.shop>

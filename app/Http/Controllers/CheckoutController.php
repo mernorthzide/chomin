@@ -5,6 +5,7 @@ use App\Mail\NewOrderNotification;
 use App\Mail\OrderCreated;
 use App\Models\Coupon;
 use App\Models\SiteSetting;
+use App\Http\Controllers\ReferralController;
 use App\Services\AbandonedCartTracker;
 use App\Services\CartService;
 use App\Services\GiftCardService;
@@ -43,6 +44,10 @@ class CheckoutController extends Controller
             'points_used' => 'nullable|integer|min:0',
             'gift_card_codes' => 'nullable|array',
             'gift_card_codes.*' => 'nullable|string|max:80',
+            'gift_wrap' => 'nullable|boolean',
+            'gift_message_to' => 'nullable|string|max:120',
+            'gift_message_from' => 'nullable|string|max:120',
+            'gift_message' => 'nullable|string|max:500',
         ]);
 
         $cart = $this->cartService->getCart();
@@ -63,7 +68,7 @@ class CheckoutController extends Controller
         $pointsUsed = min($request->points_used ?? 0, auth()->user()->points);
 
         $order = $this->orderService->createOrder(
-            $request->only(['shipping_name', 'shipping_phone', 'shipping_address', 'shipping_district', 'shipping_province', 'shipping_postal_code', 'note']),
+            $request->only(['shipping_name', 'shipping_phone', 'shipping_address', 'shipping_district', 'shipping_province', 'shipping_postal_code', 'note', 'gift_wrap', 'gift_message_to', 'gift_message_from', 'gift_message']),
             $cart, $coupon, $pointsUsed, $giftCardCodes,
         );
 
@@ -75,6 +80,9 @@ class CheckoutController extends Controller
 
         // Mark abandoned cart as recovered
         $this->abandonedCartTracker->markRecovered($cart);
+
+        // Credit referral bonus on the customer's first successful order
+        ReferralController::creditFirstOrder($order->user);
 
         return redirect()->route('checkout.success', $order)->with('success', 'สั่งซื้อสำเร็จ');
     }

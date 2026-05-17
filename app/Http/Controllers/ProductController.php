@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Services\RecommendationService;
 use App\Support\Seo;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+    public function __construct(private RecommendationService $recommendations) {}
+
     public function quickview(string $locale, Product $product): JsonResponse
     {
         abort_unless($product->is_active, 404);
@@ -115,6 +118,12 @@ class ProductController extends Controller
                 ->get();
         }
 
+        // Frequently bought together (collaborative filtering from orders)
+        $frequentlyBought = $this->recommendations->frequentlyBoughtTogether($product->id, 3);
+
+        // Customers also bought
+        $customersAlsoBought = $this->recommendations->customersAlsoBought($product->id, 6);
+
         // Track recently-viewed in session (max 12, dedup)
         $this->trackRecentlyViewed($product->id);
 
@@ -151,7 +160,7 @@ class ProductController extends Controller
 
         $ogType = 'product';
 
-        return view('pages.products.show', compact('product', 'related', 'completeTheLook', 'title', 'description', 'ogImage', 'inWishlist', 'jsonLd', 'ogType'));
+        return view('pages.products.show', compact('product', 'related', 'completeTheLook', 'frequentlyBought', 'customersAlsoBought', 'title', 'description', 'ogImage', 'inWishlist', 'jsonLd', 'ogType'));
     }
 
     private function trackRecentlyViewed(int $productId): void

@@ -15,10 +15,12 @@ class Order extends Model
         'shipping_name', 'shipping_phone', 'shipping_address', 'shipping_district',
         'shipping_province', 'shipping_postal_code',
         'tracking_number', 'carrier_name', 'shipped_at', 'completed_at', 'cancelled_at', 'note',
+        'gift_wrap', 'gift_wrap_fee', 'gift_message_to', 'gift_message_from', 'gift_message',
     ];
     protected $casts = [
         'subtotal' => 'decimal:2', 'shipping_fee' => 'decimal:2', 'discount' => 'decimal:2',
         'gift_card_discount' => 'decimal:2', 'total' => 'decimal:2',
+        'gift_wrap' => 'boolean', 'gift_wrap_fee' => 'decimal:2',
         'shipped_at' => 'datetime', 'completed_at' => 'datetime', 'cancelled_at' => 'datetime',
     ];
 

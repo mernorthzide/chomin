@@ -45,7 +45,7 @@
                         </div>
                         <template x-if="product.images.length > 1">
                             <div class="flex gap-2 overflow-x-auto p-3">
-                                <template x-for="(img, i) in product.images" :key="i">
+                                <template x-for="(img, i) in product.images" :key="img">
                                     <button type="button" @click="activeImage = i"
                                             class="h-16 w-12 flex-shrink-0 overflow-hidden border"
                                             :class="activeImage === i ? 'border-brand-black' : 'border-brand-gray-border'">

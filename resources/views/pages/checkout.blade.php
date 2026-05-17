@@ -225,6 +225,54 @@
                             </div>
 
                         </div>
+
+                        {{-- Gift Wrapping --}}
+                        @php $giftWrapFee = (int) \App\Models\SiteSetting::get('gift_wrap_fee', 50); @endphp
+                        <div class="mt-6 border-t border-brand-gray-border pt-6"
+                             x-data="{ giftWrap: {{ old('gift_wrap') ? 'true' : 'false' }} }">
+                            <label class="flex items-start gap-3 cursor-pointer">
+                                <input type="checkbox" name="gift_wrap" value="1" x-model="giftWrap"
+                                       class="mt-1 accent-brand-black h-4 w-4">
+                                <span class="flex-1">
+                                    <span class="block text-sm font-medium">
+                                        {{ app()->getLocale() === 'en' ? 'Gift wrap this order' : 'ห่อของขวัญ' }}
+                                        <span class="text-xs text-brand-gray-medium">(+฿{{ number_format($giftWrapFee, 0) }})</span>
+                                    </span>
+                                    <span class="block text-xs text-brand-gray-light mt-0.5">
+                                        {{ app()->getLocale() === 'en' ? 'Cotton wrap, ribbon, and handwritten card.' : 'ห่อด้วยผ้าฝ้าย ผูกริบบิ้น พร้อมการ์ดเขียนมือ' }}
+                                    </span>
+                                </span>
+                            </label>
+
+                            <div x-show="giftWrap" x-cloak x-transition class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs uppercase tracking-wide text-brand-gray-light mb-1">
+                                        {{ app()->getLocale() === 'en' ? 'To' : 'ถึง' }}
+                                    </label>
+                                    <input type="text" name="gift_message_to" maxlength="120"
+                                           value="{{ old('gift_message_to') }}"
+                                           placeholder="{{ app()->getLocale() === 'en' ? 'Recipient name' : 'ชื่อผู้รับ' }}"
+                                           class="w-full border border-brand-gray-border px-3 py-2 text-sm focus:outline-none focus:border-brand-black">
+                                </div>
+                                <div>
+                                    <label class="block text-xs uppercase tracking-wide text-brand-gray-light mb-1">
+                                        {{ app()->getLocale() === 'en' ? 'From' : 'จาก' }}
+                                    </label>
+                                    <input type="text" name="gift_message_from" maxlength="120"
+                                           value="{{ old('gift_message_from') }}"
+                                           placeholder="{{ app()->getLocale() === 'en' ? 'Your name' : 'ชื่อผู้ส่ง' }}"
+                                           class="w-full border border-brand-gray-border px-3 py-2 text-sm focus:outline-none focus:border-brand-black">
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <label class="block text-xs uppercase tracking-wide text-brand-gray-light mb-1">
+                                        {{ app()->getLocale() === 'en' ? 'Card message' : 'ข้อความบนการ์ด' }}
+                                    </label>
+                                    <textarea name="gift_message" rows="3" maxlength="500"
+                                              placeholder="{{ app()->getLocale() === 'en' ? 'Write a short message…' : 'เขียนข้อความสั้น ๆ…' }}"
+                                              class="w-full border border-brand-gray-border px-3 py-2 text-sm focus:outline-none focus:border-brand-black resize-none">{{ old('gift_message') }}</textarea>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {{-- Coupon & Points Summary (mobile) --}}
@@ -303,7 +351,7 @@
                             <label class="block text-xs font-medium tracking-widest uppercase text-brand-gray-dark mb-3">
                                 Gift Card
                             </label>
-                            <template x-for="(code, index) in giftCardCodes" :key="index">
+                            <template x-for="(code, index) in giftCardCodes" :key="'gc-'+index">
                                 <div class="flex gap-2 mb-2">
                                     <input type="text"
                                            :name="`gift_card_codes[${index}]`"
