@@ -68,7 +68,7 @@ class NewsletterController extends Controller
 
         return Coupon::create([
             'code' => $code,
-            'type' => 'percentage',
+            'type' => 'percent',
             'value' => (int) config('chomin.newsletter.discount_percent', 10),
             'max_discount' => (float) config('chomin.newsletter.discount_max', 300),
             'min_order_amount' => 0,

@@ -43,10 +43,9 @@
                         Design Your Own Shirt
                     </h1>
                     <div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs uppercase tracking-[0.14em] text-brand-gray-dark">
-                        <span>Special ฿999</span>
-                        <span>DuoDeal ฿1,850</span>
+                        <span>฿999</span>
                         <span>50+ สี</span>
-                        <span>XS-6XL</span>
+                        <span>XS&ndash;6XL</span>
                     </div>
                 </div>
 
@@ -96,8 +95,7 @@
             </div>
             <div class="xl:col-span-4 grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-1 border-t xl:border-t-0 xl:border-l border-brand-gray-border">
                 <a href="{{ route('color-library') }}" class="p-6 md:p-7 border-b sm:border-b-0 sm:border-r xl:border-r-0 xl:border-b border-brand-gray-border group">
-                    <span class="block text-4xl font-serif leading-none">50+</span>
-                    <h3 class="mt-4 text-xs uppercase tracking-[0.14em]">สีให้เลือก</h3>
+                    <h3 class="text-xs uppercase tracking-[0.14em]">สีให้เลือกกว่า 50 เฉด</h3>
                     <p class="mt-3 text-sm text-brand-gray-medium leading-relaxed">เลือกโทนทำงาน คลาสสิก หรือสีชัดสำหรับวันพิเศษ</p>
                     @if($heroColors->isNotEmpty())
                         <div class="mt-5 flex flex-wrap gap-1.5">
@@ -110,43 +108,14 @@
                     @endif
                 </a>
                 <a href="{{ route('pages.size-guide') }}" class="p-6 md:p-7 border-b sm:border-b-0 sm:border-r xl:border-r-0 xl:border-b border-brand-gray-border group">
-                    <span class="block text-4xl font-serif leading-none">XS-6XL</span>
-                    <h3 class="mt-4 text-xs uppercase tracking-[0.14em]">ไซส์ครอบคลุม</h3>
+                    <h3 class="text-xs uppercase tracking-[0.14em]">ไซส์ XS&ndash;6XL</h3>
                     <p class="mt-3 text-sm text-brand-gray-medium leading-relaxed">ทำให้การหาเชิ้ตพอดีตัวง่ายขึ้น ตั้งแต่ตัวเล็กถึงพลัสไซส์</p>
                 </a>
                 <a href="{{ route('pages.member') }}" class="p-6 md:p-7 group">
-                    <span class="block text-4xl font-serif leading-none">3</span>
-                    <h3 class="mt-4 text-xs uppercase tracking-[0.14em]">รายละเอียดที่เลือกได้</h3>
-                    <p class="mt-3 text-sm text-brand-gray-medium leading-relaxed">เลือกคอเสื้อ ปลายแขน และกระเป๋าให้เข้ากับการใช้งาน</p>
+                    <h3 class="text-xs uppercase tracking-[0.14em]">เลือกคอ ปลายแขน กระเป๋า</h3>
+                    <p class="mt-3 text-sm text-brand-gray-medium leading-relaxed">เลือกรายละเอียดทั้งสามจุดให้เข้ากับการใช้งาน</p>
                 </a>
             </div>
-        </div>
-    </section>
-
-    <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 border-b border-brand-gray-border bg-white" aria-label="Facebook campaign offers">
-        <div class="border-b md:border-r border-brand-gray-border">
-            <img src="{{ $campaignImages['duoBox'] }}"
-                 alt="CHO.MIN DuoDeal gift-ready shirts"
-                 class="h-full min-h-[320px] w-full object-cover"
-                 loading="lazy">
-        </div>
-        <div class="px-6 md:px-10 py-12 md:py-16 border-b xl:border-r border-brand-gray-border">
-            <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-5">Special Price</p>
-            <h2 class="font-serif uppercase leading-none text-5xl md:text-7xl">999</h2>
-            <p class="mt-5 text-sm text-brand-gray-dark leading-relaxed">จากราคาเต็ม 1,790 บาท สำหรับ CM Classic Custom Shirt เลือกสี ไซส์ และรายละเอียดได้ครบ</p>
-            <a href="{{ route('shop.index') }}" class="mt-8 inline-block text-xs uppercase tracking-[0.16em] border-b border-brand-black pb-1">Shop special</a>
-        </div>
-        <div class="border-b md:border-b-0 md:border-r border-brand-gray-border">
-            <img src="{{ $campaignImages['careStudio'] }}"
-                 alt="CHO.MIN shirt care studio"
-                 class="h-full min-h-[320px] w-full object-cover"
-                 loading="lazy">
-        </div>
-        <div class="px-6 md:px-10 py-12 md:py-16 bg-brand-black text-white">
-            <p class="text-xs uppercase tracking-[0.18em] text-white/50 mb-5">DuoDeal</p>
-            <h2 class="font-serif uppercase leading-none text-4xl md:text-6xl">2 shirts<br>1,850</h2>
-            <p class="mt-5 text-sm text-white/70 leading-relaxed">โปรคู่สุดคุ้มสำหรับเติมเชิ้ตคุณภาพเข้าตู้ เสื้อเนื้อนุ่ม ใส่สบาย เหมาะทั้งใช้เองและเป็นของขวัญ</p>
-            <a href="https://line.me/R/ti/p/@chomin.th" target="_blank" rel="noopener" class="mt-8 inline-block text-xs uppercase tracking-[0.16em] border-b border-white pb-1">LINE @chomin.th</a>
         </div>
     </section>
 

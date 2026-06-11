@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Coupon;
 use App\Services\AbandonedCartTracker;
 use App\Services\CartService;
 use Illuminate\Http\Request;
@@ -44,6 +45,43 @@ class CartController extends Controller
         $this->abandonedCartTracker->capture($this->cartService->getCart());
 
         return back()->with('success', 'เพิ่มสินค้าลงตะกร้าแล้ว');
+    }
+
+    public function validateCoupon(Request $request, string $locale)
+    {
+        $data = $request->validate([
+            'coupon_code' => ['required', 'string', 'max:80'],
+        ]);
+
+        $cart = $this->cartService->getCart();
+        $cart->loadMissing('items.product');
+        $code = trim($data['coupon_code']);
+
+        if ($cart->items->isEmpty()) {
+            return response()->json([
+                'ok' => false,
+                'message' => $locale === 'en' ? 'Your cart is empty.' : 'ตะกร้าของคุณว่างเปล่า',
+            ], 422);
+        }
+
+        $coupon = Coupon::where('code', $code)->first();
+
+        if (! $coupon || ! $coupon->isValid($cart->subtotal)) {
+            return response()->json([
+                'ok' => false,
+                'message' => $locale === 'en' ? 'This coupon is not valid for your cart.' : 'คูปองไม่ถูกต้องหรือไม่เข้าเงื่อนไข',
+            ], 422);
+        }
+
+        $discount = $coupon->calculateDiscount((float) $cart->subtotal);
+
+        return response()->json([
+            'ok' => true,
+            'code' => $coupon->code,
+            'discount' => $discount,
+            'formatted_discount' => '฿'.number_format($discount, 0),
+            'message' => $locale === 'en' ? 'Coupon applied.' : 'ใช้คูปองได้',
+        ]);
     }
 
     public function update(Request $request, string $locale, int $itemId)

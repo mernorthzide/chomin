@@ -83,6 +83,7 @@
                     $minSelected = (int) request('min_price', $minBound);
                     $maxSelected = (int) request('max_price', $maxBound);
                 @endphp
+                @if($minBound < $maxBound)
                 <div class="filter-field" x-data="{
                     min: {{ $minSelected }},
                     max: {{ $maxSelected }},
@@ -109,6 +110,7 @@
                         </button>
                     </div>
                 </div>
+                @endif
 
                 <div class="col-span-2 text-xs uppercase tracking-[0.14em] text-brand-gray-light md:ml-auto md:col-span-1">
                     {{ $products->total() }} รายการ

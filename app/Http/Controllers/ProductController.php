@@ -32,6 +32,8 @@ class ProductController extends Controller
         }
 
         $colors = $product->colors->map(fn ($c) => [
+            'id' => $c->id,
+            'key' => $c->slug ?: 'color-'.$c->id,
             'name' => $c->localized_name ?? $c->name,
             'slug' => $c->slug,
             'code' => $c->color_code,

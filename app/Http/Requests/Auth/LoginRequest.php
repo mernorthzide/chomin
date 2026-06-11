@@ -20,6 +20,11 @@ class LoginRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        app()->setLocale(config('chomin.locales.default', 'th'));
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *

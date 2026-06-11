@@ -113,7 +113,8 @@
                                             @method('DELETE')
                                             <button type="submit"
                                                     class="text-brand-gray-medium hover:text-red-500 transition-colors duration-200"
-                                                    title="ลบสินค้า">
+                                                    title="ลบสินค้า"
+                                                    aria-label="ลบ {{ $item->product->localized_name }} ออกจากตะกร้า">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                                                 </svg>
@@ -129,6 +130,7 @@
                                             <div class="flex items-center border border-brand-gray-border">
                                                 <button type="button"
                                                         @click="qty = Math.max(1, qty - 1)"
+                                                        aria-label="ลดจำนวน {{ $item->product->localized_name }}"
                                                         class="w-8 h-8 flex items-center justify-center text-brand-gray-dark hover:bg-brand-gray transition-colors duration-150">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" />
@@ -141,6 +143,7 @@
                                                        class="w-10 h-8 text-center border-x border-brand-gray-border text-sm text-brand-black focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none">
                                                 <button type="button"
                                                         @click="qty = Math.min({{ $item->variant->stock }}, qty + 1)"
+                                                        aria-label="เพิ่มจำนวน {{ $item->product->localized_name }}"
                                                         class="w-8 h-8 flex items-center justify-center text-brand-gray-dark hover:bg-brand-gray transition-colors duration-150">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
@@ -176,9 +179,69 @@
                 <div class="mt-10 lg:mt-0">
                     <div class="border border-brand-gray-border bg-white p-6 sticky top-28"
                          x-data="{
+                             subtotal: {{ (float) $cart->subtotal }},
                              couponCode: '',
+                             couponDiscount: 0,
+                             couponMessage: '',
+                             couponValid: false,
+                             couponStatus: null,
+                             validatingCoupon: false,
                              pointsUsed: 0,
                              maxPoints: {{ (int) (auth()->user()?->points ?? 0) }},
+                             pointsToBaht: {{ (int) \App\Models\SiteSetting::get('points_to_baht', 10) }},
+                             pointsDiscount() {
+                                 const points = Math.max(0, Math.min(Number(this.pointsUsed) || 0, this.maxPoints));
+                                 return Math.floor(points / Math.max(1, this.pointsToBaht));
+                             },
+                             total() {
+                                 return Math.max(0, this.subtotal - this.couponDiscount - this.pointsDiscount());
+                             },
+                             checkoutUrl() {
+                                 const params = new URLSearchParams();
+                                 if (this.couponValid && this.couponCode.trim()) params.set('coupon_code', this.couponCode.trim());
+                                 if ((Number(this.pointsUsed) || 0) > 0) params.set('points_used', Number(this.pointsUsed) || 0);
+                                 const query = params.toString();
+                                 return `{{ route('checkout.index') }}${query ? '?' + query : ''}`;
+                             },
+                             clearCoupon() {
+                                 this.couponDiscount = 0;
+                                 this.couponMessage = '';
+                                 this.couponValid = false;
+                                 this.couponStatus = null;
+                             },
+                             async validateCoupon() {
+                                 const code = this.couponCode.trim();
+                                 this.clearCoupon();
+                                 if (!code) return;
+                                 this.validatingCoupon = true;
+                                 try {
+                                     const csrf = document.querySelector('meta[name=csrf-token]')?.content;
+                                     const res = await fetch('{{ route('cart.coupon.validate') }}', {
+                                         method: 'POST',
+                                         headers: {
+                                             'Content-Type': 'application/json',
+                                             'Accept': 'application/json',
+                                             'X-CSRF-TOKEN': csrf,
+                                         },
+                                         body: JSON.stringify({ coupon_code: code }),
+                                     });
+                                     const data = await res.json().catch(() => ({}));
+                                     if (!res.ok) throw new Error(data.message || 'คูปองไม่ถูกต้อง');
+                                     this.couponCode = data.code || code;
+                                     this.couponDiscount = Number(data.discount) || 0;
+                                     this.couponMessage = data.message || 'ใช้คูปองได้';
+                                     this.couponStatus = 'success';
+                                     this.couponValid = true;
+                                 } catch (e) {
+                                     this.couponMessage = e.message || 'คูปองไม่ถูกต้อง';
+                                     this.couponStatus = 'error';
+                                 } finally {
+                                     this.validatingCoupon = false;
+                                 }
+                             },
+                             money(value) {
+                                 return '฿' + Math.round(Number(value) || 0).toLocaleString();
+                             },
                          }">
 
                         <h2 class="text-sm font-medium tracking-widest uppercase text-brand-black mb-6">
@@ -207,9 +270,21 @@
                             <div class="flex gap-2">
                                 <input type="text"
                                        x-model="couponCode"
+                                       @input="clearCoupon()"
                                        placeholder="ใส่รหัสคูปอง"
                                        class="flex-1 border border-brand-gray-border px-3 py-2 text-xs focus:outline-none focus:border-brand-black bg-white">
+                                <button type="button"
+                                        @click="validateCoupon()"
+                                        :disabled="validatingCoupon || !couponCode.trim()"
+                                        class="border border-brand-black px-4 py-2 text-xs uppercase tracking-[0.12em] text-brand-black disabled:cursor-not-allowed disabled:opacity-40 hover:bg-brand-black hover:text-white">
+                                    <span x-show="!validatingCoupon">ใช้</span>
+                                    <span x-show="validatingCoupon">...</span>
+                                </button>
                             </div>
+                            <p x-show="couponMessage" x-cloak
+                               class="mt-2 text-xs"
+                               :class="couponStatus === 'success' ? 'text-green-600' : 'text-red-600'"
+                               x-text="couponMessage"></p>
                         </div>
 
                         {{-- Points --}}
@@ -232,6 +307,21 @@
 
                         <div class="border-t border-brand-gray-border my-5"></div>
 
+                        <div class="mb-5 space-y-2 text-sm">
+                            <template x-if="couponDiscount > 0">
+                                <div class="flex justify-between text-green-600">
+                                    <span>ส่วนลดคูปอง</span>
+                                    <span x-text="'-' + money(couponDiscount)"></span>
+                                </div>
+                            </template>
+                            <template x-if="pointsDiscount() > 0">
+                                <div class="flex justify-between text-green-600">
+                                    <span>ส่วนลดแต้ม</span>
+                                    <span x-text="'-' + money(pointsDiscount())"></span>
+                                </div>
+                            </template>
+                        </div>
+
                         {{-- Shipping calculator --}}
                         <div class="mb-5">
                             <x-shipping-calculator :subtotal="$cart->subtotal" />
@@ -240,12 +330,12 @@
                         {{-- Total --}}
                         <div class="flex justify-between items-center mb-6">
                             <span class="text-sm font-medium text-brand-black">ยอดรวม</span>
-                            <span class="text-lg font-medium text-brand-black">฿{{ number_format($cart->subtotal, 0) }}</span>
+                            <span class="text-lg font-medium text-brand-black" x-text="money(total())">฿{{ number_format($cart->subtotal, 0) }}</span>
                         </div>
 
                         {{-- Checkout Button --}}
                         @auth
-                            <a :href="`{{ route('checkout.index') }}?coupon_code=${encodeURIComponent(couponCode)}&points_used=${pointsUsed}`"
+                            <a :href="checkoutUrl()"
                                class="block w-full py-4 text-center text-sm font-medium tracking-[0.15em] uppercase bg-brand-black text-white hover:bg-brand-gray-dark transition-colors duration-300">
                                 ดำเนินการสั่งซื้อ
                             </a>

@@ -16,6 +16,8 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
+        app()->setLocale(config('chomin.locales.default', 'th'));
+
         return view('auth.login');
     }
 
@@ -28,7 +30,9 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $redirect = $this->safeRedirectPath($request->input('redirect'));
+
+        return redirect()->intended($redirect ?? route('dashboard', absolute: false));
     }
 
     /**
@@ -42,6 +46,22 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/'.config('chomin.locales.default', 'th'));
+    }
+
+    private function safeRedirectPath(?string $redirect): ?string
+    {
+        if (! $redirect) {
+            return null;
+        }
+
+        $path = parse_url($redirect, PHP_URL_PATH);
+        if (! is_string($path) || ! str_starts_with($path, '/')) {
+            return null;
+        }
+
+        $query = parse_url($redirect, PHP_URL_QUERY);
+
+        return $path.($query ? '?'.$query : '');
     }
 }

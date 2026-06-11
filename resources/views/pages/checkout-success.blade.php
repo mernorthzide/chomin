@@ -262,7 +262,7 @@
                                             <p class="text-xs text-brand-gray-medium" x-text="fileName || 'คลิกเพื่อเลือกไฟล์สลิป'"></p>
                                             <p class="text-xs text-brand-gray-border mt-1">PNG, JPG ไม่เกิน 5MB</p>
                                         </div>
-                                        <input type="file" name="slip" accept="image/*" class="sr-only"
+                                        <input type="file" name="slip" accept="image/*" class="sr-only" required
                                                @change="fileName = $event.target.files[0]?.name || ''">
                                     </label>
                                 </div>

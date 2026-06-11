@@ -3,6 +3,7 @@
     <div
         x-data="productPage()"
         x-init="init()"
+        @select-recommended-size.window="selectSize($event.detail.size)"
         class="bg-white">
 
         @php
@@ -90,7 +91,7 @@
 
                     <!-- Thumbnail Row -->
                     <div class="flex gap-2 overflow-x-auto pb-1">
-                        <template x-for="(img, idx) in currentImages" :key="img">
+                        <template x-for="(img, idx) in currentImages" :key="'product-img-'+idx+'-'+img">
                             <button
                                 @click="activeImageIndex = idx"
                                 class="flex-shrink-0 w-16 h-20 overflow-hidden bg-brand-gray border-2 transition-colors duration-200"
@@ -117,33 +118,11 @@
                     </h1>
 
                     <!-- Price -->
-                    <div class="mt-3 flex items-baseline gap-3">
+                    <div class="mt-3">
                         <p class="text-xl font-normal text-brand-black">
                             ฿{{ number_format($product->display_price, 0) }}
                         </p>
-                        @if($product->is_on_sale)
-                            <p class="text-sm text-brand-gray-light line-through">
-                                ฿{{ number_format((float) $product->price, 0) }}
-                            </p>
-                        @endif
                     </div>
-
-                    <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 border border-brand-gray-border">
-                        <div class="p-4 border-b sm:border-b-0 sm:border-r border-brand-gray-border">
-                            <p class="text-[10px] uppercase tracking-[0.16em] text-brand-gray-light">Special Price</p>
-                            <p class="mt-2 text-sm text-brand-black">จาก 1,790 เหลือ 999 บาท</p>
-                        </div>
-                        <div class="p-4">
-                            <p class="text-[10px] uppercase tracking-[0.16em] text-brand-gray-light">DuoDeal</p>
-                            <p class="mt-2 text-sm text-brand-black">2 ตัว 1,850 บาท ผ่าน LINE</p>
-                        </div>
-                    </div>
-                    <a href="https://line.me/R/ti/p/@chomin.th"
-                       target="_blank"
-                       rel="noopener"
-                       class="mt-3 inline-flex min-h-11 items-center justify-center border border-brand-black px-5 text-xs uppercase tracking-[0.16em] hover:bg-brand-black hover:text-white">
-                        Chat LINE @chomin.th
-                    </a>
 
                     <!-- Divider -->
                     <div class="w-12 h-px bg-brand-gray-border my-6"></div>
@@ -393,8 +372,8 @@
                      class="h-72 w-full object-cover"
                      loading="lazy">
                 <div class="p-5">
-                    <p class="text-xs uppercase tracking-[0.16em] text-brand-gray-light">DuoDeal</p>
-                    <p class="mt-2 text-sm text-brand-gray-dark">2 ตัว 1,850 บาท สำหรับเติมสีใหม่เข้าตู้หรือซื้อคู่เป็นของขวัญ</p>
+                    <p class="text-xs uppercase tracking-[0.16em] text-brand-gray-light">Sizes XS&ndash;6XL</p>
+                    <p class="mt-2 text-sm text-brand-gray-dark">ไซส์ครอบคลุมตั้งแต่ XS ถึง 6XL เทียบสัดส่วนได้จากตารางไซส์</p>
                 </div>
             </article>
             <article>

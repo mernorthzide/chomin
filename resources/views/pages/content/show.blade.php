@@ -18,6 +18,12 @@
             </div>
 
             @if(in_array($page->slug, ['contact', 'careers', 'partnerships', 'wholesale'], true))
+                @if(session('success'))
+                    <div class="mt-10 border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700" role="status">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
                 <form method="POST" action="{{ route($page->slug === 'contact' ? 'contact.store' : $page->slug.'.store') }}" class="mt-12 space-y-5">
                     @csrf
                     <input type="text" name="company" class="hidden" tabindex="-1" autocomplete="off">

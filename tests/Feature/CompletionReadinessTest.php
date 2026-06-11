@@ -6,6 +6,7 @@ use App\Exports\TopProductsExport;
 use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Collection;
+use App\Models\Coupon;
 use App\Models\GiftCard;
 use App\Models\Order;
 use App\Models\Product;
@@ -16,6 +17,7 @@ use App\Models\ShippingSetting;
 use App\Models\SiteSetting;
 use App\Models\Story;
 use App\Models\User;
+use App\Models\Wishlist;
 use App\Services\PointsService;
 use Database\Seeders\AdminUserSeeder;
 use Database\Seeders\ContentSeeder;
@@ -153,6 +155,206 @@ class CompletionReadinessTest extends TestCase
             ->assertSee('action="'.route('wishlist.toggle').'"', false)
             ->assertSee('name="product_id"', false)
             ->assertSee('value="'.$product->id.'"', false);
+    }
+
+    public function test_newsletter_popup_creates_a_valid_percent_coupon(): void
+    {
+        Mail::fake();
+
+        $this->postJson('/th/newsletter', [
+            'email' => 'new-customer@example.com',
+            'source' => 'popup',
+            'with_coupon' => true,
+        ])
+            ->assertOk()
+            ->assertJson(['ok' => true]);
+
+        $this->assertDatabaseHas('coupons', [
+            'type' => 'percent',
+            'value' => 10,
+        ]);
+    }
+
+    public function test_checkout_invalid_coupon_returns_field_error_instead_of_debug_response(): void
+    {
+        $user = User::factory()->create(['points' => 0]);
+        $product = $this->createCatalogProduct(['price' => 1000]);
+        $variant = $product->variants()->firstOrFail();
+
+        $cart = Cart::create(['user_id' => $user->id]);
+        $cart->items()->create([
+            'product_id' => $product->id,
+            'product_variant_id' => $variant->id,
+            'quantity' => 1,
+        ]);
+
+        $this->actingAs($user)
+            ->from('/th/checkout?coupon_code=WELCOME10')
+            ->post('/th/checkout', [
+                'shipping_name' => 'Chomin Customer',
+                'shipping_phone' => '0812345678',
+                'shipping_address' => '1 Silom Road',
+                'shipping_district' => 'Bang Rak',
+                'shipping_province' => 'Bangkok',
+                'shipping_postal_code' => '10500',
+                'payment_method' => 'promptpay_slip',
+                'coupon_code' => 'WELCOME10',
+            ])
+            ->assertRedirect('/th/checkout?coupon_code=WELCOME10')
+            ->assertSessionHasErrors('coupon_code');
+    }
+
+    public function test_contact_form_shows_success_feedback_after_submission(): void
+    {
+        $this->seed(ContentSeeder::class);
+
+        $this->followingRedirects()
+            ->post('/th/contact', [
+                'name' => 'Playwright Audit',
+                'email' => 'audit@example.com',
+                'phone' => '0812345678',
+                'topic' => 'contact',
+                'message' => 'Please confirm this inquiry was received.',
+            ])
+            ->assertOk()
+            ->assertSee('รับข้อความเรียบร้อยแล้ว');
+    }
+
+    public function test_ineligible_order_return_redirects_with_feedback_instead_of_422(): void
+    {
+        $user = User::factory()->create();
+        $order = Order::create([
+            'user_id' => $user->id,
+            'order_number' => 'CHO-20260517-9001',
+            'status' => 'pending',
+            'subtotal' => 1000,
+            'shipping_fee' => 0,
+            'discount' => 0,
+            'gift_card_discount' => 0,
+            'total' => 1000,
+            'shipping_name' => 'Chomin Customer',
+            'shipping_phone' => '0812345678',
+            'shipping_address' => '1 Silom Road',
+            'shipping_district' => 'Bang Rak',
+            'shipping_province' => 'Bangkok',
+            'shipping_postal_code' => '10500',
+        ]);
+
+        $this->actingAs($user)
+            ->get("/th/orders/{$order->id}/returns/create")
+            ->assertRedirect('/th/my-returns')
+            ->assertSessionHas('flash');
+    }
+
+    public function test_wishlist_renders_sale_display_price_instead_of_original_price_only(): void
+    {
+        $user = User::factory()->create();
+        $product = $this->createCatalogProduct([
+            'name' => 'Sale Wishlist Shirt',
+            'slug' => 'sale-wishlist-shirt',
+            'price' => 1790,
+            'sale_price' => 999,
+        ]);
+        Wishlist::create([
+            'user_id' => $user->id,
+            'product_id' => $product->id,
+        ]);
+
+        $this->actingAs($user)
+            ->get('/th/wishlist')
+            ->assertOk()
+            ->assertSee('฿999')
+            ->assertSee('฿1,790');
+    }
+
+    public function test_cart_coupon_validation_endpoint_returns_live_discount(): void
+    {
+        $user = User::factory()->create();
+        $product = $this->createCatalogProduct(['price' => 1000]);
+        $variant = $product->variants()->firstOrFail();
+        Coupon::create([
+            'code' => 'LIVE10',
+            'type' => 'percent',
+            'value' => 10,
+            'min_order_amount' => 0,
+            'max_uses' => 10,
+            'used_count' => 0,
+            'starts_at' => now()->subDay(),
+            'expires_at' => now()->addDay(),
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($user)->post('/th/cart/add', [
+            'variant_id' => $variant->id,
+            'quantity' => 1,
+        ])->assertRedirect();
+
+        $this->actingAs($user)->postJson('/th/cart/coupon/validate', [
+            'coupon_code' => 'LIVE10',
+        ])
+            ->assertOk()
+            ->assertJson([
+                'ok' => true,
+                'code' => 'LIVE10',
+                'discount' => 100,
+            ]);
+    }
+
+    public function test_checkout_summary_receives_coupon_discount_for_live_total(): void
+    {
+        $user = User::factory()->create(['points' => 20]);
+        $product = $this->createCatalogProduct(['price' => 1000]);
+        $variant = $product->variants()->firstOrFail();
+        Cart::create(['user_id' => $user->id])->items()->create([
+            'product_id' => $product->id,
+            'product_variant_id' => $variant->id,
+            'quantity' => 1,
+        ]);
+        Coupon::create([
+            'code' => 'CHECKOUT10',
+            'type' => 'percent',
+            'value' => 10,
+            'min_order_amount' => 0,
+            'max_uses' => 10,
+            'used_count' => 0,
+            'starts_at' => now()->subDay(),
+            'expires_at' => now()->addDay(),
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($user)
+            ->get('/th/checkout?coupon_code=CHECKOUT10&points_used=20')
+            ->assertOk()
+            ->assertSee('couponDiscount: 100', false)
+            ->assertSee('pointsDiscount()', false)
+            ->assertSee('displayTotal()', false);
+    }
+
+    public function test_storefront_interaction_markup_covers_audit_fixes(): void
+    {
+        $layout = file_get_contents(base_path('resources/views/components/layouts/shop.blade.php'));
+        $flashToast = file_get_contents(base_path('resources/views/components/flash-toast.blade.php'));
+        $productCard = file_get_contents(base_path('resources/views/components/product-card.blade.php'));
+        $navbar = file_get_contents(base_path('resources/views/components/navbar.blade.php'));
+        $lineWidget = file_get_contents(base_path('resources/views/components/line-widget.blade.php'));
+        $checkout = file_get_contents(base_path('resources/views/pages/checkout.blade.php'));
+        $success = file_get_contents(base_path('resources/views/pages/checkout-success.blade.php'));
+        $sizeRecommender = file_get_contents(base_path('resources/views/components/size-recommender.blade.php'));
+        $productPage = file_get_contents(base_path('resources/views/pages/products/show.blade.php'));
+        $authTh = file_get_contents(base_path('lang/th/auth.php'));
+
+        $this->assertStringContainsString('<x-flash-toast />', $layout);
+        $this->assertStringContainsString("session('flash')", $flashToast);
+        $this->assertStringContainsString('<div x-data class="product-card-wrapper', $productCard);
+        $this->assertStringContainsString('lg:hidden', $navbar);
+        $this->assertStringContainsString('@close-mobile-menu.window', $navbar);
+        $this->assertStringContainsString('$dispatch(\'close-mobile-menu\')', $lineWidget);
+        $this->assertStringContainsString('displayTotal()', $checkout);
+        $this->assertStringContainsString("paymentMethod === 'cod'", $checkout);
+        $this->assertStringContainsString('class="sr-only" required', $success);
+        $this->assertStringContainsString('select-recommended-size', $sizeRecommender);
+        $this->assertStringContainsString('@select-recommended-size.window', $productPage);
+        $this->assertStringContainsString('อีเมลหรือรหัสผ่านไม่ถูกต้อง', $authTh);
     }
 
     public function test_product_page_uses_product_seo_metadata_and_open_graph_image(): void

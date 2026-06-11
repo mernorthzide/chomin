@@ -95,6 +95,7 @@ function sizeRecommender() {
             this.recommendedSize = sizes[baseIdx];
             const fitMap = { slim: '{{ $isEn ? "slim" : "ทรงพอดี" }}', regular: '{{ $isEn ? "regular" : "ทรงปกติ" }}', relaxed: '{{ $isEn ? "relaxed" : "ทรงหลวม" }}' };
             this.explanation = '{{ $isEn ? "Based on BMI " : "คำนวณจาก BMI " }}' + bmi.toFixed(1) + ' · ' + fitMap[this.fit];
+            this.$dispatch('select-recommended-size', { size: this.recommendedSize });
         }
     };
 }

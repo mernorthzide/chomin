@@ -133,6 +133,9 @@ Route::prefix('{locale}')
         // Cart routes (public)
         Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
         Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+        Route::post('/cart/coupon/validate', [CartController::class, 'validateCoupon'])
+            ->middleware('throttle:20,1')
+            ->name('cart.coupon.validate');
         Route::patch('/cart/{item}', [CartController::class, 'update'])->name('cart.update');
         Route::delete('/cart/{item}', [CartController::class, 'remove'])->name('cart.remove');
 

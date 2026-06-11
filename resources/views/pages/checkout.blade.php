@@ -26,6 +26,12 @@
 
         @php
             $defaultAddress = $addresses->firstWhere('is_default', true) ?? $addresses->first();
+            $giftWrapFee = (int) \App\Models\SiteSetting::get('gift_wrap_fee', 50);
+            $defaultPaymentMethod = collect(config('chomin.payment.methods', []))
+                ->filter(fn ($method) => $method['enabled'] ?? false)
+                ->keys()
+                ->first() ?? 'promptpay_slip';
+            $codFee = (float) config('chomin.payment.methods.cod.fee', 30);
             $customOptionGroups = config('chomin.custom_options');
             $customOptionLabel = function (?array $options) use ($customOptionGroups): array {
                 if (!$options) {
@@ -58,6 +64,27 @@
                   pointsUsed: {{ request('points_used', 0) }},
                   maxPoints: {{ (int) (auth()->user()?->points ?? 0) }},
                   giftCardCodes: [''],
+                  subtotal: {{ (float) $cart->subtotal }},
+                  giftWrap: {{ old('gift_wrap') ? 'true' : 'false' }},
+                  giftWrapFee: {{ $giftWrapFee }},
+                  paymentMethod: '{{ old('payment_method', $defaultPaymentMethod) }}',
+                  codFee: {{ $codFee }},
+                  couponDiscount: {{ (float) ($couponDiscount ?? 0) }},
+                  pointsToBaht: {{ (int) \App\Models\SiteSetting::get('points_to_baht', 10) }},
+                  pointsDiscount() {
+                      const points = Math.max(0, Math.min(Number(this.pointsUsed) || 0, this.maxPoints));
+                      return Math.floor(points / Math.max(1, this.pointsToBaht));
+                  },
+                  displayTotal() {
+                      return Math.max(0, this.subtotal
+                          - this.couponDiscount
+                          - this.pointsDiscount()
+                          + (this.giftWrap ? this.giftWrapFee : 0)
+                          + (this.paymentMethod === 'cod' ? this.codFee : 0));
+                  },
+                  money(value) {
+                      return '฿' + Math.round(Number(value) || 0).toLocaleString();
+                  },
 
                   init() {
                       if (!this.useNewAddress && this.selectedAddress) {
@@ -227,9 +254,7 @@
                         </div>
 
                         {{-- Gift Wrapping --}}
-                        @php $giftWrapFee = (int) \App\Models\SiteSetting::get('gift_wrap_fee', 50); @endphp
-                        <div class="mt-6 border-t border-brand-gray-border pt-6"
-                             x-data="{ giftWrap: {{ old('gift_wrap') ? 'true' : 'false' }} }">
+                        <div class="mt-6 border-t border-brand-gray-border pt-6">
                             <label class="flex items-start gap-3 cursor-pointer">
                                 <input type="checkbox" name="gift_wrap" value="1" x-model="giftWrap"
                                        class="mt-1 accent-brand-black h-4 w-4">
@@ -336,13 +361,25 @@
                             <template x-if="couponCode">
                                 <div class="flex justify-between text-green-600">
                                     <span>คูปอง: <span x-text="couponCode"></span></span>
-                                    <span>-</span>
+                                    <span x-text="couponDiscount > 0 ? '-' + money(couponDiscount) : '-'"></span>
                                 </div>
                             </template>
                             <template x-if="pointsUsed > 0">
                                 <div class="flex justify-between text-green-600">
                                     <span>แต้มสะสม (<span x-text="pointsUsed"></span> แต้ม)</span>
-                                    <span>-</span>
+                                    <span x-text="pointsDiscount() > 0 ? '-' + money(pointsDiscount()) : '-'"></span>
+                                </div>
+                            </template>
+                            <template x-if="giftWrap">
+                                <div class="flex justify-between">
+                                    <span class="text-brand-gray-medium">ห่อของขวัญ</span>
+                                    <span x-text="money(giftWrapFee)"></span>
+                                </div>
+                            </template>
+                            <template x-if="paymentMethod === 'cod'">
+                                <div class="flex justify-between">
+                                    <span class="text-brand-gray-medium">ค่าบริการ COD</span>
+                                    <span x-text="money(codFee)"></span>
                                 </div>
                             </template>
                         </div>
@@ -376,7 +413,7 @@
                         <div class="border-t border-brand-gray-border mt-4 pt-4">
                             <div class="flex justify-between font-medium">
                                 <span class="text-sm">ยอดรวม</span>
-                                <span class="text-lg">฿{{ number_format($cart->subtotal, 0) }}</span>
+                                <span class="text-lg" x-text="money(displayTotal())">฿{{ number_format($cart->subtotal, 0) }}</span>
                             </div>
                         </div>
 
@@ -389,12 +426,11 @@
                                 @foreach(config('chomin.payment.methods') as $key => $method)
                                     @if($method['enabled'])
                                         <label class="flex items-center gap-3 p-3 border cursor-pointer transition-colors duration-200"
-                                               x-data
-                                               :class="$el.querySelector('input').checked ? 'border-brand-black bg-white' : 'border-brand-gray-border hover:border-brand-gray-dark'">
+                                               :class="paymentMethod === '{{ $key }}' ? 'border-brand-black bg-white' : 'border-brand-gray-border hover:border-brand-gray-dark'">
                                             <input type="radio" name="payment_method" value="{{ $key }}"
-                                                   {{ $loop->first ? 'checked' : '' }}
-                                                   class="text-brand-black focus:ring-brand-black"
-                                                   @change="$el.closest('.space-y-2').querySelectorAll('label').forEach(l => l.classList.remove('border-brand-black', 'bg-white'));;$el.closest('label').classList.add('border-brand-black', 'bg-white')">
+                                                   x-model="paymentMethod"
+                                                   {{ old('payment_method', $defaultPaymentMethod) === $key ? 'checked' : '' }}
+                                                   class="text-brand-black focus:ring-brand-black">
                                             <div class="flex-1 min-w-0">
                                                 <span class="text-sm text-brand-black">
                                                     {{ app()->getLocale() === 'en' ? $method['label_en'] : $method['label_th'] }}

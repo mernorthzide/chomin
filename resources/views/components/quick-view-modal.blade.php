@@ -45,7 +45,7 @@
                         </div>
                         <template x-if="product.images.length > 1">
                             <div class="flex gap-2 overflow-x-auto p-3">
-                                <template x-for="(img, i) in product.images" :key="img">
+                                <template x-for="(img, i) in product.images" :key="'quick-img-'+i+'-'+img">
                                     <button type="button" @click="activeImage = i"
                                             class="h-16 w-12 flex-shrink-0 overflow-hidden border"
                                             :class="activeImage === i ? 'border-brand-black' : 'border-brand-gray-border'">
@@ -64,11 +64,8 @@
                             </template>
                             <h2 class="mt-2 font-serif text-2xl uppercase leading-tight" x-text="product.name"></h2>
 
-                            <div class="mt-3 flex items-baseline gap-3">
+                            <div class="mt-3">
                                 <span class="text-lg" x-text="'฿' + product.display_price.toLocaleString()"></span>
-                                <template x-if="product.is_on_sale">
-                                    <span class="text-sm text-brand-gray-light line-through" x-text="'฿' + product.price.toLocaleString()"></span>
-                                </template>
                             </div>
                         </div>
 
@@ -83,10 +80,10 @@
                                     {{ app()->getLocale() === 'en' ? 'Color' : 'สี' }}
                                 </p>
                                 <div class="mt-2 flex flex-wrap gap-2">
-                                    <template x-for="color in product.colors" :key="color.slug">
-                                        <button type="button" @click="selectedColor = color.slug"
+                                    <template x-for="color in product.colors" :key="color.key">
+                                        <button type="button" @click="selectedColor = color.key"
                                                 class="h-8 w-8 rounded-full border"
-                                                :class="selectedColor === color.slug ? 'border-brand-black ring-2 ring-brand-black ring-offset-2' : 'border-brand-gray-border'"
+                                                :class="selectedColor === color.key ? 'border-brand-black ring-2 ring-brand-black ring-offset-2' : 'border-brand-gray-border'"
                                                 :style="`background-color: ${color.code || '#eeeeee'}`"
                                                 :title="color.name"
                                                 :aria-label="color.name"></button>

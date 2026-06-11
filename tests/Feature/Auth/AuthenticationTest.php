@@ -37,6 +37,8 @@ class AuthenticationTest extends TestCase
         $this->post('/login', [
             'email' => $user->email,
             'password' => 'wrong-password',
+        ])->assertSessionHasErrors([
+            'email' => 'อีเมลหรือรหัสผ่านไม่ถูกต้อง',
         ]);
 
         $this->assertGuest();
@@ -49,6 +51,6 @@ class AuthenticationTest extends TestCase
         $response = $this->actingAs($user)->post('/logout');
 
         $this->assertGuest();
-        $response->assertRedirect('/');
+        $response->assertRedirect('/th');
     }
 }

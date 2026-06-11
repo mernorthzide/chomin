@@ -44,6 +44,7 @@
                             <span x-show="loading">…</span>
                         </button>
                     </form>
+                    <p x-show="errorMessage" x-cloak class="mt-2 text-xs text-red-600" x-text="errorMessage"></p>
                     <button @click="dismiss()" class="mt-3 text-[11px] uppercase tracking-[0.14em] text-brand-gray-light underline-offset-4 underline">
                         {{ $isEn ? 'No thanks' : 'ไม่ขอบคุณ' }}
                     </button>
@@ -83,20 +84,16 @@ function newsletterPopup() {
         success: false,
         copied: false,
         couponCode: '',
+        errorMessage: '',
         init() {
             if (localStorage.getItem('chomin_newsletter_dismissed') || localStorage.getItem('chomin_newsletter_subscribed')) return;
 
-            const delay = {{ (int) config('chomin.newsletter.popup_delay_ms', 25000) }};
+            // Exit-intent only: never interrupt reading with timers or scroll triggers
             const exitIntentGrace = 8000; // require dwell + user interaction before exit-intent
             const pageLoadAt = Date.now();
             let hasInteracted = false;
 
             const onFirstInteraction = () => { hasInteracted = true; };
-            const timer = setTimeout(() => { this.show(); cleanup(); }, delay);
-            const onScroll = () => {
-                const percent = (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight;
-                if (percent > 0.5) { this.show(); cleanup(); }
-            };
             const onExit = (e) => {
                 if (e.clientY >= 10) return;
                 if (!hasInteracted) return;
@@ -105,17 +102,12 @@ function newsletterPopup() {
                 cleanup();
             };
             const cleanup = () => {
-                clearTimeout(timer);
-                window.removeEventListener('scroll', onScroll);
                 document.removeEventListener('mouseleave', onExit);
                 document.removeEventListener('mousemove', onFirstInteraction);
-                document.removeEventListener('touchstart', onFirstInteraction);
                 window.removeEventListener('pagehide', cleanup);
             };
-            window.addEventListener('scroll', onScroll, { passive: true });
             document.addEventListener('mouseleave', onExit);
             document.addEventListener('mousemove', onFirstInteraction, { once: true });
-            document.addEventListener('touchstart', onFirstInteraction, { once: true, passive: true });
             window.addEventListener('pagehide', cleanup);
         },
         show() {
@@ -130,6 +122,7 @@ function newsletterPopup() {
         },
         async submit() {
             this.loading = true;
+            this.errorMessage = '';
             try {
                 const locale = document.documentElement.lang || 'th';
                 const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
@@ -143,12 +136,16 @@ function newsletterPopup() {
                     body: JSON.stringify({ email: this.email, source: 'popup', with_coupon: true }),
                 });
                 const data = await res.json().catch(() => ({}));
-                if (res.ok) {
-                    this.success = true;
-                    this.couponCode = data.coupon || 'WELCOME10';
-                    localStorage.setItem('chomin_newsletter_subscribed', '1');
+                if (!res.ok) {
+                    throw new Error(data.message || '{{ $isEn ? 'Please try again.' : 'สมัครไม่สำเร็จ กรุณาลองใหม่' }}');
                 }
-            } catch (e) { console.error(e); }
+                this.success = true;
+                this.couponCode = data.coupon || 'WELCOME10';
+                localStorage.setItem('chomin_newsletter_subscribed', '1');
+            } catch (e) {
+                console.error(e);
+                this.errorMessage = e.message || '{{ $isEn ? 'Please try again.' : 'สมัครไม่สำเร็จ กรุณาลองใหม่' }}';
+            }
             finally { this.loading = false; }
         },
         copyCode() {

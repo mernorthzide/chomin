@@ -2,7 +2,7 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\OrderItem;
+use App\Models\Product;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -23,9 +23,9 @@ class TopProducts extends BaseWidget
     {
         return $table
             ->query(
-                OrderItem::query()
+                Product::query()
+                    ->join('order_items', 'order_items.product_id', '=', 'products.id')
                     ->join('orders', 'orders.id', '=', 'order_items.order_id')
-                    ->join('products', 'products.id', '=', 'order_items.product_id')
                     ->where('orders.created_at', '>=', now()->subDays(30))
                     ->select(
                         'products.id as id',

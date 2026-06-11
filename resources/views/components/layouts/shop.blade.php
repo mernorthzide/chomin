@@ -25,19 +25,11 @@
 </head>
 <body class="storefront font-sans antialiased bg-white text-brand-black">
 
-    <!-- Announcement Ticker -->
-    <div class="bg-brand-black text-white overflow-hidden border-b border-brand-black">
-        <div class="ticker-track flex whitespace-nowrap py-2">
-            @for($i = 0; $i < 3; $i++)
-                <span class="ticker-item text-[11px] tracking-[0.14em] uppercase px-10">Free shipping Thailand</span>
-                <span class="text-white/30 text-[11px]">/</span>
-                <span class="ticker-item text-[11px] tracking-[0.14em] uppercase px-10">50+ colors</span>
-                <span class="text-white/30 text-[11px]">/</span>
-                <span class="ticker-item text-[11px] tracking-[0.14em] uppercase px-10">XS-6XL</span>
-                <span class="text-white/30 text-[11px]">/</span>
-                <span class="ticker-item text-[11px] tracking-[0.14em] uppercase px-10">30 day exchange</span>
-            @endfor
-        </div>
+    <!-- Announcement Bar -->
+    <div class="bg-brand-black text-white border-b border-brand-black">
+        <p class="px-4 py-2 text-center text-[11px] tracking-[0.14em] uppercase truncate">
+            Free shipping Thailand <span class="text-white/30 px-2">/</span> XS&ndash;6XL <span class="text-white/30 px-2">/</span> 30 day exchange
+        </p>
     </div>
 
     <!-- Navbar -->
@@ -51,6 +43,7 @@
     <!-- Footer -->
     <x-footer />
 
+    <x-flash-toast />
     <x-newsletter-popup />
     <x-line-widget />
     <x-cookie-consent />

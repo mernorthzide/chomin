@@ -5,9 +5,6 @@
     if ($product->created_at && $product->created_at->gt(now()->subDays(14))) {
         $badges[] = 'ใหม่';
     }
-    if ($product->is_on_sale) {
-        $badges[] = 'Sale';
-    }
     if (isset($product->variants) && $product->variants->isNotEmpty() && $product->variants->sum('stock') <= 5 && $product->variants->sum('stock') > 0) {
         $badges[] = 'เหลือน้อย';
     }
@@ -16,7 +13,7 @@
     $colorPreview = $product->colors ?? collect();
 @endphp
 
-<div class="product-card-wrapper group relative {{ $dark ? 'product-card-dark' : '' }}">
+<div x-data class="product-card-wrapper group relative {{ $dark ? 'product-card-dark' : '' }}">
 <a href="{{ route('products.show', $product->slug) }}"
    class="product-card block focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-inset">
     <div class="relative aspect-[3/4] overflow-hidden bg-brand-gray">
@@ -64,9 +61,6 @@
             </div>
             <div class="text-right text-xs text-brand-black whitespace-nowrap">
                 <span>฿{{ number_format($product->display_price, 0) }}</span>
-                @if($product->is_on_sale)
-                    <span class="mt-1.5 block text-[10px] text-brand-gray-light line-through">฿{{ number_format((float) $product->price, 0) }}</span>
-                @endif
             </div>
         </div>
 

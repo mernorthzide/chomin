@@ -35,7 +35,15 @@ class OrderReturnController extends Controller
     public function create(string $locale, Order $order)
     {
         abort_unless($order->user_id === Auth::id(), 403);
-        abort_unless($this->isEligible($order), 422);
+        if (! $this->isEligible($order)) {
+            return redirect()->route('returns.index', ['locale' => $locale])
+                ->with('flash', [
+                    'type' => 'warning',
+                    'message' => $locale === 'en'
+                        ? 'This order is not eligible for a return or exchange.'
+                        : 'ออเดอร์นี้ยังไม่เข้าเงื่อนไขการคืนหรือเปลี่ยนสินค้า',
+                ]);
+        }
 
         $order->load('items.product.primaryImage', 'items.variant.color.translations');
 
@@ -59,7 +67,15 @@ class OrderReturnController extends Controller
     public function store(Request $request, string $locale, Order $order): RedirectResponse
     {
         abort_unless($order->user_id === Auth::id(), 403);
-        abort_unless($this->isEligible($order), 422);
+        if (! $this->isEligible($order)) {
+            return redirect()->route('returns.index', ['locale' => $locale])
+                ->with('flash', [
+                    'type' => 'warning',
+                    'message' => $locale === 'en'
+                        ? 'This order is not eligible for a return or exchange.'
+                        : 'ออเดอร์นี้ยังไม่เข้าเงื่อนไขการคืนหรือเปลี่ยนสินค้า',
+                ]);
+        }
 
         $data = $request->validate([
             'type' => ['required', 'in:return,exchange'],
@@ -134,7 +150,12 @@ class OrderReturnController extends Controller
     public function cancel(string $locale, OrderReturn $return): RedirectResponse
     {
         abort_unless($return->user_id === Auth::id(), 403);
-        abort_unless(in_array($return->status, OrderReturnStatus::openStatuses()), 422);
+        if (! in_array($return->status, OrderReturnStatus::openStatuses(), true)) {
+            return back()->with('flash', [
+                'type' => 'warning',
+                'message' => $locale === 'en' ? 'This return cannot be cancelled now.' : 'คำขอคืนนี้ไม่สามารถยกเลิกได้แล้ว',
+            ]);
+        }
 
         $return->update(['status' => OrderReturnStatus::Cancelled->value]);
 

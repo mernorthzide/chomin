@@ -85,8 +85,13 @@
                                                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                                 @endif
                                             </div>
-                                            <p class="text-xs text-brand-black font-medium truncate">{{ $item->product->name }}</p>
-                                            <p class="text-xs text-brand-gray-medium mt-0.5">฿{{ number_format($item->product->price, 0) }}</p>
+                                            <p class="text-xs text-brand-black font-medium truncate">{{ $item->product->localized_name }}</p>
+                                            <p class="text-xs text-brand-gray-medium mt-0.5">
+                                                ฿{{ number_format($item->product->display_price, 0) }}
+                                                @if($item->product->is_on_sale)
+                                                    <span class="ml-1 text-[10px] text-brand-gray-light line-through">฿{{ number_format((float) $item->product->price, 0) }}</span>
+                                                @endif
+                                            </p>
                                         </a>
                                     @else
                                         <div class="aspect-[3/4] bg-brand-gray flex items-center justify-center mb-2">

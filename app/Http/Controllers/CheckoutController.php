@@ -30,8 +30,18 @@ class CheckoutController extends Controller
         $cart->load('items.product.translations', 'items.product.primaryImage', 'items.variant.color.translations');
         abort_if($cart->items->isEmpty(), 404, 'ตะกร้าว่าง');
         $addresses = auth()->user()->addresses()->orderByDesc('is_default')->get();
+        $coupon = null;
+        $couponDiscount = 0.0;
+        $couponCode = trim((string) request('coupon_code', ''));
 
-        return view('pages.checkout', compact('cart', 'addresses'));
+        if ($couponCode !== '') {
+            $coupon = Coupon::where('code', $couponCode)->first();
+            if ($coupon && $coupon->isValid($cart->subtotal)) {
+                $couponDiscount = $coupon->calculateDiscount((float) $cart->subtotal);
+            }
+        }
+
+        return view('pages.checkout', compact('cart', 'addresses', 'coupon', 'couponDiscount'));
     }
 
     public function store(Request $request)
@@ -69,12 +79,22 @@ class CheckoutController extends Controller
         }
 
         $cart = $this->cartService->getCart();
-        abort_if($cart->items->isEmpty(), 422, 'ตะกร้าว่าง');
+        $cart->loadMissing('items.product', 'items.variant');
+        if ($cart->items->isEmpty()) {
+            throw ValidationException::withMessages([
+                'cart' => 'ตะกร้าว่าง',
+            ]);
+        }
 
         $coupon = null;
-        if ($request->coupon_code) {
-            $coupon = Coupon::where('code', $request->coupon_code)->first();
-            abort_unless($coupon && $coupon->isValid($cart->subtotal), 422, 'คูปองไม่ถูกต้อง');
+        $couponCode = trim((string) $request->input('coupon_code', ''));
+        if ($couponCode !== '') {
+            $coupon = Coupon::where('code', $couponCode)->first();
+            if (! $coupon || ! $coupon->isValid($cart->subtotal)) {
+                throw ValidationException::withMessages([
+                    'coupon_code' => app()->getLocale() === 'en' ? 'This coupon is not valid for your cart.' : 'คูปองไม่ถูกต้องหรือไม่เข้าเงื่อนไข',
+                ]);
+            }
         }
 
         $giftCardCodes = $request->input('gift_card_codes', []);

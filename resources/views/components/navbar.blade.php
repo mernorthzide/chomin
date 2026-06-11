@@ -12,11 +12,12 @@
 
 <nav class="sticky top-0 z-50 border-b border-brand-gray-border bg-white"
      x-data="{ mobileMenu: false, shopMega: false, mobileSection: null, searchOpen: false }"
+     @close-mobile-menu.window="mobileMenu = false"
      @keydown.escape.window="shopMega = false; mobileMenu = false; searchOpen = false">
     <div class="relative flex items-center justify-between px-4 md:px-8 py-3">
         <div class="flex items-center gap-5">
             <button type="button"
-                    class="inline-flex h-11 w-11 items-center justify-center hover:opacity-60 focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2"
+                    class="inline-flex h-11 w-11 items-center justify-center hover:opacity-60 focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2 lg:hidden"
                     @click="mobileMenu = !mobileMenu"
                     :aria-expanded="mobileMenu.toString()"
                     aria-label="เมนู">
@@ -29,7 +30,7 @@
             </button>
 
             <button type="button"
-                    @click="searchOpen = true; $nextTick(() => $refs.searchInput?.focus())"
+                    @click="mobileMenu = false; searchOpen = true; $nextTick(() => $refs.searchInput?.focus())"
                     class="inline-flex h-11 w-11 items-center justify-center hover:opacity-60 focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2"
                     aria-label="{{ app()->getLocale() === 'en' ? 'Search' : 'ค้นหา' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
@@ -41,7 +42,8 @@
                 <div class="relative"
                      @mouseenter="shopMega = true"
                      @mouseleave="shopMega = false"
-                     @focusin="shopMega = true">
+                     @focusin="shopMega = true"
+                     @click.outside="shopMega = false">
                     <button type="button"
                             @click="shopMega = !shopMega"
                             :aria-expanded="shopMega.toString()"
@@ -52,14 +54,14 @@
                     <div x-show="shopMega"
                          x-cloak
                          x-transition
-                         class="absolute left-0 top-full mt-4 w-[760px] border border-brand-gray-border bg-white p-7 shadow-xl"
+                         class="absolute left-0 top-full mt-1 w-[760px] border border-brand-gray-border bg-white p-7 shadow-xl"
+                         @mouseenter="shopMega = true"
                          @focusout="if (!$el.contains($event.relatedTarget)) shopMega = false">
                         <div class="grid grid-cols-3 gap-8">
                             <div>
                                 <h3 class="mb-4 text-[11px] uppercase tracking-[0.18em] text-brand-gray-light">Shop</h3>
                                 <ul class="space-y-3 text-xs uppercase tracking-[0.12em]">
                                     <li><a href="{{ route('shop.index') }}" class="hover:opacity-60">All products</a></li>
-                                    <li><a href="{{ route('sale') }}" class="hover:opacity-60">Special Price</a></li>
                                     <li><a href="{{ route('color-library') }}" class="hover:opacity-60">Color Library</a></li>
                                     <li><a href="{{ route('pages.size-guide') }}" class="hover:opacity-60">Size Guide</a></li>
                                 </ul>
@@ -88,7 +90,6 @@
                     </div>
                 </div>
                 <a href="{{ route('collections.index') }}" class="hover:opacity-60">Collections</a>
-                <a href="{{ route('sale') }}" class="hover:opacity-60">Special Price</a>
                 <a href="{{ route('pages.member') }}" class="hover:opacity-60">Member</a>
             </div>
         </div>
@@ -156,7 +157,6 @@
             <div class="grid grid-cols-1 gap-1 text-sm">
                 <a href="{{ route('shop.index') }}" class="py-3 uppercase tracking-[0.12em]" @click="mobileMenu = false">Products</a>
                 <a href="{{ route('collections.index') }}" class="py-3 uppercase tracking-[0.12em]" @click="mobileMenu = false">Collections</a>
-                <a href="{{ route('sale') }}" class="py-3 uppercase tracking-[0.12em]" @click="mobileMenu = false">Special Price</a>
                 <a href="{{ route('color-library') }}" class="py-3 uppercase tracking-[0.12em]" @click="mobileMenu = false">Color Library</a>
                 <a href="{{ route('pages.size-guide') }}" class="py-3 uppercase tracking-[0.12em]" @click="mobileMenu = false">Size Guide</a>
                 <a href="{{ route('pages.member') }}" class="py-3 uppercase tracking-[0.12em]" @click="mobileMenu = false">Member</a>
