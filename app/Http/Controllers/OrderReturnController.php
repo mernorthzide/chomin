@@ -14,7 +14,7 @@ class OrderReturnController extends Controller
 {
     private function eligibleDays(): int
     {
-        return (int) config('chomin.returns.eligible_days', 30);
+        return (int) config('chomin.returns.eligible_days', 7);
     }
 
     private function eligibleStatuses(): array
@@ -173,6 +173,6 @@ class OrderReturnController extends Controller
 
         $anchor = $order->shipped_at ?? $order->created_at;
 
-        return $anchor->gte(now()->subDays((int) config('chomin.returns.eligible_days', 30)));
+        return $anchor->gte(now()->subDays((int) config('chomin.returns.eligible_days', 7)));
     }
 }

@@ -11,7 +11,8 @@
         </h1>
         <p class="mt-2 text-sm text-brand-gray-medium">
             {{ $isEn ? 'Order' : 'คำสั่งซื้อ' }} {{ $order->order_number }} ·
-            {{ $isEn ? '30-day window from delivery.' : 'ภายใน 30 วันนับจากวันที่จัดส่ง' }}
+            @php($returnDays = (int) config('chomin.returns.eligible_days', 7))
+            {{ $isEn ? "{$returnDays}-day window from delivery." : "ภายใน {$returnDays} วันนับจากวันที่จัดส่ง" }}
         </p>
 
         @if($errors->any())

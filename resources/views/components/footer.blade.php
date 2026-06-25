@@ -17,7 +17,7 @@
                         <a href="{{ route('pages.shipping') }}" class="hover:text-brand-black transition-colors duration-200 focus:outline-none focus:underline">จัดส่งฟรีทั่วประเทศ</a>
                     </li>
                     <li>
-                        <a href="{{ route('pages.returns') }}" class="hover:text-brand-black transition-colors duration-200 focus:outline-none focus:underline">เปลี่ยนคืนภายใน 30 วัน</a>
+                        <a href="{{ route('pages.returns') }}" class="hover:text-brand-black transition-colors duration-200 focus:outline-none focus:underline">เปลี่ยนคืนภายใน 7 วัน</a>
                     </li>
                     <li><a href="{{ route('faq') }}" class="hover:text-brand-black transition-colors duration-200 focus:outline-none focus:underline">คำถามที่พบบ่อย</a></li>
                     <li><a href="{{ route('pages.contact') }}" class="hover:text-brand-black transition-colors duration-200 focus:outline-none focus:underline">ติดต่อเรา</a></li>

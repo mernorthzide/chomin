@@ -11,6 +11,7 @@ class DatabaseSeeder extends Seeder
             SiteSettingSeeder::class,
             ShippingSettingSeeder::class,
             ContentSeeder::class,
+            ShopeeProductSeeder::class,
         ]);
     }
 }

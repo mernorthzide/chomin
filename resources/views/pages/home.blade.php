@@ -9,6 +9,8 @@
             'duoBox' => $storageImage('products/chomin-imagen/duo-box.jpg'),
             'careStudio' => $storageImage('products/chomin-imagen/care-studio.jpg'),
             'lifestyle' => $storageImage('products/chomin-imagen/lifestyle-editorial.jpg'),
+            'brandHero' => $storageImage('products/chomin-imagen/brand-hero.jpg'),
+            'brandLifestyle' => $storageImage('products/chomin-imagen/brand-lifestyle.jpg'),
         ];
 
         if ($heroCollection) {
@@ -38,20 +40,21 @@
                 @endif
 
                 <div class="campaign-hero-copy">
-                    <p class="text-xs uppercase tracking-[0.16em] text-brand-gray-medium">CM Classic</p>
+                    <p class="text-xs uppercase tracking-[0.16em] text-brand-gray-medium">{{ $heroCollection->localized_name }}</p>
                     <h1 class="mt-3 font-serif uppercase leading-none text-brand-black campaign-hero-title">
                         Design Your Own Shirt
                     </h1>
                     <div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs uppercase tracking-[0.14em] text-brand-gray-dark">
-                        <span>฿999</span>
+                        <span>฿1,190</span>
                         <span>50+ สี</span>
                         <span>XS&ndash;6XL</span>
+                        <span>Premium Japanese Cotton</span>
                     </div>
                 </div>
 
                 <div class="campaign-hero-cta">
                     <span class="text-xs uppercase tracking-[0.16em] border-b border-brand-black pb-1">
-                        Shop CM Classic
+                        Shop {{ $heroCollection->localized_name }}
                     </span>
                 </div>
             </a>
@@ -62,8 +65,8 @@
         <section class="bg-white border-b border-brand-gray-border" aria-label="Shop by shirt line">
             <div class="px-6 md:px-12 py-8 border-t border-brand-gray-border flex items-end justify-between gap-6">
                 <div>
-                    <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-3">Shop by shirt line</p>
-                    <h2 class="font-serif uppercase leading-none text-3xl md:text-5xl">เลือกจาก 5 ไลน์</h2>
+                    <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-3">Shop by colour palette</p>
+                    <h2 class="font-serif uppercase leading-none text-3xl md:text-5xl">เลือกตามชุดสี</h2>
                 </div>
                 <a href="{{ route('shop.index') }}" class="hidden sm:inline-block text-xs uppercase tracking-[0.16em] border-b border-brand-black pb-1 hover:opacity-60">
                     View all
@@ -125,8 +128,8 @@
                 <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-6">The Brand</p>
                 <h2 class="font-serif uppercase leading-none text-4xl md:text-6xl">Simple. Comfortable. Your Style.</h2>
                 <div class="mt-8 space-y-4 text-sm md:text-base text-brand-gray-dark leading-relaxed">
-                    <p>CHOMIN ทำเชิ้ตให้เลือกได้มากกว่าแค่สี เราให้คุณเลือกสัดส่วน รายละเอียด และโทนที่เข้ากับวันที่ต้องใส่จริง</p>
-                    <p>เริ่มจากเชิ้ตดี ๆ สักตัว แล้วปรับรายละเอียดให้เข้ากับวิธีแต่งตัวของคุณในทุกวัน</p>
+                    <p>สไตล์ที่ดี เริ่มจากความเรียบง่าย CHO.MIN ทำเชิ้ตจากผ้า Premium Japanese Cotton ให้เลือกได้ทั้งสี ทรง คอเสื้อ ปลายแขน และกระเป๋า ตามสไตล์ของคุณ</p>
+                    <p>ดีไซน์ unisex ใส่ได้ทุกเพศทุกวัย ไซส์ XS&ndash;6XL ใส่สบายตั้งแต่วันทำงานจนถึงวันสบาย ๆ</p>
                 </div>
                 <div class="mt-8 flex flex-wrap gap-4">
                     <a href="{{ route('shop.index') }}" class="text-xs uppercase tracking-[0.16em] border-b border-brand-black pb-1">Shop all</a>
@@ -135,8 +138,8 @@
             </div>
         </div>
         <div class="order-1 lg:order-2 lg:col-span-7 border-b lg:border-b-0 lg:border-l border-brand-gray-border">
-            <img src="{{ $campaignImages['lifestyle'] }}"
-                 alt="CHO.MIN lifestyle editorial shirts"
+            <img src="{{ $campaignImages['brandHero'] }}"
+                 alt="CHO.MIN design your own shirt — fabrics, collars and details"
                  class="h-full min-h-[360px] w-full object-cover"
                  loading="lazy">
         </div>
@@ -149,7 +152,7 @@
              loading="lazy">
         <div class="absolute inset-0 bg-brand-black/55"></div>
         <div class="relative z-10">
-            <p class="text-xs uppercase tracking-[0.2em] text-white/60 mb-8">Free shipping / 30 day exchange / LINE @chomin.th</p>
+            <p class="text-xs uppercase tracking-[0.2em] text-white/60 mb-8">Free shipping / 7 day exchange / LINE @chomin.th</p>
             <h2 class="font-serif uppercase leading-none mx-auto max-w-5xl" style="font-size: clamp(2.8rem, 9vw, 8rem);">
                 Define Your Elegance.
             </h2>

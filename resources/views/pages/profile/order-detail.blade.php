@@ -269,7 +269,8 @@
                             {{ app()->getLocale() === 'en' ? 'Return or exchange' : 'คืน / เปลี่ยนสินค้า' }}
                         </h3>
                         <p class="text-xs text-brand-gray-medium mb-4">
-                            {{ app()->getLocale() === 'en' ? 'Within 30 days of delivery.' : 'ภายใน 30 วันนับจากวันที่จัดส่ง' }}
+                            @php($returnDays = (int) config('chomin.returns.eligible_days', 7))
+                            {{ app()->getLocale() === 'en' ? "Within {$returnDays} days of delivery." : "ภายใน {$returnDays} วันนับจากวันที่จัดส่ง" }}
                         </p>
                         <a href="{{ route('returns.create', ['locale' => app()->getLocale(), 'order' => $order->id]) }}"
                            class="inline-block border border-brand-black px-5 py-2 text-xs uppercase tracking-[0.16em] hover:bg-brand-black hover:text-white">

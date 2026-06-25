@@ -14,8 +14,8 @@
                     </h1>
                     <p class="mt-6 max-w-md text-sm text-brand-gray-medium leading-relaxed">
                         {{ app()->getLocale() === 'en'
-                            ? 'Choose from 5 shirt lines. Select your color from 50+ shades, pick your collar, cuff and pocket — priced at ฿999.'
-                            : 'เลือกจาก 5 ไลน์เชิ้ต กว่า 50 สี ปรับคอเสื้อ ปลายแขน และกระเป๋าให้เป็นแบบที่คุณต้องการ ในราคา 999 บาท' }}
+                            ? 'Premium Japanese Cotton shirts in curated colour palettes. Select from 50+ shades, pick your collar, cuff and pocket — from ฿1,190.'
+                            : 'เสื้อเชิ้ตผ้า Premium Japanese Cotton หลายชุดสี เลือกได้กว่า 50 เฉด ปรับคอเสื้อ ปลายแขน และกระเป๋าให้เป็นแบบที่คุณต้องการ เริ่มต้น 1,190 บาท' }}
                     </p>
                 </div>
             </div>

@@ -6,3 +6,5 @@
 !products/
 !products/chomin-imagen/
 !products/chomin-imagen/*.jpg
+!products/shopee/
+!products/shopee/**

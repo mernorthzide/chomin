@@ -1,7 +1,7 @@
 <x-layouts.shop :title="$title" :description="$description" :ogImage="$ogImage">
 
     @php
-        $lifestyle = \Illuminate\Support\Facades\Storage::url('products/chomin-imagen/lifestyle-editorial.jpg');
+        $lifestyle = \Illuminate\Support\Facades\Storage::url('products/chomin-imagen/brand-lifestyle.jpg');
         $customDetails = \Illuminate\Support\Facades\Storage::url('products/chomin-imagen/custom-details.jpg');
         $duoBox = \Illuminate\Support\Facades\Storage::url('products/chomin-imagen/duo-box.jpg');
         $careStudio = \Illuminate\Support\Facades\Storage::url('products/chomin-imagen/care-studio.jpg');
@@ -151,8 +151,8 @@
                         <p class="text-sm text-brand-gray-dark leading-relaxed">{{ $locale === 'en' ? 'XS to 6XL, unisex. We believe great design should fit everyone — not just a specific body type.' : 'XS ถึง 6XL ทรง Unisex เพราะดีไซน์ที่ดีต้องใส่ได้ทุกคน ไม่ใช่แค่บางสัดส่วน' }}</p>
                     </div>
                     <div class="border-t border-brand-gray-border pt-6">
-                        <h3 class="text-xs uppercase tracking-[0.16em] text-brand-black mb-3">{{ $locale === 'en' ? 'Free Exchange, 30 Days' : 'เปลี่ยนได้ฟรี 30 วัน' }}</h3>
-                        <p class="text-sm text-brand-gray-dark leading-relaxed">{{ $locale === 'en' ? 'Unsure about size? Exchange within 30 days, no questions asked. We want you to love what you wear.' : 'ไม่แน่ใจเรื่องไซส์? เปลี่ยนได้ฟรีภายใน 30 วัน เราต้องการให้คุณรู้สึกดีกับสิ่งที่ใส่' }}</p>
+                        <h3 class="text-xs uppercase tracking-[0.16em] text-brand-black mb-3">{{ $locale === 'en' ? 'Free Exchange, 7 Days' : 'เปลี่ยนได้ฟรี 7 วัน' }}</h3>
+                        <p class="text-sm text-brand-gray-dark leading-relaxed">{{ $locale === 'en' ? 'Unsure about size? Exchange within 7 days, no questions asked. We want you to love what you wear.' : 'ไม่แน่ใจเรื่องไซส์? เปลี่ยนได้ฟรีภายใน 7 วัน เราต้องการให้คุณรู้สึกดีกับสิ่งที่ใส่' }}</p>
                     </div>
                 </div>
             </div>

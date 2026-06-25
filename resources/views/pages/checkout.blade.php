@@ -471,7 +471,7 @@
                                 </svg>
                                 <div>
                                     <p class="text-xs font-medium uppercase tracking-[0.12em]">รับประกันคุณภาพ</p>
-                                    <p class="text-[11px] text-brand-gray-medium">QC ทุกตัว · เปลี่ยน-คืนภายใน 30 วัน</p>
+                                    <p class="text-[11px] text-brand-gray-medium">QC ทุกตัว · เปลี่ยน-คืนภายใน 7 วัน</p>
                                 </div>
                             </div>
                             <div class="flex items-start gap-3">
@@ -492,7 +492,7 @@
                             </a>
                             <a href="{{ route('pages.returns') }}" class="p-3 border-r border-brand-gray-border">
                                 <span class="block text-[10px] uppercase tracking-[0.12em] text-brand-gray-light">Return</span>
-                                <span class="block text-xs mt-1">30D</span>
+                                <span class="block text-xs mt-1">7D</span>
                             </a>
                             <a href="{{ route('pages.member') }}" class="p-3">
                                 <span class="block text-[10px] uppercase tracking-[0.12em] text-brand-gray-light">Point</span>

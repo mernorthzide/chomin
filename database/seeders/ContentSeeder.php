@@ -49,15 +49,32 @@ class ContentSeeder extends Seeder
             ]);
         }
 
-        $faq = FaqItem::updateOrCreate(['category' => 'orders', 'sort_order' => 1], ['is_published' => true]);
-        $faq->translations()->updateOrCreate(['locale' => 'th'], [
-            'question' => 'จัดส่งใช้เวลากี่วัน',
-            'answer' => 'โดยทั่วไปจัดส่งภายใน 1-3 วันทำการหลังยืนยันการชำระเงิน',
-        ]);
-        $faq->translations()->updateOrCreate(['locale' => 'en'], [
-            'question' => 'How long does shipping take?',
-            'answer' => 'Orders usually ship within 1-3 business days after payment confirmation.',
-        ]);
+        $faqs = [
+            ['category' => 'orders', 'sort_order' => 1,
+                'th' => ['q' => 'ใช้เวลาผลิตและจัดส่งกี่วัน', 'a' => 'เสื้อ CHO.MIN ตัดเย็บตามคำสั่งซื้อ ใช้เวลาผลิต 3–7 วันทำการ และจัดส่ง 1–3 วันทำการหลังยืนยันการชำระเงิน'],
+                'en' => ['q' => 'How long do production and shipping take?', 'a' => 'CHO.MIN shirts are made to order: 3–7 business days to produce and 1–3 business days to deliver after payment confirmation.']],
+            ['category' => 'product', 'sort_order' => 2,
+                'th' => ['q' => 'เลือกไซส์อย่างไร', 'a' => 'เรามีไซส์ XS–6XL พร้อมบริการตัดไซส์พิเศษ แนะนำให้วัดรอบอก ไหล่ และความยาวจากเสื้อที่ใส่สบาย แล้วเทียบกับตารางไซส์ในหน้าสินค้า หากลังเลระหว่างสองไซส์ ให้เลือกตามทรงที่ต้องการ'],
+                'en' => ['q' => 'How do I choose my size?', 'a' => 'We offer XS–6XL plus custom sizing. Measure chest, shoulder, and length from a shirt that fits you well, then compare with the size chart on each product page.']],
+            ['category' => 'product', 'sort_order' => 3,
+                'th' => ['q' => 'เนื้อผ้าเป็นแบบไหน ทนไหม', 'a' => 'ตัดเย็บจากผ้า Premium Japanese Cotton เนื้อนุ่ม เบา ระบายอากาศดี ไม่ยับง่าย ทรงสวยคงรูปแม้ผ่านการซัก'],
+                'en' => ['q' => 'What is the fabric and is it durable?', 'a' => 'Made from Premium Japanese Cotton — soft, light, and breathable. It keeps its shape and looks crisp after washing.']],
+            ['category' => 'product', 'sort_order' => 4,
+                'th' => ['q' => 'ใส่ได้ทุกเพศไหม', 'a' => 'ดีไซน์เป็น unisex ใส่ได้ทุกเพศทุกวัย เหมาะทั้งวันทำงาน วันสบาย ๆ และโอกาสพิเศษ'],
+                'en' => ['q' => 'Is it unisex?', 'a' => 'Yes — the design is unisex, suitable for all genders and ages, for work, casual, and special occasions.']],
+            ['category' => 'orders', 'sort_order' => 5,
+                'th' => ['q' => 'เปลี่ยนหรือคืนสินค้าได้ไหม', 'a' => 'เปลี่ยน/คืนได้ภายใน 7 วัน เมื่อสินค้าไม่ผ่านการใช้งานและป้ายครบ สินค้าสั่งทำพิเศษไม่รับเปลี่ยน/คืน ยกเว้นกรณีชำรุดจากการผลิต'],
+                'en' => ['q' => 'Can I return or exchange?', 'a' => 'Returns/exchanges are accepted within 7 days when items are unused with tags intact. Custom items are non-returnable except for manufacturing defects.']],
+        ];
+
+        foreach ($faqs as $faqData) {
+            $faq = FaqItem::updateOrCreate(
+                ['category' => $faqData['category'], 'sort_order' => $faqData['sort_order']],
+                ['is_published' => true],
+            );
+            $faq->translations()->updateOrCreate(['locale' => 'th'], ['question' => $faqData['th']['q'], 'answer' => $faqData['th']['a']]);
+            $faq->translations()->updateOrCreate(['locale' => 'en'], ['question' => $faqData['en']['q'], 'answer' => $faqData['en']['a']]);
+        }
 
         $story = Story::updateOrCreate(['slug' => 'how-to-style-shirts'], [
             'cover_image' => 'products/chomin-imagen/care-studio.jpg',
@@ -102,8 +119,8 @@ class ContentSeeder extends Seeder
         return match ($slug) {
             'privacy' => 'วิธีที่ CHOMIN ดูแลข้อมูลส่วนบุคคลของลูกค้า',
             'terms' => 'เงื่อนไขการใช้งานเว็บไซต์และการสั่งซื้อกับ CHOMIN',
-            'shipping' => 'รายละเอียดการเตรียมสินค้า การจัดส่ง และเลขติดตามพัสดุ',
-            'returns' => 'เงื่อนไขการเปลี่ยนหรือคืนสินค้าภายใน 30 วัน',
+            'shipping' => 'ระยะเวลาผลิต 3–7 วันทำการ และจัดส่ง 1–3 วันทำการ',
+            'returns' => 'เงื่อนไขการเปลี่ยนหรือคืนสินค้าภายใน 7 วัน',
             'size-guide' => 'แนวทางวัดไซส์เสื้อเชิ้ตตั้งแต่ XS ถึง 6XL',
             'member' => 'สิทธิประโยชน์ แต้มสะสม และการใช้คะแนนสำหรับสมาชิก',
             'gift-cards' => 'รายละเอียดบัตรของขวัญและการใช้ยอดคงเหลือที่ checkout',
@@ -120,8 +137,8 @@ class ContentSeeder extends Seeder
         return match ($slug) {
             'privacy' => 'How CHOMIN handles customer personal data.',
             'terms' => 'Terms for using the website and shopping with CHOMIN.',
-            'shipping' => 'Order preparation, delivery, and tracking information.',
-            'returns' => 'Return and exchange conditions within 30 days.',
+            'shipping' => 'Production in 3–7 business days and delivery in 1–3 business days.',
+            'returns' => 'Return and exchange conditions within 7 days.',
             'size-guide' => 'How to measure CHOMIN shirts from XS to 6XL.',
             'member' => 'Member points, rewards, and redemption basics.',
             'gift-cards' => 'Gift card balance and checkout redemption details.',
@@ -138,8 +155,8 @@ class ContentSeeder extends Seeder
         return match ($slug) {
             'privacy' => "CHOMIN ให้ความสำคัญกับข้อมูลส่วนบุคคลของลูกค้า ข้อมูลที่เก็บอาจรวมถึงชื่อ อีเมล เบอร์โทร ที่อยู่จัดส่ง ประวัติการสั่งซื้อ และข้อมูลการใช้งานเว็บไซต์\n\nเราใช้ข้อมูลเพื่อดำเนินคำสั่งซื้อ ให้บริการลูกค้า ปรับปรุงประสบการณ์เว็บไซต์ และสื่อสารข่าวสารเมื่อได้รับความยินยอม ลูกค้าสามารถติดต่อเราเพื่อขอเข้าถึง แก้ไข หรือลบข้อมูลได้",
             'terms' => "การใช้งานเว็บไซต์ CHOMIN ถือว่าผู้ใช้ยอมรับข้อกำหนดนี้ ราคาสินค้า โปรโมชั่น และสต็อกอาจเปลี่ยนแปลงได้ตามความเหมาะสม\n\nลูกค้าต้องให้ข้อมูลที่ถูกต้องในการสั่งซื้อ การชำระเงิน และการจัดส่ง CHOMIN ขอสงวนสิทธิ์ในการยกเลิกคำสั่งซื้อที่มีข้อมูลผิดปกติหรือไม่สามารถตรวจสอบได้",
-            'shipping' => "จัดส่งฟรีทั่วประเทศตามเงื่อนไขที่ร้านกำหนด คำสั่งซื้อจะเริ่มจัดเตรียมหลังยืนยันการชำระเงินแล้ว\n\nเลขติดตามพัสดุจะแสดงในหน้าคำสั่งซื้อและอีเมลแจ้งจัดส่งเมื่อทีมงานส่งสินค้าแล้ว",
-            'returns' => "สามารถแจ้งเปลี่ยนหรือคืนสินค้าได้ภายใน 30 วัน เมื่อสินค้าอยู่ในสภาพสมบูรณ์ ไม่ผ่านการใช้งาน และมีหลักฐานการสั่งซื้อ\n\nสินค้าที่ผลิตเฉพาะหรือปรับแต่งพิเศษอาจมีเงื่อนไขเพิ่มเติม",
+            'shipping' => "เสื้อ CHO.MIN เป็นงานตัดเย็บตามคำสั่งซื้อ ใช้เวลาผลิต 3–7 วันทำการหลังยืนยันการชำระเงิน และจัดส่ง 1–3 วันทำการขึ้นอยู่กับพื้นที่\n\nจัดส่งฟรีทั่วประเทศตามเงื่อนไขที่ร้านกำหนด เลขติดตามพัสดุจะแสดงในหน้าคำสั่งซื้อและอีเมลแจ้งจัดส่งเมื่อทีมงานส่งสินค้าแล้ว",
+            'returns' => "สามารถแจ้งเปลี่ยนหรือคืนสินค้าได้ภายใน 7 วัน เมื่อสินค้าอยู่ในสภาพสมบูรณ์ ไม่ผ่านการใช้งาน ป้ายครบ และมีหลักฐานการสั่งซื้อ\n\nสินค้าสั่งทำพิเศษ (custom) ไม่รับเปลี่ยนหรือคืน ยกเว้นกรณีชำรุดจากการผลิต",
             'size-guide' => "CHOMIN รองรับไซส์ XS ถึง 6XL\n\nคำแนะนำเบื้องต้น: วัดรอบอก ไหล่ และความยาวเสื้อจากเสื้อที่ใส่สบาย แล้วเทียบกับตารางไซส์ในหน้าสินค้า หากลังเลระหว่างสองไซส์ ให้เลือกตามทรงที่ต้องการ",
             'member' => 'สมาชิก CHOMIN ได้รับแต้มสะสมจากคำสั่งซื้อที่สำเร็จ สามารถใช้แต้มเป็นส่วนลดในการสั่งซื้อครั้งถัดไป และติดตามประวัติแต้มได้ในหน้าโปรไฟล์',
             'gift-cards' => 'บัตรของขวัญ CHOMIN ออกโดยทีมงานและใช้เป็นยอดคงเหลือใน checkout ได้ รหัสสามารถใช้บางส่วนจนกว่ายอดคงเหลือจะหมด',
@@ -156,8 +173,8 @@ class ContentSeeder extends Seeder
         return match ($slug) {
             'privacy' => "CHOMIN respects customer privacy. We may collect names, email addresses, phone numbers, shipping addresses, order history, and website usage information.\n\nWe use this data to process orders, support customers, improve the website, and send marketing communications only when consent is given. This starter text should be reviewed before production use.",
             'terms' => "By using CHOMIN, customers accept these terms. Product prices, promotions, and availability may change.\n\nCustomers are responsible for providing accurate order, payment, and shipping information.",
-            'shipping' => 'Orders are prepared after payment confirmation. Tracking information appears on the order page and shipping email when available.',
-            'returns' => 'Returns or exchanges can be requested within 30 days when items are unused, complete, and accompanied by proof of purchase.',
+            'shipping' => 'CHO.MIN shirts are made to order: production takes 3–7 business days after payment confirmation, with delivery in 1–3 business days depending on location. Tracking appears on the order page and shipping email when available.',
+            'returns' => 'Returns or exchanges can be requested within 7 days when items are unused, complete, with tags intact and proof of purchase. Custom-made items are non-returnable except for manufacturing defects.',
             'size-guide' => 'CHOMIN supports XS through 6XL. Measure a shirt that fits well, then compare chest, shoulder, and length with the product size chart.',
             'member' => 'CHOMIN members earn points from completed orders and can redeem points on future purchases.',
             'gift-cards' => 'CHOMIN gift cards are issued by the team and can be redeemed at checkout until the stored balance is used.',

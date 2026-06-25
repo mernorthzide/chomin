@@ -70,7 +70,7 @@ return [
     ],
 
     'returns' => [
-        'eligible_days' => (int) env('CHOMIN_RETURN_ELIGIBLE_DAYS', 30),
+        'eligible_days' => (int) env('CHOMIN_RETURN_ELIGIBLE_DAYS', 7),
     ],
 
     'tiers' => [
@@ -169,6 +169,37 @@ return [
         'cm-mandarin-minimal-shirt' => [
             'collar' => 'mandarin-collar',
             'cuff' => 'one-button',
+            'pocket' => 'no-pocket',
+        ],
+        // Shopee-imported colour families (chomin640)
+        'soft-pastels' => [
+            'collar' => 'french-collar',
+            'cuff' => 'one-button',
+            'pocket' => 'no-pocket',
+        ],
+        'earth-tones' => [
+            'collar' => 'button-down',
+            'cuff' => 'one-button',
+            'pocket' => 'yes-pocket',
+        ],
+        'ocean-blues' => [
+            'collar' => 'italian-collar',
+            'cuff' => 'one-button',
+            'pocket' => 'no-pocket',
+        ],
+        'classic-neutrals' => [
+            'collar' => 'french-collar',
+            'cuff' => 'one-button',
+            'pocket' => 'no-pocket',
+        ],
+        'pinstripe' => [
+            'collar' => 'mandarin-collar',
+            'cuff' => 'one-button',
+            'pocket' => 'no-pocket',
+        ],
+        'bold-colors' => [
+            'collar' => 'button-down',
+            'cuff' => 'two-button',
             'pocket' => 'no-pocket',
         ],
     ],

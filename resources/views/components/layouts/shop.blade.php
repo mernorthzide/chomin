@@ -28,7 +28,7 @@
     <!-- Announcement Bar -->
     <div class="bg-brand-black text-white border-b border-brand-black">
         <p class="px-4 py-2 text-center text-[11px] tracking-[0.14em] uppercase truncate">
-            Free shipping Thailand <span class="text-white/30 px-2">/</span> XS&ndash;6XL <span class="text-white/30 px-2">/</span> 30 day exchange
+            Free shipping Thailand <span class="text-white/30 px-2">/</span> XS&ndash;6XL <span class="text-white/30 px-2">/</span> 7 day exchange
         </p>
     </div>
 

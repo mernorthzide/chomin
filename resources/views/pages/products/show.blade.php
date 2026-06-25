@@ -333,7 +333,7 @@
                         </a>
                         <a href="{{ route('pages.returns') }}" class="p-4 border-r border-brand-gray-border">
                             <span class="block text-[10px] uppercase tracking-[0.14em] text-brand-gray-light">Exchange</span>
-                            <span class="mt-1 block text-xs">30 วัน</span>
+                            <span class="mt-1 block text-xs">7 วัน</span>
                         </a>
                         <a href="{{ route('pages.member') }}" class="p-4">
                             <span class="block text-[10px] uppercase tracking-[0.14em] text-brand-gray-light">Member</span>
