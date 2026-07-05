@@ -11,10 +11,14 @@ _Last updated: 2026-07-05_
 - **F003** brief parity: home 6-card selling grid + 5 personas + Made For You + value-prop; about+seeder placket (ดีเทล=4); FAQ 5→8 (size-list/size-consult/care). i18n th/en.
 - **F004** Drive images (2 รูป): flat-lay→About hero, models→home hero. **user ยอมรับ "XS-6XL" ที่ฝังใน pixel ของ models image** (ต่างจาก text S–XL บนเว็บ).
 
-### ⚠️ เรื่องที่ค้าง / ต้องรู้
-- **ยังไม่ commit** — รอ user สั่ง. working tree มี dirty เก่า**ก่อน session นี้** (auth/profile/navbar/modal/about "By the Numbers"/meta theme-color ฯลฯ) ที่ไม่เกี่ยว F001–F004 — **อย่าเหมา commit รวม**; แยกไฟล์ของ sprint เท่านั้น.
-- **รูป F004 gitignored** (storage/) — local asset; deploy รูปทำแยกเหมือน brand image อื่น (ดู [[project_shopee_sync]] flow).
-- **APP_URL=http://127.0.0.1:8001** — dev server ต้องรันบน :8001 ถึงจะเห็นรูป storage (บน :8000 รูป 404 ทุกตัว).
+### ✅ Deployed แล้ว (2026-07-06)
+- commit `dfdd08b` (ทั้ง working tree — F001-F004 + polish เก่า) push main → **GitHub Actions deploy สำเร็จ** (Hostinger moccasin-dogfish-924842.hostingersite.com). main sync origin.
+- **prod DB seed แล้ว** (SSH): SiteSetting/Content/Shopee → faq 5→8, size-guide S–XL, policy copy ครบ, variants S–XL.
+- **รูป F004 SCP ขึ้น prod storage แล้ว** (from-client/). Playwright verify prod th+en ครบ, console 0 error.
+
+### ⚠️ เรื่องที่ต้องรู้
+- **deploy pipeline (`deploy.yml`) ทำแค่ git pull + build + `migrate --force` + cache — ไม่ seed, ไม่ push storage images.** งาน content ครั้งหน้าที่แตะ seeder ต้อง SSH seed prod เอง (seeders idempotent updateOrCreate); รูปใหม่ต้อง SCP เอง (storage gitignored).
+- **APP_URL=http://127.0.0.1:8001** — dev server ต้องรันบน :8001 ถึงจะเห็นรูป storage local (prod ใช้ HTTPS domain ปกติ).
 
 ### Ground truth (audit wf_55b0f317-ff0, 2026-07-05)
 - catalogue: import ครบ 6 family / **64 สี** (">50 สี" จริง) / ราคา ฿1,190 (PINSTRIPE ฿1,390) ถูกต้อง — **แต่ variant ซื้อได้แค่ S/M/L/XL** ขณะที่ทั้งไซต์โฆษณา XS–6XL → F001 แก้ให้ตรง

@@ -11,3 +11,4 @@
 ## [2026-07-05] plan | F004 Drive image sync — เริ่ม (ลองเปิดโฟลเดอร์ 'ภาพเว็บไซต์ CM' ผ่าน browser-harness; ต้องใช้ Chrome ผู้ใช้ + remote-debug + Google login)
 ## [2026-07-05] ship | F004 Drive image integration (evaluator PASS C01–C07): ดึง 2 รูปผ่าน browser-harness → flat-lay=About hero, models=home hero (user รับ XS-6XL ในภาพ); 81 tests
 ## [2026-07-05] milestone | งานลูกค้าครบทั้งชุด: Shopee catalogue + brief content (home/about/policy/faq) + Drive images — F001–F004 evaluator PASS ทั้งหมด. คิวว่าง
+## [2026-07-06] deploy | commit `dfdd08b` (ทั้ง working tree) → push main → GitHub Actions deploy สำเร็จ (Hostinger). Post-deploy: SSH seed prod (SiteSetting/Content/Shopee → faq 5→8, size-guide S–XL, policy copy) + SCP รูป F004 → storage. Playwright verify prod th+en (home 6-card/5 personas/models hero, about flat-lay/placket, faq 8, policy IP/PDPA/3-วัน, size-guide S–XL) — console 0 error, ไม่พบปัญหา. main sync origin.
