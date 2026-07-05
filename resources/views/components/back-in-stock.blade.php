@@ -22,11 +22,13 @@
             </button>
         </form>
         <template x-if="message">
-            <p class="mt-2 text-xs" :class="success ? 'text-green-700' : 'text-red-700'" x-text="message"></p>
+            <p class="mt-2 text-xs" :class="success ? 'text-brand-success' : 'text-brand-danger'" x-text="message"
+               :role="success ? 'status' : 'alert'" aria-live="polite"></p>
         </template>
     </div>
 </div>
 
+@once
 <script>
 function backInStockForm(config) {
     return {
@@ -71,3 +73,4 @@ function backInStockForm(config) {
     };
 }
 </script>
+@endonce

@@ -307,7 +307,7 @@ class FullRoadmapTest extends TestCase
             ->assertDontSee('5 items')
             ->assertSee('Build Your Shirt')
             ->assertSee('50+ สี')
-            ->assertSee('XS-6XL')
+            ->assertSee('S-XL')
             ->assertSee('/th/color-library', false)
             ->assertSee('/th/member', false);
     }

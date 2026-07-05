@@ -4,6 +4,7 @@
         $heroCollection = $collections->first();
         $heroImage = null;
         $storageImage = fn (string $path): string => \Illuminate\Support\Facades\Storage::url($path);
+        $locale = app()->getLocale();
         $campaignImages = [
             'customDetails' => $storageImage('products/chomin-imagen/custom-details.jpg'),
             'duoBox' => $storageImage('products/chomin-imagen/duo-box.jpg'),
@@ -29,6 +30,15 @@
             ->values();
     @endphp
 
+    <section class="bg-white border-b border-brand-gray-border" aria-label="CHO.MIN lookbook">
+        <div class="px-6 py-10 md:py-14 flex justify-center">
+            <img src="{{ $storageImage('products/chomin-imagen/from-client/models-lookbook-unisex.jpg') }}"
+                 alt="{{ $locale === 'en' ? 'CHO.MIN unisex shirts — design your own in Premium Japanese Cotton' : 'เชิ้ต CHO.MIN ทรง unisex ออกแบบเองได้ ผ้า Premium Japanese Cotton' }}"
+                 class="w-full max-w-md md:max-w-lg h-auto"
+                 fetchpriority="high">
+        </div>
+    </section>
+
     @if($heroCollection)
         <section class="campaign-hero bg-white border-b border-brand-gray-border" aria-label="CHOMIN campaign">
             <a href="{{ route('collections.show', $heroCollection->slug) }}" class="campaign-hero-link group">
@@ -47,7 +57,7 @@
                     <div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs uppercase tracking-[0.14em] text-brand-gray-dark">
                         <span>฿1,190</span>
                         <span>50+ สี</span>
-                        <span>XS&ndash;6XL</span>
+                        <span>S&ndash;XL</span>
                         <span>Premium Japanese Cotton</span>
                     </div>
                 </div>
@@ -81,43 +91,79 @@
     @endif
 
     <section class="px-6 md:px-12 py-16 md:py-24 bg-white border-b border-brand-gray-border" aria-label="Build Your Shirt">
-        <div class="grid grid-cols-1 xl:grid-cols-12 border border-brand-gray-border bg-white">
-            <div class="xl:col-span-4 p-7 md:p-10 flex items-end min-h-[340px]">
-                <div>
-                    <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-4">Build Your Shirt</p>
-                    <h2 class="font-serif uppercase leading-none text-brand-black" style="font-size: clamp(2.4rem, 7vw, 6.5rem);">
-                        เชิ้ตที่<br>เป็นคุณ
-                    </h2>
-                </div>
+        <div class="mb-10 md:mb-14 max-w-3xl">
+            <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-4">Build Your Shirt</p>
+            <h2 class="font-serif uppercase leading-none text-brand-black" style="font-size: clamp(2.4rem, 6vw, 4.5rem);">
+                {{ $locale === 'en' ? 'A Shirt That Is You' : 'เชิ้ตที่เป็นคุณ' }}
+            </h2>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-l border-brand-gray-border">
+            <a href="{{ route('shop.index') }}" class="p-7 md:p-8 border-r border-b border-brand-gray-border group">
+                <h3 class="font-serif text-lg uppercase tracking-[0.04em]">Design Your Own Style</h3>
+                <p class="mt-3 text-sm text-brand-gray-medium leading-relaxed">{{ $locale === 'en' ? 'Choose your color, collar, front placket, cuff, and pocket for a shirt built entirely your way.' : 'เลือกสี ปกคอ สาบหน้า ปลายแขน และกระเป๋า ออกแบบเชิ้ตในแบบของคุณเอง' }}</p>
+            </a>
+            <a href="{{ route('about') }}" class="p-7 md:p-8 border-r border-b border-brand-gray-border group">
+                <h3 class="font-serif text-lg uppercase tracking-[0.04em]">Premium Japanese Cotton</h3>
+                <p class="mt-3 text-sm text-brand-gray-medium leading-relaxed">{{ $locale === 'en' ? 'A soft, breathable fabric that stays comfortable and holds its shape all day.' : 'ผ้าเนื้อนุ่ม ใส่สบาย ระบายอากาศดี และอยู่ทรงสวยตลอดวัน' }}</p>
+            </a>
+            <a href="{{ route('color-library') }}" class="p-7 md:p-8 border-r border-b border-brand-gray-border group">
+                <h3 class="font-serif text-lg uppercase tracking-[0.04em]">50+ Colors Available</h3>
+                <p class="mt-3 text-sm text-brand-gray-medium leading-relaxed">{{ $locale === 'en' ? 'Over fifty shades in classic, muted, and statement tones for any day.' : 'สีให้เลือกกว่า 50 เฉด ทั้งโทนคลาสสิก สุภาพ และสีชัดสำหรับวันพิเศษ' }}</p>
+                @if($heroColors->isNotEmpty())
+                    <div class="mt-5 flex flex-wrap gap-1.5">
+                        @foreach($heroColors as $color)
+                            <span class="h-5 w-5 rounded-full border border-brand-gray-border"
+                                  style="background-color: {{ $color->color_code ?? '#eeeeee' }}"
+                                  role="img"
+                                  aria-label="{{ $color->localized_name }}"
+                                  title="{{ $color->localized_name }}"></span>
+                        @endforeach
+                    </div>
+                @endif
+            </a>
+            <a href="{{ route('pages.size-guide') }}" class="p-7 md:p-8 border-r border-b border-brand-gray-border group">
+                <h3 class="font-serif text-lg uppercase tracking-[0.04em]">S to XL Sizing</h3>
+                <p class="mt-3 text-sm text-brand-gray-medium leading-relaxed">{{ $locale === 'en' ? 'Sizes S to XL in an easy straight cut. Compare with the size chart to find your fit.' : 'ไซส์ S ถึง XL ทรงตรงใส่ง่าย เทียบสัดส่วนจากตารางไซส์เพื่อหาตัวที่พอดี' }}</p>
+            </a>
+            <a href="{{ route('shop.index') }}" class="p-7 md:p-8 border-r border-b border-brand-gray-border group">
+                <h3 class="font-serif text-lg uppercase tracking-[0.04em]">Designed For Everyone</h3>
+                <p class="mt-3 text-sm text-brand-gray-medium leading-relaxed">{{ $locale === 'en' ? 'A unisex design made for every gender, age, and style.' : 'ดีไซน์ unisex เหมาะกับทุกเพศ ทุกวัย และทุกสไตล์การแต่งตัว' }}</p>
+            </a>
+            <a href="{{ route('pages.contact') }}" class="p-7 md:p-8 border-r border-b border-brand-gray-border group">
+                <h3 class="font-serif text-lg uppercase tracking-[0.04em]">Made For You</h3>
+                <p class="mt-3 text-sm text-brand-gray-medium leading-relaxed">{{ $locale === 'en' ? 'Have a specific design in mind? Send us the details and our team will craft a shirt made just for you.' : 'มีดีไซน์เฉพาะที่อยากได้? ส่งรายละเอียดมาให้ทีมงานพิจารณา แล้วเราจะสร้างเชิ้ตที่ออกแบบมาเพื่อคุณโดยเฉพาะ' }}</p>
+                <span class="mt-4 inline-block text-xs uppercase tracking-[0.16em] border-b border-brand-black pb-1">{{ $locale === 'en' ? 'Contact us' : 'ติดต่อเรา' }}</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="px-6 md:px-12 py-16 md:py-24 bg-white border-b border-brand-gray-border" aria-label="Who it is for">
+        <div class="mb-10 md:mb-14 max-w-3xl">
+            <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-4">Who It Is For</p>
+            <h2 class="font-serif uppercase leading-none text-brand-black text-3xl md:text-5xl">
+                {{ $locale === 'en' ? 'Who It Is For' : 'เสื้อเชิ้ตเหมาะกับใคร' }}
+            </h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 border-t border-l border-brand-gray-border">
+            <div class="p-7 md:p-9 border-r border-b border-brand-gray-border flex items-start gap-5">
+                <span class="font-serif text-2xl text-brand-gray-light leading-none">01</span>
+                <p class="text-sm text-brand-gray-dark leading-relaxed">{{ $locale === 'en' ? 'Professionals who want a polished, credible, put-together look.' : 'คนทำงานที่อยากได้ลุคสุภาพ ดูดี และน่าเชื่อถือ' }}</p>
             </div>
-            <div class="xl:col-span-4 border-t xl:border-t-0 xl:border-l border-brand-gray-border">
-                <img src="{{ $campaignImages['customDetails'] }}"
-                     alt="CHO.MIN custom collar cuff pocket details"
-                     class="h-full min-h-[360px] w-full object-cover"
-                     loading="lazy">
+            <div class="p-7 md:p-9 border-r border-b border-brand-gray-border flex items-start gap-5">
+                <span class="font-serif text-2xl text-brand-gray-light leading-none">02</span>
+                <p class="text-sm text-brand-gray-dark leading-relaxed">{{ $locale === 'en' ? 'Students and young people who like simple dressing with real character.' : 'นักศึกษาและวัยรุ่นที่ชอบแต่งตัวเรียบง่ายแต่มีสไตล์' }}</p>
             </div>
-            <div class="xl:col-span-4 grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-1 border-t xl:border-t-0 xl:border-l border-brand-gray-border">
-                <a href="{{ route('color-library') }}" class="p-6 md:p-7 border-b sm:border-b-0 sm:border-r xl:border-r-0 xl:border-b border-brand-gray-border group">
-                    <h3 class="text-xs uppercase tracking-[0.14em]">สีให้เลือกกว่า 50 เฉด</h3>
-                    <p class="mt-3 text-sm text-brand-gray-medium leading-relaxed">เลือกโทนทำงาน คลาสสิก หรือสีชัดสำหรับวันพิเศษ</p>
-                    @if($heroColors->isNotEmpty())
-                        <div class="mt-5 flex flex-wrap gap-1.5">
-                            @foreach($heroColors as $color)
-                                <span class="h-5 w-5 rounded-full border border-brand-gray-border"
-                                      style="background-color: {{ $color->color_code ?? '#eeeeee' }}"
-                                      title="{{ $color->localized_name }}"></span>
-                            @endforeach
-                        </div>
-                    @endif
-                </a>
-                <a href="{{ route('pages.size-guide') }}" class="p-6 md:p-7 border-b sm:border-b-0 sm:border-r xl:border-r-0 xl:border-b border-brand-gray-border group">
-                    <h3 class="text-xs uppercase tracking-[0.14em]">ไซส์ XS&ndash;6XL</h3>
-                    <p class="mt-3 text-sm text-brand-gray-medium leading-relaxed">ทำให้การหาเชิ้ตพอดีตัวง่ายขึ้น ตั้งแต่ตัวเล็กถึงพลัสไซส์</p>
-                </a>
-                <a href="{{ route('pages.member') }}" class="p-6 md:p-7 group">
-                    <h3 class="text-xs uppercase tracking-[0.14em]">เลือกคอ ปลายแขน กระเป๋า</h3>
-                    <p class="mt-3 text-sm text-brand-gray-medium leading-relaxed">เลือกรายละเอียดทั้งสามจุดให้เข้ากับการใช้งาน</p>
-                </a>
+            <div class="p-7 md:p-9 border-r border-b border-brand-gray-border flex items-start gap-5">
+                <span class="font-serif text-2xl text-brand-gray-light leading-none">03</span>
+                <p class="text-sm text-brand-gray-dark leading-relaxed">{{ $locale === 'en' ? 'Anyone after a good-quality shirt comfortable enough to wear every day.' : 'คนที่มองหาเสื้อคุณภาพดี ใส่สบายได้ทุกวัน' }}</p>
+            </div>
+            <div class="p-7 md:p-9 border-r border-b border-brand-gray-border flex items-start gap-5">
+                <span class="font-serif text-2xl text-brand-gray-light leading-none">04</span>
+                <p class="text-sm text-brand-gray-dark leading-relaxed">{{ $locale === 'en' ? 'People who want one shirt for many occasions: work, travel, cafes, or events.' : 'คนที่อยากได้เชิ้ตตัวเดียว ใส่ได้หลายโอกาส ทั้งทำงาน เที่ยว คาเฟ่ หรือออกงาน' }}</p>
+            </div>
+            <div class="p-7 md:p-9 border-r border-b border-brand-gray-border flex items-start gap-5 md:col-span-2">
+                <span class="font-serif text-2xl text-brand-gray-light leading-none">05</span>
+                <p class="text-sm text-brand-gray-dark leading-relaxed">{{ $locale === 'en' ? 'Those who want a shirt that reflects who they are and their own style.' : 'คนที่อยากมีเชิ้ตที่สะท้อนตัวตนและสไตล์ของตัวเอง' }}</p>
             </div>
         </div>
     </section>
@@ -125,11 +171,11 @@
     <section class="grid grid-cols-1 lg:grid-cols-12 border-t border-b border-brand-gray-border bg-white" aria-label="CHOMIN editorial">
         <div class="order-2 lg:order-1 lg:col-span-5 px-6 md:px-12 py-14 md:py-20 flex items-center">
             <div class="max-w-xl">
-                <p class="text-xs uppercase tracking-[0.18em] text-brand-gray-light mb-6">The Brand</p>
                 <h2 class="font-serif uppercase leading-none text-4xl md:text-6xl">Simple. Comfortable. Your Style.</h2>
                 <div class="mt-8 space-y-4 text-sm md:text-base text-brand-gray-dark leading-relaxed">
-                    <p>สไตล์ที่ดี เริ่มจากความเรียบง่าย CHO.MIN ทำเชิ้ตจากผ้า Premium Japanese Cotton ให้เลือกได้ทั้งสี ทรง คอเสื้อ ปลายแขน และกระเป๋า ตามสไตล์ของคุณ</p>
-                    <p>ดีไซน์ unisex ใส่ได้ทุกเพศทุกวัย ไซส์ XS&ndash;6XL ใส่สบายตั้งแต่วันทำงานจนถึงวันสบาย ๆ</p>
+                    <p>สไตล์ที่ดี เริ่มจากความเรียบง่าย CHO.MIN ทำเชิ้ตจากผ้า Premium Japanese Cotton ที่ใส่สบายและระบายอากาศดี ให้เลือกได้ทั้งสี คอเสื้อ สาบหน้า ปลายแขน และกระเป๋า ตามสไตล์ของคุณ</p>
+                    <p>ดีไซน์ unisex ใส่ได้ทุกเพศทุกวัย ไซส์ S&ndash;XL ใส่สบายตั้งแต่วันทำงานจนถึงวันสบาย ๆ</p>
+                    <p>คุณภาพระดับพรีเมียม ในราคาที่เข้าถึงได้ เริ่มต้นเพียง ฿1,190</p>
                 </div>
                 <div class="mt-8 flex flex-wrap gap-4">
                     <a href="{{ route('shop.index') }}" class="text-xs uppercase tracking-[0.16em] border-b border-brand-black pb-1">Shop all</a>
@@ -152,7 +198,6 @@
              loading="lazy">
         <div class="absolute inset-0 bg-brand-black/55"></div>
         <div class="relative z-10">
-            <p class="text-xs uppercase tracking-[0.2em] text-white/60 mb-8">Free shipping / 7 day exchange / LINE @chomin.th</p>
             <h2 class="font-serif uppercase leading-none mx-auto max-w-5xl" style="font-size: clamp(2.8rem, 9vw, 8rem);">
                 Define Your Elegance.
             </h2>

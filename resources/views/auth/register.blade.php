@@ -19,9 +19,10 @@
         <div>
             <label for="name" class="block text-sm font-medium text-brand-gray-dark mb-1">ชื่อ-นามสกุล</label>
             <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name"
+                   @error('name') aria-describedby="name-error" aria-invalid="true" @enderror
                    class="block w-full rounded-none border-brand-gray-border focus:ring-brand-black focus:border-brand-black text-sm min-h-[44px]" />
             @error('name')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                <p id="name-error" class="text-brand-danger text-sm mt-1">{{ $message }}</p>
             @enderror
         </div>
 
@@ -29,9 +30,10 @@
         <div class="mt-4">
             <label for="email" class="block text-sm font-medium text-brand-gray-dark mb-1">อีเมล</label>
             <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="username"
+                   @error('email') aria-describedby="email-error" aria-invalid="true" @enderror
                    class="block w-full rounded-none border-brand-gray-border focus:ring-brand-black focus:border-brand-black text-sm min-h-[44px]" />
             @error('email')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                <p id="email-error" class="text-brand-danger text-sm mt-1">{{ $message }}</p>
             @enderror
         </div>
 
@@ -41,9 +43,10 @@
                 เบอร์โทรศัพท์ <span class="text-brand-gray-light font-normal">(ไม่บังคับ)</span>
             </label>
             <input id="phone" type="tel" name="phone" value="{{ old('phone') }}" autocomplete="tel"
+                   @error('phone') aria-describedby="phone-error" aria-invalid="true" @enderror
                    class="block w-full rounded-none border-brand-gray-border focus:ring-brand-black focus:border-brand-black text-sm min-h-[44px]" />
             @error('phone')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                <p id="phone-error" class="text-brand-danger text-sm mt-1">{{ $message }}</p>
             @enderror
         </div>
 
@@ -51,9 +54,10 @@
         <div class="mt-4">
             <label for="password" class="block text-sm font-medium text-brand-gray-dark mb-1">รหัสผ่าน</label>
             <input id="password" type="password" name="password" required autocomplete="new-password"
+                   @error('password') aria-describedby="password-error" aria-invalid="true" @enderror
                    class="block w-full rounded-none border-brand-gray-border focus:ring-brand-black focus:border-brand-black text-sm min-h-[44px]" />
             @error('password')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                <p id="password-error" class="text-brand-danger text-sm mt-1">{{ $message }}</p>
             @enderror
         </div>
 
@@ -61,9 +65,10 @@
         <div class="mt-4">
             <label for="password_confirmation" class="block text-sm font-medium text-brand-gray-dark mb-1">ยืนยันรหัสผ่าน</label>
             <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password"
+                   @error('password_confirmation') aria-describedby="password_confirmation-error" aria-invalid="true" @enderror
                    class="block w-full rounded-none border-brand-gray-border focus:ring-brand-black focus:border-brand-black text-sm min-h-[44px]" />
             @error('password_confirmation')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                <p id="password_confirmation-error" class="text-brand-danger text-sm mt-1">{{ $message }}</p>
             @enderror
         </div>
 

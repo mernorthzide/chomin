@@ -260,7 +260,7 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                                             </svg>
                                             <p class="text-xs text-brand-gray-medium" x-text="fileName || 'คลิกเพื่อเลือกไฟล์สลิป'"></p>
-                                            <p class="text-xs text-brand-gray-border mt-1">PNG, JPG ไม่เกิน 5MB</p>
+                                            <p class="text-xs text-brand-gray-light mt-1">PNG, JPG ไม่เกิน 5MB</p>
                                         </div>
                                         <input type="file" name="slip" accept="image/*" class="sr-only" required
                                                @change="fileName = $event.target.files[0]?.name || ''">

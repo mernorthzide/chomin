@@ -9,7 +9,9 @@
                 </h1>
             </div>
             <p class="max-w-md text-sm text-brand-gray-medium leading-relaxed">
-                รวมแคมเปญและคอลเล็คชันจาก CHOMIN สำหรับเลือกเชิ้ต สี และ styling direction ที่ใช่
+                {{ app()->getLocale() === 'en'
+                    ? 'Campaigns and collections from CHOMIN to find the right shirt, colour and styling direction.'
+                    : 'รวมแคมเปญและคอลเล็คชันจาก CHOMIN สำหรับเลือกเชิ้ต สี และ styling direction ที่ใช่' }}
             </p>
         </div>
     </section>
@@ -40,7 +42,7 @@
                         <div class="flex items-start justify-between gap-4">
                             <h2 class="text-xs uppercase tracking-[0.08em] leading-snug">{{ $collection->localized_name }}</h2>
                             <span class="collection-count text-[10px] uppercase tracking-[0.08em] text-brand-gray-light whitespace-nowrap">
-                                {{ $collection->products_count }} items
+                                {{ $collection->products_count }} {{ app()->getLocale() === 'en' ? 'items' : 'รายการ' }}
                             </span>
                         </div>
                         @if($collection->localized_description)
@@ -52,7 +54,7 @@
                 </a>
             @empty
                 <div class="col-span-full px-6 py-24 text-center">
-                    <p class="text-sm text-brand-gray-medium">ยังไม่มีคอลเล็คชัน</p>
+                    <p class="text-sm text-brand-gray-medium">{{ app()->getLocale() === 'en' ? 'No collections yet' : 'ยังไม่มีคอลเล็คชัน' }}</p>
                 </div>
             @endforelse
         </div>

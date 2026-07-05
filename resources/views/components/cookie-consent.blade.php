@@ -15,6 +15,8 @@
     }"
     x-show="open"
     x-cloak
+    role="region"
+    aria-label="{{ app()->getLocale() === 'en' ? 'Cookie consent' : 'การยินยอมคุกกี้' }}"
     class="cookie-consent-panel fixed inset-x-0 bottom-0 z-[70] max-h-[38svh] overflow-y-auto border-t border-brand-gray-border bg-white px-4 py-3 shadow-[0_-12px_36px_rgba(26,26,26,0.10)] md:inset-x-6 md:bottom-6 md:mx-auto md:max-h-none md:max-w-5xl md:border md:px-5 md:py-4 md:shadow-[0_18px_60px_rgba(26,26,26,0.12)]"
 >
     <div class="mx-auto flex max-w-5xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

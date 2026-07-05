@@ -2,7 +2,7 @@
 
     <div>
         <label class="block text-xs font-medium tracking-widest uppercase text-brand-gray-dark mb-1">
-            ชื่อผู้รับ <span class="text-red-400">*</span>
+            ชื่อผู้รับ <span class="text-brand-danger">*</span>
         </label>
         <input type="text" name="name"
                value="{{ old('name', $address->name ?? '') }}"
@@ -12,7 +12,7 @@
 
     <div>
         <label class="block text-xs font-medium tracking-widest uppercase text-brand-gray-dark mb-1">
-            เบอร์โทร <span class="text-red-400">*</span>
+            เบอร์โทร <span class="text-brand-danger">*</span>
         </label>
         <input type="text" name="phone"
                value="{{ old('phone', $address->phone ?? '') }}"
@@ -22,7 +22,7 @@
 
     <div class="sm:col-span-2">
         <label class="block text-xs font-medium tracking-widest uppercase text-brand-gray-dark mb-1">
-            ที่อยู่ <span class="text-red-400">*</span>
+            ที่อยู่ <span class="text-brand-danger">*</span>
         </label>
         <textarea name="address" rows="2"
                   class="w-full border border-brand-gray-border px-3 py-2 text-sm text-brand-black focus:outline-none focus:border-brand-black bg-white resize-none"
@@ -31,7 +31,7 @@
 
     <div>
         <label class="block text-xs font-medium tracking-widest uppercase text-brand-gray-dark mb-1">
-            อำเภอ/เขต <span class="text-red-400">*</span>
+            อำเภอ/เขต <span class="text-brand-danger">*</span>
         </label>
         <input type="text" name="district"
                value="{{ old('district', $address->district ?? '') }}"
@@ -45,7 +45,7 @@
          })" class="contents">
         <div>
             <label class="block text-xs font-medium tracking-widest uppercase text-brand-gray-dark mb-1">
-                จังหวัด <span class="text-red-400">*</span>
+                จังหวัด <span class="text-brand-danger">*</span>
             </label>
             <select name="province" x-model="province"
                     class="w-full border border-brand-gray-border px-3 py-2 text-sm text-brand-black focus:outline-none focus:border-brand-black bg-white"
@@ -59,7 +59,7 @@
 
         <div>
             <label class="block text-xs font-medium tracking-widest uppercase text-brand-gray-dark mb-1">
-                รหัสไปรษณีย์ <span class="text-red-400">*</span>
+                รหัสไปรษณีย์ <span class="text-brand-danger">*</span>
             </label>
             <input type="text" inputmode="numeric" maxlength="5" pattern="\d{5}" name="postal_code"
                    x-model="postalCode" @input="autofill()"
@@ -69,6 +69,7 @@
         </div>
     </div>
 
+    @once
     <script>
     function thaiAddressLookup(config) {
         return {
@@ -95,6 +96,7 @@
         };
     }
     </script>
+    @endonce
 
     <div class="flex items-center gap-3 sm:col-span-2">
         <input type="checkbox" id="is_default_{{ $address->id ?? 'new' }}" name="is_default" value="1"

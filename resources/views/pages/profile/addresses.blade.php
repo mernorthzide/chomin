@@ -3,8 +3,11 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12"
          x-data="{ showAddForm: false, editId: null }">
 
+        <p class="text-xs font-medium tracking-widest uppercase text-brand-gray-light mb-2">
+            {{ app()->getLocale() === 'en' ? 'My Account' : 'บัญชีของฉัน' }}
+        </p>
         <h1 class="text-2xl md:text-3xl font-medium text-brand-black tracking-widest uppercase mb-8">
-            บัญชีของฉัน
+            {{ app()->getLocale() === 'en' ? 'Addresses' : 'ที่อยู่จัดส่ง' }}
         </h1>
 
         <div class="lg:grid lg:grid-cols-4 lg:gap-8">
@@ -18,13 +21,13 @@
             <div class="lg:col-span-3">
 
                 @if(session('success'))
-                    <div class="mb-6 px-4 py-3 bg-green-50 border border-green-200 text-green-700 text-sm">
+                    <div role="status" aria-live="polite" class="mb-6 px-4 py-3 bg-brand-success/10 border border-brand-success text-brand-success text-sm">
                         {{ session('success') }}
                     </div>
                 @endif
 
                 @if($errors->any())
-                    <div class="mb-6 px-4 py-3 bg-red-50 border border-red-200 text-red-700 text-sm">
+                    <div role="alert" class="mb-6 px-4 py-3 bg-brand-danger/10 border border-brand-danger text-brand-danger text-sm">
                         <ul class="list-disc list-inside space-y-1">
                             @foreach($errors->all() as $error)
                                 <li>{{ $error }}</li>
@@ -96,7 +99,7 @@
                                             </div>
                                             <div class="flex items-center gap-3 flex-shrink-0 ml-4">
                                                 <button @click="editing = true"
-                                                        class="text-xs text-brand-gray-medium hover:text-brand-black underline transition-colors duration-150">
+                                                        class="inline-flex items-center min-h-[44px] text-xs text-brand-gray-medium hover:text-brand-black underline transition-colors duration-150">
                                                     แก้ไข
                                                 </button>
                                                 <form method="POST" action="{{ route('addresses.destroy', $address) }}"
@@ -104,7 +107,7 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"
-                                                            class="text-xs text-red-400 hover:text-red-600 underline transition-colors duration-150">
+                                                            class="inline-flex items-center min-h-[44px] text-xs text-brand-danger hover:text-brand-danger underline transition-colors duration-150">
                                                         ลบ
                                                     </button>
                                                 </form>

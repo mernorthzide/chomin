@@ -2,8 +2,11 @@
     @php $isEn = app()->getLocale() === 'en'; @endphp
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        <h1 class="text-2xl md:text-3xl font-medium text-brand-black tracking-widest uppercase mb-8">
+        <p class="text-xs font-medium tracking-widest uppercase text-brand-gray-light mb-2">
             {{ $isEn ? 'My Account' : 'บัญชีของฉัน' }}
+        </p>
+        <h1 class="text-2xl md:text-3xl font-medium text-brand-black tracking-widest uppercase mb-8">
+            {{ $isEn ? 'Returns & Exchanges' : 'การคืนสินค้า' }}
         </h1>
 
         <div class="lg:grid lg:grid-cols-4 lg:gap-8">
@@ -23,7 +26,7 @@
                     </div>
 
                     @if(session('flash'))
-                        <div class="mb-6 border border-brand-black px-4 py-3 text-sm">
+                        <div role="status" aria-live="polite" class="mb-6 border border-brand-black px-4 py-3 text-sm">
                             {{ session('flash')['message'] }}
                         </div>
                     @endif

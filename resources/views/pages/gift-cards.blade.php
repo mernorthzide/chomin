@@ -45,7 +45,7 @@
             @endif
 
             @if($errors->any())
-                <div class="mb-6 border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+                <div class="mb-6 border border-brand-danger/40 bg-brand-danger/5 px-4 py-3 text-sm text-brand-danger" role="alert">
                     <ul class="list-disc list-inside">
                         @foreach($errors->all() as $error) <li>{{ $error }}</li> @endforeach
                     </ul>

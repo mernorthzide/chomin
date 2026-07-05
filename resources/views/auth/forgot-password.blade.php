@@ -22,9 +22,10 @@
         <div>
             <label for="email" class="block text-sm font-medium text-brand-gray-dark mb-1">อีเมล</label>
             <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
+                   @error('email') aria-describedby="email-error" aria-invalid="true" @enderror
                    class="block w-full rounded-none border-brand-gray-border focus:ring-brand-black focus:border-brand-black text-sm min-h-[44px]" />
             @error('email')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                <p id="email-error" class="text-brand-danger text-sm mt-1">{{ $message }}</p>
             @enderror
         </div>
 

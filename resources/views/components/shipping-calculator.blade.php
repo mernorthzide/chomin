@@ -10,7 +10,7 @@
                class="flex-1 border border-brand-gray-border px-3 py-2 text-sm">
     </div>
     <template x-if="result">
-        <div class="mt-3 space-y-1 text-xs">
+        <div class="mt-3 space-y-1 text-xs" role="status" aria-live="polite">
             <p class="flex justify-between">
                 <span class="text-brand-gray-medium">{{ $isEn ? 'Province' : 'จังหวัด' }}</span>
                 <span class="font-medium" x-text="result.province || '—'"></span>
@@ -22,7 +22,7 @@
                         <span>฿<span x-text="result.shipping_fee.toLocaleString()"></span></span>
                     </template>
                     <template x-if="result.shipping_fee === 0">
-                        <span class="text-green-700 uppercase">{{ $isEn ? 'Free' : 'จัดส่งฟรี' }}</span>
+                        <span class="text-brand-success uppercase">{{ $isEn ? 'Free' : 'จัดส่งฟรี' }}</span>
                     </template>
                 </span>
             </p>
@@ -43,7 +43,7 @@
         </div>
     </template>
     <template x-if="error">
-        <p class="mt-3 text-[11px] text-red-700" x-text="error"></p>
+        <p class="mt-3 text-[11px] text-brand-danger" x-text="error" role="alert"></p>
     </template>
 </div>
 

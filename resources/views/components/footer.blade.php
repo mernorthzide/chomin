@@ -68,7 +68,7 @@
                 <h4 class="text-xs font-bold uppercase tracking-widest">โซเชียลมีเดีย</h4>
                 <ul class="text-xs tracking-widest text-brand-gray-medium space-y-3 uppercase">
                     <li>
-                        <a href="https://www.facebook.com/Chominstyle" target="_blank" class="hover:text-brand-black transition-colors duration-200 focus:outline-none focus:underline">Facebook</a>
+                        <a href="https://www.facebook.com/Chominstyle" target="_blank" rel="noopener" class="hover:text-brand-black transition-colors duration-200 focus:outline-none focus:underline">Facebook</a>
                     </li>
                     @if(\App\Models\SiteSetting::get('line_chat_url'))
                     <li>
@@ -93,7 +93,7 @@
                 <h4 class="text-xs font-bold uppercase tracking-widest">ไซส์และการสั่งซื้อ</h4>
                 <ul class="text-xs tracking-widest text-brand-gray-medium space-y-3 uppercase">
                     <li>
-                        <a href="{{ route('pages.size-guide') }}" class="hover:text-brand-black transition-colors duration-200 focus:outline-none focus:underline">ไซส์ XS &ndash; 6XL</a>
+                        <a href="{{ route('pages.size-guide') }}" class="hover:text-brand-black transition-colors duration-200 focus:outline-none focus:underline">ไซส์ S &ndash; XL</a>
                     </li>
                     <li>
                         <a href="{{ route('color-library') }}" class="hover:text-brand-black transition-colors duration-200 focus:outline-none focus:underline">50+ สี ให้เลือก</a>
@@ -140,7 +140,7 @@
                         </div>
                     </template>
                     <p x-show="!allowEmbeds" class="text-xs text-brand-gray-medium">
-                        Instagram embed จะแสดงหลังยอมรับคุกกี้หมวด embeds
+                        {{ app()->getLocale() === 'en' ? 'Instagram embed will appear after you accept the embeds cookie category.' : 'Instagram embed จะแสดงหลังยอมรับคุกกี้หมวด embeds' }}
                     </p>
                 @endif
             </div>

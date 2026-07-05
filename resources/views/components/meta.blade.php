@@ -14,7 +14,7 @@
     if (! $hasBrand) {
         $resolvedTitle = ($resolvedTitle !== '' ? $resolvedTitle.' | ' : '').'CHOMIN';
     }
-    $resolvedDescription = $description ?: 'CHO.MIN — เชิ้ตดีไซน์ 50+ สี ไซส์ XS-6XL ออกแบบให้คุณเลือกได้ทุกดีเทล';
+    $resolvedDescription = $description ?: 'CHO.MIN — เชิ้ตดีไซน์ 50+ สี ไซส์ S-XL ออกแบบให้คุณเลือกได้ทุกดีเทล';
     $resolvedImage = $ogImage ?: ($image ?: url('/images/og-default.jpg'));
     $canonical = \App\Support\Seo::canonical();
     $alternates = \App\Support\Seo::alternates();
@@ -49,7 +49,7 @@
 <meta name="twitter:description" content="{{ $resolvedDescription }}">
 <meta name="twitter:image" content="{{ $resolvedImage }}">
 
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#1a1a1a">
 
 {{-- Site-wide JSON-LD --}}
 <script type="application/ld+json">{!! json_encode(\App\Support\Seo::organizationJsonLd(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>

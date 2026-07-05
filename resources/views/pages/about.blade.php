@@ -8,6 +8,14 @@
         $locale = app()->getLocale();
     @endphp
 
+    {{-- ── BRAND FLAT-LAY (client image) ────────────────────────────── --}}
+    <section class="bg-white border-b border-brand-gray-border" aria-label="CHO.MIN design your own shirt">
+        <img src="{{ \Illuminate\Support\Facades\Storage::url('products/chomin-imagen/from-client/brand-flatlay-design-your-own.jpg') }}"
+             alt="{{ $locale === 'en' ? 'CHO.MIN — design your own shirt: fabrics, collar styles, buttons, and details' : 'CHO.MIN ออกแบบเสื้อเชิ้ตในแบบของคุณ ผ้า คอเสื้อ กระดุม และรายละเอียด' }}"
+             class="w-full h-auto"
+             fetchpriority="high">
+    </section>
+
     {{-- ── HERO ──────────────────────────────────────────────────────── --}}
     <section class="relative overflow-hidden bg-white border-b border-brand-gray-border">
         <div class="grid grid-cols-1 lg:grid-cols-2">
@@ -45,9 +53,6 @@
     {{-- ── MANIFESTO ────────────────────────────────────────────────── --}}
     <section class="bg-white border-b border-brand-gray-border px-6 md:px-14 py-16 md:py-24">
         <div class="max-w-3xl">
-            <p class="text-xs uppercase tracking-[0.22em] text-brand-gray-light mb-8">
-                {{ $locale === 'en' ? 'What We Believe' : 'สิ่งที่เราเชื่อ' }}
-            </p>
             <blockquote class="font-serif uppercase leading-tight text-brand-black" style="font-size: clamp(1.6rem, 3.5vw, 3rem);">
                 {{ $locale === 'en'
                     ? '"Style is not a size. It\'s not a standard. It\'s the detail you choose every morning."'
@@ -59,16 +64,12 @@
     {{-- ── HOW IT WORKS ─────────────────────────────────────────────── --}}
     <section class="bg-white border-b border-brand-gray-border" aria-label="How CHO.MIN works">
         <div class="px-6 md:px-14 py-12 border-b border-brand-gray-border">
-            <p class="text-xs uppercase tracking-[0.22em] text-brand-gray-light mb-3">
-                {{ $locale === 'en' ? 'How It Works' : 'วิธีการทำงาน' }}
-            </p>
             <h2 class="font-serif uppercase leading-none text-3xl md:text-5xl">
                 {{ $locale === 'en' ? 'Three Steps to Your Shirt' : 'สามขั้นตอน สู่เชิ้ตของคุณ' }}
             </h2>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-brand-gray-border">
             <div class="p-8 md:p-10">
-                <span class="block font-serif text-5xl leading-none text-brand-black mb-6">01</span>
                 <h3 class="text-xs uppercase tracking-[0.16em] text-brand-black mb-3">
                     {{ $locale === 'en' ? 'Choose Your Color' : 'เลือกสี' }}
                 </h3>
@@ -79,25 +80,23 @@
                 </p>
             </div>
             <div class="p-8 md:p-10">
-                <span class="block font-serif text-5xl leading-none text-brand-black mb-6">02</span>
                 <h3 class="text-xs uppercase tracking-[0.16em] text-brand-black mb-3">
                     {{ $locale === 'en' ? 'Pick Your Details' : 'เลือกรายละเอียด' }}
                 </h3>
                 <p class="text-sm text-brand-gray-dark leading-relaxed">
                     {{ $locale === 'en'
-                        ? 'Collar style, cuff shape, pocket or no pocket. Small choices that make a shirt feel entirely yours.'
-                        : 'คอเสื้อ ปลายแขน และกระเป๋า ตัดสินใจ 3 อย่าง แค่นั้นก็ได้เชิ้ตที่ไม่เหมือนใคร' }}
+                        ? 'Collar, front placket, cuff, and pocket. Four small choices that make a shirt feel entirely yours.'
+                        : 'คอเสื้อ สาบหน้า ปลายแขน และกระเป๋า ตัดสินใจ 4 อย่าง แค่นั้นก็ได้เชิ้ตที่ไม่เหมือนใคร' }}
                 </p>
             </div>
             <div class="p-8 md:p-10">
-                <span class="block font-serif text-5xl leading-none text-brand-black mb-6">03</span>
                 <h3 class="text-xs uppercase tracking-[0.16em] text-brand-black mb-3">
                     {{ $locale === 'en' ? 'Find Your Size' : 'เลือกไซส์' }}
                 </h3>
                 <p class="text-sm text-brand-gray-dark leading-relaxed">
                     {{ $locale === 'en'
-                        ? 'XS to 6XL. A unisex cut designed to drape well across all body types — slim, regular, and plus.'
-                        : 'XS ถึง 6XL ทรง Unisex ที่ออกแบบให้ตกทรงดีในทุกสัดส่วน ทั้งเล็ก กลาง และพลัสไซส์' }}
+                        ? 'S to XL. A unisex cut designed to drape well across body types — slim, regular, and relaxed.'
+                        : 'S ถึง XL ทรง Unisex ที่ออกแบบให้ตกทรงดีในหลายสัดส่วน ทั้งทรงสลิม ปกติ และหลวมสบาย' }}
                 </p>
             </div>
         </div>
@@ -110,7 +109,7 @@
                  alt="{{ $locale === 'en' ? 'CHO.MIN collar and cuff detail' : 'รายละเอียดคอเสื้อและปลายแขน CHO.MIN' }}"
                  class="h-72 md:h-96 w-full object-cover"
                  loading="lazy">
-            <div class="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/40 to-transparent">
+            <div class="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/55 to-transparent">
                 <p class="text-xs uppercase tracking-[0.16em] text-white/80">{{ $locale === 'en' ? 'Custom Details' : 'รายละเอียดที่เลือกได้' }}</p>
             </div>
         </div>
@@ -119,7 +118,7 @@
                  alt="{{ $locale === 'en' ? 'CHO.MIN shirts gift packaging' : 'แพ็กเกจเชิ้ต CHO.MIN' }}"
                  class="h-72 md:h-96 w-full object-cover"
                  loading="lazy">
-            <div class="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/40 to-transparent">
+            <div class="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/55 to-transparent">
                 <p class="text-xs uppercase tracking-[0.16em] text-white/80">{{ $locale === 'en' ? 'Ready to Gift' : 'พร้อมเป็นของขวัญ' }}</p>
             </div>
         </div>
@@ -128,7 +127,7 @@
                  alt="{{ $locale === 'en' ? 'CHO.MIN shirt care' : 'การดูแลเชิ้ต CHO.MIN' }}"
                  class="h-72 md:h-96 w-full object-cover"
                  loading="lazy">
-            <div class="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/40 to-transparent">
+            <div class="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/55 to-transparent">
                 <p class="text-xs uppercase tracking-[0.16em] text-white/80">{{ $locale === 'en' ? 'Premium Fabric' : 'ผ้าคุณภาพ' }}</p>
             </div>
         </div>
@@ -138,9 +137,6 @@
     <section class="bg-white border-b border-brand-gray-border px-6 md:px-14 py-16 md:py-20">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
             <div>
-                <p class="text-xs uppercase tracking-[0.22em] text-brand-gray-light mb-8">
-                    {{ $locale === 'en' ? 'Our Commitment' : 'สิ่งที่เรายึดมั่น' }}
-                </p>
                 <div class="space-y-8">
                     <div class="border-t border-brand-gray-border pt-6">
                         <h3 class="text-xs uppercase tracking-[0.16em] text-brand-black mb-3">{{ $locale === 'en' ? 'Quality Without Compromise' : 'คุณภาพที่ไม่ลดทอน' }}</h3>
@@ -148,7 +144,7 @@
                     </div>
                     <div class="border-t border-brand-gray-border pt-6">
                         <h3 class="text-xs uppercase tracking-[0.16em] text-brand-black mb-3">{{ $locale === 'en' ? 'Inclusive Sizing' : 'ไซส์สำหรับทุกคน' }}</h3>
-                        <p class="text-sm text-brand-gray-dark leading-relaxed">{{ $locale === 'en' ? 'XS to 6XL, unisex. We believe great design should fit everyone — not just a specific body type.' : 'XS ถึง 6XL ทรง Unisex เพราะดีไซน์ที่ดีต้องใส่ได้ทุกคน ไม่ใช่แค่บางสัดส่วน' }}</p>
+                        <p class="text-sm text-brand-gray-dark leading-relaxed">{{ $locale === 'en' ? 'S to XL, unisex. We believe great design should fit well — not just one specific body type.' : 'S ถึง XL ทรง Unisex เพราะดีไซน์ที่ดีควรใส่ได้สบายในหลายสัดส่วน ไม่ใช่แค่ทรงเดียว' }}</p>
                     </div>
                     <div class="border-t border-brand-gray-border pt-6">
                         <h3 class="text-xs uppercase tracking-[0.16em] text-brand-black mb-3">{{ $locale === 'en' ? 'Free Exchange, 7 Days' : 'เปลี่ยนได้ฟรี 7 วัน' }}</h3>
@@ -156,24 +152,12 @@
                     </div>
                 </div>
             </div>
-            <div class="lg:border-l border-t lg:border-t-0 border-brand-gray-border lg:pl-16 pt-8 lg:pt-0">
-                <p class="text-xs uppercase tracking-[0.22em] text-brand-gray-light mb-8">
-                    {{ $locale === 'en' ? 'By the Numbers' : 'ตัวเลขที่เล่าเรื่อง' }}
+            <div class="lg:border-l border-t lg:border-t-0 border-brand-gray-border lg:pl-16 pt-8 lg:pt-0 flex items-center">
+                <p class="font-serif uppercase leading-tight text-brand-black" style="font-size: clamp(1.4rem, 2.6vw, 2.2rem);">
+                    {{ $locale === 'en'
+                        ? 'Over fifty colors, sizes from S to XL, and four details you choose yourself — every shirt is unisex, and entirely your own.'
+                        : 'กว่าห้าสิบเฉดสี ไซส์ตั้งแต่ S ถึง XL และอีกสี่รายละเอียดที่คุณเลือกเอง ทุกตัวเป็นทรง Unisex และเป็นของคุณอย่างแท้จริง' }}
                 </p>
-                <div class="space-y-8">
-                    <div class="border-t border-brand-gray-border pt-6">
-                        <span class="block font-serif text-5xl leading-none text-brand-black">50+</span>
-                        <p class="mt-2 text-xs uppercase tracking-[0.14em] text-brand-gray-medium">{{ $locale === 'en' ? 'Colors to choose' : 'สีให้เลือก' }}</p>
-                    </div>
-                    <div class="border-t border-brand-gray-border pt-6">
-                        <span class="block font-serif text-5xl leading-none text-brand-black">XS–6XL</span>
-                        <p class="mt-2 text-xs uppercase tracking-[0.14em] text-brand-gray-medium">{{ $locale === 'en' ? 'Size range, unisex' : 'ไซส์ครอบคลุม ทรง Unisex' }}</p>
-                    </div>
-                    <div class="border-t border-brand-gray-border pt-6">
-                        <span class="block font-serif text-5xl leading-none text-brand-black">3</span>
-                        <p class="mt-2 text-xs uppercase tracking-[0.14em] text-brand-gray-medium">{{ $locale === 'en' ? 'Details to customize' : 'รายละเอียดที่ปรับได้' }}</p>
-                    </div>
-                </div>
             </div>
         </div>
     </section>

@@ -16,7 +16,7 @@
         </p>
 
         @if($errors->any())
-            <div class="mt-4 border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <div role="alert" class="mt-4 border border-brand-danger bg-brand-danger/10 px-4 py-3 text-sm text-brand-danger">
                 {{ $errors->first() }}
             </div>
         @endif
@@ -54,7 +54,7 @@
                             <div class="w-16 h-20 bg-brand-gray overflow-hidden shrink-0">
                                 @if($item->product?->primaryImage)
                                     <img src="{{ Storage::url($item->product->primaryImage->image_path) }}"
-                                         alt="" class="w-full h-full object-cover">
+                                         alt="" loading="lazy" class="w-full h-full object-cover">
                                 @endif
                             </div>
                             <div class="flex-1 min-w-0">
@@ -73,7 +73,8 @@
                 <legend class="text-xs uppercase tracking-[0.14em] text-brand-gray-light mb-3">
                     {{ $isEn ? 'Reason' : 'เหตุผล' }}
                 </legend>
-                <select name="reason" required class="w-full border border-brand-gray-border px-3 py-2 text-sm bg-white">
+                <label for="reason" class="sr-only">{{ $isEn ? 'Reason' : 'เหตุผล' }}</label>
+                <select name="reason" id="reason" required class="w-full border border-brand-gray-border px-3 py-2 text-sm bg-white">
                     <option value="size_too_small">{{ $isEn ? 'Size too small' : 'ไซส์เล็กไป' }}</option>
                     <option value="size_too_large">{{ $isEn ? 'Size too large' : 'ไซส์ใหญ่ไป' }}</option>
                     <option value="color_different">{{ $isEn ? 'Color looks different' : 'สีไม่ตรงตามภาพ' }}</option>
@@ -85,25 +86,25 @@
             </fieldset>
 
             <div>
-                <label class="text-xs uppercase tracking-[0.14em] text-brand-gray-light">
+                <label for="reason_detail" class="text-xs uppercase tracking-[0.14em] text-brand-gray-light">
                     {{ $isEn ? 'Detail (optional)' : 'รายละเอียดเพิ่มเติม (ถ้ามี)' }}
                 </label>
-                <textarea name="reason_detail" rows="3" maxlength="1000"
+                <textarea name="reason_detail" id="reason_detail" rows="3" maxlength="1000"
                           class="mt-1 w-full border border-brand-gray-border px-3 py-2 text-sm"></textarea>
             </div>
 
             <div>
-                <label class="text-xs uppercase tracking-[0.14em] text-brand-gray-light">
+                <label for="photos" class="text-xs uppercase tracking-[0.14em] text-brand-gray-light">
                     {{ $isEn ? 'Photos (optional, up to 6)' : 'รูปสินค้า (ถ้ามี ไม่เกิน 6 รูป)' }}
                 </label>
-                <input type="file" name="photos[]" multiple accept="image/jpeg,image/png,image/webp"
+                <input type="file" name="photos[]" id="photos" multiple accept="image/jpeg,image/png,image/webp"
                        class="mt-1 w-full border border-brand-gray-border px-3 py-2 text-xs file:mr-3 file:border-0 file:bg-brand-black file:text-white file:px-3 file:py-1 file:text-[11px] file:uppercase">
                 <p class="mt-1 text-[10px] text-brand-gray-light">
                     {{ $isEn ? 'Helpful for damaged or color-mismatch claims.' : 'แนะนำถ่ายให้เห็นรอยตำหนิ/สี เพื่อพิจารณาเร็วขึ้น' }}
                 </p>
             </div>
 
-            <div class="border border-brand-gray-border bg-brand-gray/40 p-4 text-xs text-brand-gray-dark space-y-2">
+            <div class="border border-brand-gray-border bg-brand-gray p-4 text-xs text-brand-gray-dark space-y-2">
                 <p class="font-medium uppercase tracking-[0.14em]">{{ $isEn ? 'How returns work' : 'ขั้นตอนการคืน/เปลี่ยน' }}</p>
                 <ol class="list-decimal pl-5 space-y-1">
                     <li>{{ $isEn ? 'Submit this form. We review within 1–2 business days.' : 'ส่งคำขอนี้ ทีมงานตรวจสอบภายใน 1–2 วันทำการ' }}</li>

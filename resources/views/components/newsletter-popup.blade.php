@@ -7,6 +7,10 @@
      x-transition.opacity
      @click.self="dismiss()">
     <div class="relative grid w-full max-w-3xl grid-cols-1 overflow-hidden bg-white md:grid-cols-5"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="newsletter-popup-title"
+         x-trap="open"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 translate-y-4"
          x-transition:enter-end="opacity-100 translate-y-0">
@@ -26,7 +30,7 @@
             <template x-if="!success">
                 <div>
                     <p class="text-[11px] uppercase tracking-[0.18em] text-brand-gray-light">{{ $isEn ? 'Join the list' : 'สมัครรับข่าวสาร' }}</p>
-                    <h2 class="mt-2 font-serif text-3xl uppercase leading-tight md:text-4xl">
+                    <h2 id="newsletter-popup-title" class="mt-2 font-serif text-3xl uppercase leading-tight md:text-4xl">
                         {{ $isEn ? '10% off your first order' : 'รับส่วนลด 10% ครั้งแรก' }}
                     </h2>
                     <p class="mt-3 text-sm leading-relaxed text-brand-gray-medium">
@@ -44,7 +48,7 @@
                             <span x-show="loading">…</span>
                         </button>
                     </form>
-                    <p x-show="errorMessage" x-cloak class="mt-2 text-xs text-red-600" x-text="errorMessage"></p>
+                    <p x-show="errorMessage" x-cloak role="alert" class="mt-2 text-xs text-brand-danger" x-text="errorMessage"></p>
                     <button @click="dismiss()" class="mt-3 text-[11px] uppercase tracking-[0.14em] text-brand-gray-light underline-offset-4 underline">
                         {{ $isEn ? 'No thanks' : 'ไม่ขอบคุณ' }}
                     </button>

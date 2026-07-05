@@ -2,8 +2,11 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
 
+        <p class="text-xs font-medium tracking-widest uppercase text-brand-gray-light mb-2">
+            {{ app()->getLocale() === 'en' ? 'My Account' : 'บัญชีของฉัน' }}
+        </p>
         <h1 class="text-2xl md:text-3xl font-medium text-brand-black tracking-widest uppercase mb-8">
-            บัญชีของฉัน
+            {{ app()->getLocale() === 'en' ? 'Loyalty Points' : 'แต้มสะสม' }}
         </h1>
 
         <div class="lg:grid lg:grid-cols-4 lg:gap-8">
@@ -59,15 +62,15 @@
                                             </td>
                                             <td class="py-3 pr-4">
                                                 @if($tx->type === 'earn')
-                                                    <span class="inline-block px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700 rounded">
+                                                    <span class="inline-block px-2 py-0.5 text-xs font-medium bg-brand-success/10 text-brand-success">
                                                         รับแต้ม
                                                     </span>
                                                 @elseif($tx->type === 'redeem')
-                                                    <span class="inline-block px-2 py-0.5 text-xs font-medium bg-red-100 text-red-600 rounded">
+                                                    <span class="inline-block px-2 py-0.5 text-xs font-medium bg-brand-danger/10 text-brand-danger">
                                                         ใช้แต้ม
                                                     </span>
                                                 @else
-                                                    <span class="inline-block px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded">
+                                                    <span class="inline-block px-2 py-0.5 text-xs font-medium bg-brand-gray text-brand-gray-dark border border-brand-gray-border">
                                                         {{ $tx->type }}
                                                     </span>
                                                 @endif
@@ -76,7 +79,7 @@
                                                 {{ $tx->description ?? '-' }}
                                             </td>
                                             <td class="py-3 text-right font-medium
-                                                {{ $tx->points >= 0 ? 'text-green-600' : 'text-red-500' }}">
+                                                {{ $tx->points >= 0 ? 'text-brand-success' : 'text-brand-danger' }}">
                                                 {{ $tx->points >= 0 ? '+' : '' }}{{ number_format($tx->points) }}
                                             </td>
                                         </tr>

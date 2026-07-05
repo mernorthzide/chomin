@@ -20,7 +20,7 @@
         </div>
 
         @if(session('flash'))
-            <div class="mt-4 border border-brand-black px-4 py-3 text-sm">
+            <div role="status" aria-live="polite" class="mt-4 border border-brand-black px-4 py-3 text-sm">
                 {{ session('flash')['message'] }}
             </div>
         @endif
@@ -79,7 +79,7 @@
         @endif
 
         @if($return->admin_note)
-            <div class="mt-6 border-l-2 border-brand-black bg-brand-gray/40 px-4 py-3">
+            <div class="mt-6 border border-brand-gray-border bg-brand-gray px-4 py-3">
                 <p class="text-xs uppercase tracking-[0.14em] text-brand-gray-light mb-1">{{ $isEn ? 'CHOMIN replied' : 'CHOMIN ตอบ' }}</p>
                 <p class="text-sm whitespace-pre-line">{{ $return->admin_note }}</p>
             </div>

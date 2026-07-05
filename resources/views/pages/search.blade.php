@@ -7,8 +7,9 @@
         <form method="GET" action="{{ route('search') }}" class="mt-8 max-w-3xl">
             <input name="q"
                    value="{{ $q }}"
+                   aria-label="{{ app()->getLocale() === 'en' ? 'Search by color, collar, collection' : 'ค้นหาด้วยสี คอเสื้อ หรือคอลเล็คชัน' }}"
                    placeholder="{{ app()->getLocale() === 'en' ? 'Search by color, collar, collection' : 'ค้นหาด้วยสี คอเสื้อ หรือคอลเล็คชัน' }}"
-                   class="w-full border-0 border-b border-brand-black px-0 py-4 text-xl md:text-2xl focus:ring-0">
+                   class="w-full border-0 border-b border-brand-black px-0 py-4 text-xl md:text-2xl focus:border-b-2 focus:border-brand-black focus:outline-none">
         </form>
     </section>
 

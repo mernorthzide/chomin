@@ -19,7 +19,7 @@
 
             @if(in_array($page->slug, ['contact', 'careers', 'partnerships', 'wholesale'], true))
                 @if(session('success'))
-                    <div class="mt-10 border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700" role="status">
+                    <div class="mt-10 border border-brand-success/30 bg-brand-success/5 px-4 py-3 text-sm text-brand-success" role="status">
                         {{ session('success') }}
                     </div>
                 @endif

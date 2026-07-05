@@ -20,7 +20,7 @@
                     class="inline-flex h-11 w-11 items-center justify-center hover:opacity-60 focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2 lg:hidden"
                     @click="mobileMenu = !mobileMenu"
                     :aria-expanded="mobileMenu.toString()"
-                    aria-label="เมนู">
+                    aria-label="{{ app()->getLocale() === 'en' ? 'Menu' : 'เมนู' }}">
                 <svg x-show="!mobileMenu" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" />
                 </svg>
@@ -100,7 +100,7 @@
 
         <a href="{{ route('cart.index') }}"
            class="absolute right-4 top-1/2 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center hover:opacity-60 focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2 md:hidden"
-           aria-label="ตะกร้าสินค้า {{ $cartCount > 0 ? "($cartCount)" : '' }}">
+           aria-label="{{ app()->getLocale() === 'en' ? 'Cart' : 'ตะกร้าสินค้า' }} {{ $cartCount > 0 ? "($cartCount)" : '' }}">
             <span class="relative">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.36-1.99 1.26 12c.07.66-.45 1.24-1.12 1.24H4.25a1.13 1.13 0 0 1-1.12-1.24l1.26-12A1.13 1.13 0 0 1 5.51 7.5h12.98c.57 0 1.06.44 1.12 1.01Z" />
@@ -120,7 +120,7 @@
 
             <a href="{{ auth()->check() ? route('profile.edit') : route('login') }}"
                class="inline-flex h-11 w-11 items-center justify-center hover:opacity-60 focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2"
-               aria-label="บัญชี">
+               aria-label="{{ app()->getLocale() === 'en' ? 'Account' : 'บัญชี' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.12a7.5 7.5 0 0 1 15 0A17.93 17.93 0 0 1 12 21.75c-2.68 0-5.22-.58-7.5-1.63Z" />
                 </svg>
@@ -136,7 +136,7 @@
 
             <a href="{{ route('cart.index') }}"
                class="inline-flex h-11 w-11 items-center justify-center hover:opacity-60 focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2"
-               aria-label="ตะกร้าสินค้า {{ $cartCount > 0 ? "($cartCount)" : '' }}">
+               aria-label="{{ app()->getLocale() === 'en' ? 'Cart' : 'ตะกร้าสินค้า' }} {{ $cartCount > 0 ? "($cartCount)" : '' }}">
                 <span class="relative">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.36-1.99 1.26 12c.07.66-.45 1.24-1.12 1.24H4.25a1.13 1.13 0 0 1-1.12-1.24l1.26-12A1.13 1.13 0 0 1 5.51 7.5h12.98c.57 0 1.06.44 1.12 1.01Z" />
@@ -152,6 +152,7 @@
     <div x-show="mobileMenu"
          x-cloak
          x-transition
+         x-trap="mobileMenu"
          class="border-t border-brand-gray-border bg-white lg:hidden">
         <div class="px-6 py-5">
             <div class="grid grid-cols-1 gap-1 text-sm">
@@ -181,6 +182,10 @@
 
     <div x-show="searchOpen" x-cloak
          x-transition.opacity
+         x-trap="searchOpen"
+         role="dialog"
+         aria-modal="true"
+         aria-label="{{ app()->getLocale() === 'en' ? 'Search' : 'ค้นหา' }}"
          class="fixed top-0 left-0 right-0 z-[71] border-b border-brand-gray-border bg-white"
          x-data="searchAutocomplete()"
          @keydown.escape.window="searchOpen = false">

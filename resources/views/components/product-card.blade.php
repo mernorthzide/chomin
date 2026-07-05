@@ -50,7 +50,7 @@
     <div class="min-h-[146px] border-t border-brand-gray-border p-4 md:p-5">
         <div class="flex items-start justify-between gap-4">
             <div class="min-w-0">
-                <h3 class="text-xs uppercase tracking-[0.08em] leading-snug text-brand-black">
+                <h3 class="text-xs uppercase tracking-[0.08em] leading-snug text-brand-black line-clamp-2">
                     {{ $product->localized_name }}
                 </h3>
                 @if($product->collection ?? false)
@@ -68,7 +68,7 @@
             @if($colorPreview->isNotEmpty())
                 <div class="flex -space-x-1">
                     @foreach($colorPreview->take(6) as $color)
-                        <span class="h-5 w-5 rounded-full border border-white ring-1 ring-brand-gray-border"
+                        <span class="h-5 w-5 rounded-full border border-white ring-1 ring-brand-gray-border shadow-[inset_0_0_0_1px_rgba(0,0,0,0.08)]"
                               style="background-color: {{ $color->color_code ?? '#eeeeee' }}"></span>
                     @endforeach
                 </div>

@@ -1,4 +1,44 @@
 {
   "$comment": "Feature registry + work queue. status: queued | planned | in-progress | done | parked | blocked | needs-clarification. Entry shape: {id, title, status, priority: P1|P2|P3, queued_at: YYYY-MM-DD, source: user-interrupt|inbox|planner, reason?}. งานแทรกจาก user เข้าเป็น queued เสมอ. blocked/needs-clarification ต้องมี reason (สำหรับ needs-clarification ให้ reason เป็นคำถามที่ต้องการคำตอบ).",
-  "features": []
+  "features": [
+    {
+      "id": "F001",
+      "title": "Size-claim reconciliation — ลด claim ทั้งไซต์เหลือ S/M/L/XL ให้ตรง inventory จริง",
+      "status": "done",
+      "priority": "P1",
+      "queued_at": "2026-07-05",
+      "source": "user-interrupt",
+      "note": "DONE 2026-07-05 — evaluator VERDICT: PASS (C01–C18). ลด XS–6XL + custom-size → S/M/L/XL ทุกจุด user-facing + seeders; size-recommender clamp S–XL; คง custom-DESIGN/50+ สี. 81 tests pass. contract rev2 (rev1 ถูก evaluator FAIL เรื่อง &ndash;/through grep)."
+    },
+    {
+      "id": "F002",
+      "title": "Legal & policy copy completeness — IP clause (terms), PDPA non-disclosure + EN privacy production copy, damaged-goods 3-day policy (returns)",
+      "status": "done",
+      "done_note": "DONE 2026-07-05 evaluator PASS (C01–C14+CM). ContentSeeder privacy/terms/returns TH+EN + migration 30→7. 81 tests. contract rev2 (rev1 FAIL: C08 ผ่านฟรี/migration landmine/grep scope).",
+      "priority": "P1",
+      "queued_at": "2026-07-05",
+      "source": "user-interrupt",
+      "note": "จาก brief doc (client policy copy) + audit Sprint B. ContentSeeder privacy/terms/returns TH+EN. คงนโยบายคืน 7 วัน (brief ขัดกันเอง 7วัน/24ชม. → ใช้ 7 วันที่ live อยู่แล้ว)."
+    },
+    {
+      "id": "F003",
+      "title": "Home/FAQ/About brief parity — personas 5 ตัว, กริดจุดขาย 6 ใบ, Made For You, สาบหน้า (placket), FAQ care/size-consult",
+      "status": "done",
+      "done_note": "DONE 2026-07-05 evaluator PASS (C01–C16, design avg 0.78). home 6-card grid+5 personas+editorial value-prop, about+seeder placket(4), FAQ 5→8 idempotent. i18n th/en. 81 tests. contract rev2 (rev1 FAIL: dedup/Made-For-You/สามจุด/meta-freeze/en-dash-grep).",
+      "priority": "P2",
+      "queued_at": "2026-07-05",
+      "source": "user-interrupt",
+      "note": "จาก brief doc + audit Sprint C. ปรับข้อความไซซ์ทุกจุดเป็น S–XL (override brief ตาม decision F001). คง 50+ สี. i18n th/en."
+    },
+    {
+      "id": "F004",
+      "title": "Drive image sync — ดึงรูปจากโฟลเดอร์ 'ภาพเว็บไซต์ CM' ผ่าน browser-harness แล้ว integrate",
+      "status": "done",
+      "done_note": "DONE 2026-07-05 evaluator PASS (C01–C07). โฟลเดอร์มี 2 รูป — ดึงผ่าน browser-harness (CDP download). IMG_8216 flat-lay→About hero, IMG_8217 models→home hero (user ยอมรับ XS-6XL ที่ฝังใน pixel ของภาพ; alt ไม่มีเลขไซซ์). ไฟล์ gitignored ที่ products/chomin-imagen/from-client/. รูปโหลดจริง naturalWidth 1122/1504.",
+      "priority": "P2",
+      "queued_at": "2026-07-05",
+      "source": "user-interrupt",
+      "note": "งานข้อ 3 ที่ลูกค้าส่ง. Drive API enumerate ลูกของ shared folder ไม่ได้ → user เลือกให้ลองผ่าน browser-harness (Chrome ที่ล็อกอิน Google)."
+    }
+  ]
 }

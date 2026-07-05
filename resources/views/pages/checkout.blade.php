@@ -15,7 +15,9 @@
             </div>
         @endif
         @if($errors->any())
-            <div class="mb-6 px-4 py-3 bg-red-50 border border-red-200 text-red-700 text-sm">
+            <div role="alert" tabindex="-1"
+                 x-data x-init="$el.focus()"
+                 class="mb-6 px-4 py-3 bg-brand-danger/10 border border-brand-danger/30 text-brand-danger text-sm focus:outline-none focus:ring-2 focus:ring-brand-danger focus:ring-offset-2">
                 <ul class="list-disc list-inside space-y-1">
                     @foreach($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -119,7 +121,7 @@
                     {{-- Saved Addresses --}}
                     @if($addresses->isNotEmpty())
                         <div>
-                            <h2 class="text-sm font-medium tracking-widest uppercase text-brand-black mb-4">
+                            <h2 class="text-sm font-medium uppercase text-brand-black mb-4">
                                 ที่อยู่จัดส่ง
                             </h2>
 
@@ -163,7 +165,7 @@
 
                     {{-- Address Form --}}
                     <div x-show="useNewAddress" x-transition>
-                        <h2 class="text-sm font-medium tracking-widest uppercase text-brand-black mb-4">
+                        <h2 class="text-sm font-medium uppercase text-brand-black mb-4">
                             {{ $addresses->isEmpty() ? 'ที่อยู่จัดส่ง' : 'ที่อยู่ใหม่' }}
                         </h2>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -174,9 +176,10 @@
                                 </label>
                                 <input type="text" name="shipping_name" x-ref="shippingName"
                                        value="{{ old('shipping_name', auth()->user()->name) }}"
-                                       class="w-full border border-brand-gray-border px-4 py-3 text-sm focus:outline-none focus:border-brand-black @error('shipping_name') border-red-400 @enderror">
+                                       @error('shipping_name') aria-invalid="true" aria-describedby="error-shipping_name" @enderror
+                                       class="w-full border border-brand-gray-border px-4 py-3 text-sm focus:outline-none focus:border-brand-black @error('shipping_name') border-brand-danger @enderror">
                                 @error('shipping_name')
-                                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                                    <p id="error-shipping_name" class="mt-1 text-xs text-brand-danger">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -186,9 +189,10 @@
                                 </label>
                                 <input type="tel" name="shipping_phone" x-ref="shippingPhone"
                                        value="{{ old('shipping_phone') }}"
-                                       class="w-full border border-brand-gray-border px-4 py-3 text-sm focus:outline-none focus:border-brand-black @error('shipping_phone') border-red-400 @enderror">
+                                       @error('shipping_phone') aria-invalid="true" aria-describedby="error-shipping_phone" @enderror
+                                       class="w-full border border-brand-gray-border px-4 py-3 text-sm focus:outline-none focus:border-brand-black @error('shipping_phone') border-brand-danger @enderror">
                                 @error('shipping_phone')
-                                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                                    <p id="error-shipping_phone" class="mt-1 text-xs text-brand-danger">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -198,9 +202,10 @@
                                 </label>
                                 <textarea name="shipping_address" x-ref="shippingAddress"
                                           rows="2"
-                                          class="w-full border border-brand-gray-border px-4 py-3 text-sm focus:outline-none focus:border-brand-black @error('shipping_address') border-red-400 @enderror resize-none">{{ old('shipping_address') }}</textarea>
+                                          @error('shipping_address') aria-invalid="true" aria-describedby="error-shipping_address" @enderror
+                                          class="w-full border border-brand-gray-border px-4 py-3 text-sm focus:outline-none focus:border-brand-black @error('shipping_address') border-brand-danger @enderror resize-none">{{ old('shipping_address') }}</textarea>
                                 @error('shipping_address')
-                                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                                    <p id="error-shipping_address" class="mt-1 text-xs text-brand-danger">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -210,9 +215,10 @@
                                 </label>
                                 <input type="text" name="shipping_district" x-ref="shippingDistrict"
                                        value="{{ old('shipping_district') }}"
-                                       class="w-full border border-brand-gray-border px-4 py-3 text-sm focus:outline-none focus:border-brand-black @error('shipping_district') border-red-400 @enderror">
+                                       @error('shipping_district') aria-invalid="true" aria-describedby="error-shipping_district" @enderror
+                                       class="w-full border border-brand-gray-border px-4 py-3 text-sm focus:outline-none focus:border-brand-black @error('shipping_district') border-brand-danger @enderror">
                                 @error('shipping_district')
-                                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                                    <p id="error-shipping_district" class="mt-1 text-xs text-brand-danger">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -222,9 +228,10 @@
                                 </label>
                                 <input type="text" name="shipping_province" x-ref="shippingProvince"
                                        value="{{ old('shipping_province') }}"
-                                       class="w-full border border-brand-gray-border px-4 py-3 text-sm focus:outline-none focus:border-brand-black @error('shipping_province') border-red-400 @enderror">
+                                       @error('shipping_province') aria-invalid="true" aria-describedby="error-shipping_province" @enderror
+                                       class="w-full border border-brand-gray-border px-4 py-3 text-sm focus:outline-none focus:border-brand-black @error('shipping_province') border-brand-danger @enderror">
                                 @error('shipping_province')
-                                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                                    <p id="error-shipping_province" class="mt-1 text-xs text-brand-danger">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -235,9 +242,10 @@
                                 <input type="text" name="shipping_postal_code" x-ref="shippingPostalCode"
                                        value="{{ old('shipping_postal_code') }}"
                                        maxlength="10"
-                                       class="w-full border border-brand-gray-border px-4 py-3 text-sm focus:outline-none focus:border-brand-black @error('shipping_postal_code') border-red-400 @enderror">
+                                       @error('shipping_postal_code') aria-invalid="true" aria-describedby="error-shipping_postal_code" @enderror
+                                       class="w-full border border-brand-gray-border px-4 py-3 text-sm focus:outline-none focus:border-brand-black @error('shipping_postal_code') border-brand-danger @enderror">
                                 @error('shipping_postal_code')
-                                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                                    <p id="error-shipping_postal_code" class="mt-1 text-xs text-brand-danger">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -313,7 +321,7 @@
                 {{-- Right: Order Summary --}}
                 <div class="mt-10 lg:mt-0">
                     <div class="border border-brand-gray-border bg-white p-6 sticky top-28">
-                        <h2 class="text-sm font-medium tracking-widest uppercase text-brand-black mb-6">
+                        <h2 class="text-sm font-medium uppercase text-brand-black mb-6">
                             รายการสั่งซื้อ
                         </h2>
 
@@ -419,7 +427,7 @@
 
                         {{-- Payment Method --}}
                         <div class="border-t border-brand-gray-border mt-4 pt-4">
-                            <p class="text-xs font-medium tracking-widest uppercase text-brand-black mb-3">
+                            <p class="text-xs font-medium uppercase text-brand-black mb-3">
                                 วิธีการชำระเงิน
                             </p>
                             <div class="space-y-2">
@@ -483,21 +491,6 @@
                                     <a href="https://line.me/R/ti/p/@chomin.th" target="_blank" rel="noopener" class="text-[11px] text-brand-black underline-offset-2 underline">LINE @chomin.th</a>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="mt-3 grid grid-cols-3 border border-brand-gray-border text-center">
-                            <a href="{{ route('pages.shipping') }}" class="p-3 border-r border-brand-gray-border">
-                                <span class="block text-[10px] uppercase tracking-[0.12em] text-brand-gray-light">Ship</span>
-                                <span class="block text-xs mt-1">Free</span>
-                            </a>
-                            <a href="{{ route('pages.returns') }}" class="p-3 border-r border-brand-gray-border">
-                                <span class="block text-[10px] uppercase tracking-[0.12em] text-brand-gray-light">Return</span>
-                                <span class="block text-xs mt-1">7D</span>
-                            </a>
-                            <a href="{{ route('pages.member') }}" class="p-3">
-                                <span class="block text-[10px] uppercase tracking-[0.12em] text-brand-gray-light">Point</span>
-                                <span class="block text-xs mt-1">Earn</span>
-                            </a>
                         </div>
                     </div>
                 </div>

@@ -2,8 +2,11 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
 
+        <p class="text-xs font-medium tracking-widest uppercase text-brand-gray-light mb-2">
+            {{ app()->getLocale() === 'en' ? 'My Account' : 'บัญชีของฉัน' }}
+        </p>
         <h1 class="text-2xl md:text-3xl font-medium text-brand-black tracking-widest uppercase mb-8">
-            บัญชีของฉัน
+            {{ app()->getLocale() === 'en' ? 'Order History' : 'ประวัติคำสั่งซื้อ' }}
         </h1>
 
         <div class="lg:grid lg:grid-cols-4 lg:gap-8">
@@ -58,16 +61,13 @@
                                             <td class="py-4 pr-4">
                                                 @php
                                                     $statusColor = match($order->status) {
-                                                        'pending' => 'bg-yellow-100 text-yellow-700',
-                                                        'awaiting_payment' => 'bg-blue-100 text-blue-700',
-                                                        'paid' => 'bg-green-100 text-green-700',
-                                                        'shipping' => 'bg-purple-100 text-purple-700',
-                                                        'completed' => 'bg-gray-100 text-gray-700',
-                                                        'cancelled' => 'bg-red-100 text-red-600',
-                                                        default => 'bg-gray-100 text-gray-700',
+                                                        'paid' => 'bg-brand-success/10 text-brand-success',
+                                                        'completed' => 'bg-brand-success/10 text-brand-success',
+                                                        'cancelled' => 'bg-brand-danger/10 text-brand-danger',
+                                                        default => 'bg-brand-gray text-brand-gray-dark border border-brand-gray-border',
                                                     };
                                                 @endphp
-                                                <span class="inline-block px-2 py-0.5 text-xs font-medium rounded {{ $statusColor }}">
+                                                <span class="inline-block px-2 py-0.5 text-xs font-medium {{ $statusColor }}">
                                                     {{ $order->status_label }}
                                                 </span>
                                             </td>
@@ -76,7 +76,7 @@
                                             </td>
                                             <td class="py-4 pl-4 text-right">
                                                 <a href="{{ route('orders.show', $order) }}"
-                                                   class="text-xs text-brand-gray-dark hover:text-brand-black underline tracking-wide transition-colors duration-150">
+                                                   class="inline-flex items-center justify-end min-h-[44px] text-xs text-brand-gray-dark hover:text-brand-black underline tracking-wide transition-colors duration-150">
                                                     ดูรายละเอียด
                                                 </a>
                                             </td>
@@ -97,23 +97,20 @@
                                         </div>
                                         @php
                                             $statusColor = match($order->status) {
-                                                'pending' => 'bg-yellow-100 text-yellow-700',
-                                                'awaiting_payment' => 'bg-blue-100 text-blue-700',
-                                                'paid' => 'bg-green-100 text-green-700',
-                                                'shipping' => 'bg-purple-100 text-purple-700',
-                                                'completed' => 'bg-gray-100 text-gray-700',
-                                                'cancelled' => 'bg-red-100 text-red-600',
-                                                default => 'bg-gray-100 text-gray-700',
+                                                'paid' => 'bg-brand-success/10 text-brand-success',
+                                                'completed' => 'bg-brand-success/10 text-brand-success',
+                                                'cancelled' => 'bg-brand-danger/10 text-brand-danger',
+                                                default => 'bg-brand-gray text-brand-gray-dark border border-brand-gray-border',
                                             };
                                         @endphp
-                                        <span class="inline-block px-2 py-0.5 text-xs font-medium rounded {{ $statusColor }}">
+                                        <span class="inline-block px-2 py-0.5 text-xs font-medium {{ $statusColor }}">
                                             {{ $order->status_label }}
                                         </span>
                                     </div>
                                     <div class="flex justify-between items-center">
                                         <p class="text-sm font-medium text-brand-black">฿{{ number_format($order->total, 0) }}</p>
                                         <a href="{{ route('orders.show', $order) }}"
-                                           class="text-xs text-brand-gray-dark hover:text-brand-black underline tracking-wide">
+                                           class="inline-flex items-center min-h-[44px] text-xs text-brand-gray-dark hover:text-brand-black underline tracking-wide">
                                             ดูรายละเอียด
                                         </a>
                                     </div>

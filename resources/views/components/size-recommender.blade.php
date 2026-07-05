@@ -24,10 +24,11 @@
         </div>
 
         <div class="mt-3">
-            <span class="text-[11px] uppercase tracking-[0.12em] text-brand-gray-medium">{{ $isEn ? 'Fit preference' : 'รูปทรงที่ชอบ' }}</span>
-            <div class="mt-1 flex gap-2">
+            <span class="text-[11px] uppercase tracking-[0.12em] text-brand-gray-medium" id="fit-pref-label">{{ $isEn ? 'Fit preference' : 'รูปทรงที่ชอบ' }}</span>
+            <div class="mt-1 flex gap-2" role="group" aria-labelledby="fit-pref-label">
                 <template x-for="opt in ['slim','regular','relaxed']" :key="opt">
                     <button type="button" @click="fit = opt"
+                            :aria-pressed="(fit === opt).toString()"
                             class="flex-1 border py-2 text-xs uppercase tracking-[0.12em]"
                             :class="fit === opt ? 'border-brand-black bg-brand-black text-white' : 'border-brand-gray-border'"
                             x-text="opt"></button>
@@ -41,7 +42,7 @@
         </button>
 
         <template x-if="recommendedSize">
-            <div class="mt-4 border-t border-brand-gray-border pt-4 text-center">
+            <div class="mt-4 border-t border-brand-gray-border pt-4 text-center" role="status" aria-live="polite">
                 <p class="text-[11px] uppercase tracking-[0.14em] text-brand-gray-light">{{ $isEn ? 'We recommend' : 'แนะนำไซส์' }}</p>
                 <p class="mt-2 font-serif text-4xl uppercase" x-text="recommendedSize"></p>
                 <p class="mt-2 text-[11px] text-brand-gray-medium" x-text="explanation"></p>
@@ -70,28 +71,22 @@ function sizeRecommender() {
                 return;
             }
             const bmi = w / Math.pow(h / 100, 2);
-            // Base size from BMI
+            // Base size from BMI — clamped to the sizes we actually sell (S–XL)
             let baseIdx;
-            if (bmi < 18.5) baseIdx = 0;       // XS
-            else if (bmi < 21) baseIdx = 1;    // S
-            else if (bmi < 24) baseIdx = 2;    // M
-            else if (bmi < 27) baseIdx = 3;    // L
-            else if (bmi < 30) baseIdx = 4;    // XL
-            else if (bmi < 33) baseIdx = 5;    // 2XL
-            else if (bmi < 36) baseIdx = 6;    // 3XL
-            else if (bmi < 39) baseIdx = 7;    // 4XL
-            else if (bmi < 42) baseIdx = 8;    // 5XL
-            else baseIdx = 9;                  // 6XL
+            if (bmi < 20) baseIdx = 0;         // S
+            else if (bmi < 24) baseIdx = 1;    // M
+            else if (bmi < 28) baseIdx = 2;    // L
+            else baseIdx = 3;                  // XL
 
             // Adjust by fit preference
             if (this.fit === 'slim') baseIdx = Math.max(0, baseIdx - 1);
-            if (this.fit === 'relaxed') baseIdx = Math.min(9, baseIdx + 1);
+            if (this.fit === 'relaxed') baseIdx = Math.min(3, baseIdx + 1);
 
             // Adjust by height extremes (very tall → +1, very short → -1)
-            if (h >= 185) baseIdx = Math.min(9, baseIdx + 1);
+            if (h >= 185) baseIdx = Math.min(3, baseIdx + 1);
             if (h <= 155) baseIdx = Math.max(0, baseIdx - 1);
 
-            const sizes = ['XS','S','M','L','XL','2XL','3XL','4XL','5XL','6XL'];
+            const sizes = ['S','M','L','XL'];
             this.recommendedSize = sizes[baseIdx];
             const fitMap = { slim: '{{ $isEn ? "slim" : "ทรงพอดี" }}', regular: '{{ $isEn ? "regular" : "ทรงปกติ" }}', relaxed: '{{ $isEn ? "relaxed" : "ทรงหลวม" }}' };
             this.explanation = '{{ $isEn ? "Based on BMI " : "คำนวณจาก BMI " }}' + bmi.toFixed(1) + ' · ' + fitMap[this.fit];

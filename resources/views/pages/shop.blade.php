@@ -33,7 +33,7 @@
             <form method="GET" action="{{ route('shop.index') }}" class="grid grid-cols-2 items-end gap-4 md:flex md:flex-wrap md:items-center md:gap-6">
                 <div class="filter-field">
                     <label for="category">หมวดหมู่</label>
-                    <select id="category" name="category" onchange="this.form.submit()">
+                    <select id="category" name="category">
                         <option value="">ทั้งหมด</option>
                         @foreach($categories as $category)
                             <option value="{{ $category->slug }}" {{ request('category') === $category->slug ? 'selected' : '' }}>
@@ -45,7 +45,7 @@
 
                 <div class="filter-field">
                     <label for="collection">คอลเล็คชัน</label>
-                    <select id="collection" name="collection" onchange="this.form.submit()">
+                    <select id="collection" name="collection">
                         <option value="">ทั้งหมด</option>
                         @foreach($collections as $collection)
                             <option value="{{ $collection->slug }}" {{ request('collection') === $collection->slug ? 'selected' : '' }}>
@@ -57,7 +57,7 @@
 
                 <div class="filter-field">
                     <label for="size">ไซส์</label>
-                    <select id="size" name="size" onchange="this.form.submit()">
+                    <select id="size" name="size">
                         <option value="">ทั้งหมด</option>
                         @foreach($availableSizes as $size)
                             <option value="{{ $size }}" {{ request('size') === $size ? 'selected' : '' }}>
@@ -69,7 +69,7 @@
 
                 <div class="filter-field">
                     <label for="sort">เรียงตาม</label>
-                    <select id="sort" name="sort" onchange="this.form.submit()">
+                    <select id="sort" name="sort">
                         <option value="newest" {{ $sort === 'newest' ? 'selected' : '' }}>แนะนำ</option>
                         <option value="price_asc" {{ $sort === 'price_asc' ? 'selected' : '' }}>ราคาต่ำ-สูง</option>
                         <option value="price_desc" {{ $sort === 'price_desc' ? 'selected' : '' }}>ราคาสูง-ต่ำ</option>
@@ -89,8 +89,10 @@
                     max: {{ $maxSelected }},
                     open: false,
                 }">
-                    <label>ช่วงราคา</label>
-                    <button type="button" @click="open = !open" class="w-full text-left border border-brand-gray-border px-3 py-2 text-xs">
+                    <label>{{ app()->getLocale() === 'en' ? 'Price range' : 'ช่วงราคา' }}</label>
+                    <button type="button" @click="open = !open" :aria-expanded="open"
+                            aria-label="{{ app()->getLocale() === 'en' ? 'Price range' : 'ช่วงราคา' }}"
+                            class="w-full text-left border border-brand-gray-border px-3 py-2 text-xs">
                         ฿<span x-text="min.toLocaleString()"></span> – ฿<span x-text="max.toLocaleString()"></span>
                     </button>
                     <div x-show="open" x-cloak @click.outside="open = false"
@@ -99,12 +101,20 @@
                             <span>฿<span x-text="min.toLocaleString()"></span></span>
                             <span>฿<span x-text="max.toLocaleString()"></span></span>
                         </div>
-                        <input type="range" name="min_price" :min="{{ $minBound }}" :max="{{ $maxBound }}" x-model.number="min"
+                        <label for="min_price_range" class="block text-[11px] uppercase tracking-[0.14em] text-brand-gray-medium">
+                            {{ app()->getLocale() === 'en' ? 'Min price' : 'ราคาต่ำสุด' }}
+                        </label>
+                        <input id="min_price_range" type="range" name="min_price" :min="{{ $minBound }}" :max="{{ $maxBound }}" x-model.number="min"
+                               aria-label="{{ app()->getLocale() === 'en' ? 'Min price' : 'ราคาต่ำสุด' }}"
                                @change="if (min > max) min = max"
                                class="w-full accent-black">
-                        <input type="range" name="max_price" :min="{{ $minBound }}" :max="{{ $maxBound }}" x-model.number="max"
+                        <label for="max_price_range" class="block mt-2 text-[11px] uppercase tracking-[0.14em] text-brand-gray-medium">
+                            {{ app()->getLocale() === 'en' ? 'Max price' : 'ราคาสูงสุด' }}
+                        </label>
+                        <input id="max_price_range" type="range" name="max_price" :min="{{ $minBound }}" :max="{{ $maxBound }}" x-model.number="max"
+                               aria-label="{{ app()->getLocale() === 'en' ? 'Max price' : 'ราคาสูงสุด' }}"
                                @change="if (max < min) max = min"
-                               class="w-full accent-black mt-2">
+                               class="w-full accent-black">
                         <button type="submit" class="mt-3 w-full bg-brand-black px-3 py-2 text-[11px] uppercase tracking-[0.14em] text-white">
                             ใช้ช่วงราคา
                         </button>
@@ -112,13 +122,19 @@
                 </div>
                 @endif
 
+                <div class="filter-field col-span-2 md:col-span-1">
+                    <button type="submit" class="min-h-[44px] w-full bg-brand-black px-4 text-xs uppercase tracking-[0.14em] text-white md:w-auto">
+                        {{ app()->getLocale() === 'en' ? 'Apply filters' : 'ใช้ตัวกรอง' }}
+                    </button>
+                </div>
+
                 <div class="col-span-2 text-xs uppercase tracking-[0.14em] text-brand-gray-light md:ml-auto md:col-span-1">
-                    {{ $products->total() }} รายการ
+                    {{ $products->total() }} {{ app()->getLocale() === 'en' ? 'items' : 'รายการ' }}
                 </div>
 
                 @if(request()->hasAny(['category', 'collection', 'color', 'size', 'min_price', 'max_price', 'in_stock']))
                     <a href="{{ route('shop.index') }}" class="text-xs uppercase tracking-[0.14em] border-b border-brand-black pb-1">
-                        ล้างตัวกรอง
+                        {{ app()->getLocale() === 'en' ? 'Clear filters' : 'ล้างตัวกรอง' }}
                     </a>
                 @endif
             </form>
@@ -132,7 +148,7 @@
                             $colorQuery = array_filter(array_merge(request()->except(['page', 'color']), ['color' => $colorKey]), fn ($value) => filled($value));
                         @endphp
                         <a href="{{ route('shop.index', $colorQuery) }}"
-                           class="h-9 w-9 flex-shrink-0 rounded-full border {{ request('color') === $colorKey ? 'border-brand-black ring-2 ring-brand-black ring-offset-2' : 'border-brand-gray-border' }}"
+                           class="h-9 w-9 flex-shrink-0 rounded-full border shadow-[inset_0_0_0_1px_rgba(0,0,0,0.08)] {{ request('color') === $colorKey ? 'border-brand-black ring-2 ring-brand-black ring-offset-2' : 'border-brand-gray-border' }}"
                            style="background-color: {{ $color->color_code ?? '#eeeeee' }}"
                            title="{{ $color->localized_name }}"
                            aria-label="{{ $color->localized_name }}"></a>

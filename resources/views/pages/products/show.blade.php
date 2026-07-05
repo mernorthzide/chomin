@@ -25,10 +25,10 @@
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <ol class="flex min-w-0 items-center space-x-2 overflow-hidden text-xs text-brand-gray-medium">
                 <li class="shrink-0"><a href="{{ route('home') }}" class="hover:text-brand-black transition-colors">หน้าแรก</a></li>
-                <li><span class="text-brand-gray-border">/</span></li>
+                <li><span class="text-brand-gray-border" aria-hidden="true">/</span></li>
                 @if($product->collection)
                     <li class="min-w-0 shrink"><a href="{{ route('collections.show', $product->collection->slug) }}" class="block truncate hover:text-brand-black transition-colors">{{ $product->collection->name }}</a></li>
-                    <li class="shrink-0"><span class="text-brand-gray-border">/</span></li>
+                    <li class="shrink-0"><span class="text-brand-gray-border" aria-hidden="true">/</span></li>
                 @endif
                 <li class="min-w-0 truncate text-brand-black">{{ $product->name }}</li>
             </ol>
@@ -132,18 +132,24 @@
                         <div class="mb-6">
                             <div class="flex items-center justify-between mb-3">
                                 <span class="text-xs font-medium tracking-widest uppercase text-brand-gray-dark">สี</span>
-                                <span class="text-xs text-brand-gray-medium" x-text="selectedColorName"></span>
+                                <span class="text-xs text-brand-gray-medium" x-text="selectedColorName" aria-live="polite"></span>
                             </div>
-                            <div class="grid grid-cols-8 gap-2.5 sm:grid-cols-10">
+                            <div class="grid grid-cols-8 gap-2.5 sm:grid-cols-10" role="group" aria-label="{{ app()->getLocale() === 'en' ? 'Color' : 'สี' }}">
                                 @foreach($product->colors as $color)
                                     <button
                                         x-show="showAllColors || {{ $loop->iteration }} <= {{ $visibleColorLimit }}"
                                         @click="selectColor({{ $color->id }}, '{{ $color->localized_name }}', {{ json_encode($color->images->pluck('image_path')->map(fn($p) => \Illuminate\Support\Facades\Storage::url($p))->values()) }})"
-                                        class="aspect-square min-h-11 border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2"
-                                        :class="{{ $color->id }} === selectedColorId ? 'border-brand-black scale-105' : 'border-brand-gray-border hover:border-brand-gray-dark'"
+                                        :aria-pressed="selectedColorId === {{ $color->id }}"
+                                        class="relative aspect-square min-h-11 border ring-1 ring-inset ring-brand-gray-border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2"
+                                        :class="{{ $color->id }} === selectedColorId ? 'border-brand-black ring-2 ring-brand-black ring-offset-2 scale-105' : 'border-brand-gray-border hover:border-brand-gray-dark'"
                                         style="background-color: {{ $color->color_code ?? '#cccccc' }}"
                                         aria-label="เลือกสี {{ $color->localized_name }}"
                                         :title="'{{ $color->localized_name }}'">
+                                        <svg x-show="selectedColorId === {{ $color->id }}" x-cloak aria-hidden="true"
+                                             class="pointer-events-none absolute inset-0 m-auto h-4 w-4 mix-blend-difference text-white"
+                                             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                        </svg>
                                     </button>
                                 @endforeach
                             </div>
@@ -174,12 +180,12 @@
                             <div class="flex items-center justify-between mb-3">
                                 <span class="text-xs font-medium tracking-widest uppercase text-brand-gray-dark">{{ app()->getLocale() === 'en' ? 'Size' : 'ไซส์' }}</span>
                                 <div class="flex items-center gap-3">
-                                    <span class="text-xs text-brand-gray-medium" x-text="selectedSize ? selectedSize : '{{ app()->getLocale() === 'en' ? 'Select' : 'กรุณาเลือก' }}'"></span>
+                                    <span class="text-xs text-brand-gray-medium" x-text="selectedSize ? selectedSize : '{{ app()->getLocale() === 'en' ? 'Select' : 'กรุณาเลือก' }}'" aria-live="polite"></span>
                                     <a href="{{ route('pages.size-guide') }}" class="text-xs uppercase tracking-[0.12em] text-brand-gray-light underline underline-offset-2 hover:text-brand-black transition-colors">{{ app()->getLocale() === 'en' ? 'Size Guide' : 'ตารางไซส์' }}</a>
                                 </div>
                             </div>
                             <x-size-recommender />
-                            <div class="flex flex-wrap gap-2">
+                            <div class="flex flex-wrap gap-2" role="group" aria-label="{{ app()->getLocale() === 'en' ? 'Size' : 'ไซส์' }}">
                                 @foreach($availableSizes as $size)
                                     @php
                                         $variantsForSize = $product->variants->where('size', $size);
@@ -187,6 +193,7 @@
                                     @endphp
                                     <button
                                         @click="selectSize('{{ $size }}')"
+                                        :aria-pressed="selectedSize === '{{ $size }}'"
                                         :disabled="!isSizeAvailable('{{ $size }}')"
                                         class="min-h-[44px] min-w-[56px] border px-3 text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2"
                                         :class="{
@@ -272,6 +279,7 @@
                                 <input type="number" name="quantity"
                                        x-model="quantity"
                                        min="1"
+                                       aria-label="{{ app()->getLocale() === 'en' ? 'Quantity' : 'จำนวน' }}"
                                        class="h-11 w-14 border-x border-brand-gray-border text-center text-sm text-brand-black focus:outline-none focus:ring-0">
                                 <button type="button"
                                         @click="quantity = Math.min((selectedVariantStock || 99), quantity + 1)" :disabled="selectedVariantStock !== null && quantity >= selectedVariantStock"
@@ -372,8 +380,8 @@
                      class="h-72 w-full object-cover"
                      loading="lazy">
                 <div class="p-5">
-                    <p class="text-xs uppercase tracking-[0.16em] text-brand-gray-light">Sizes XS&ndash;6XL</p>
-                    <p class="mt-2 text-sm text-brand-gray-dark">ไซส์ครอบคลุมตั้งแต่ XS ถึง 6XL เทียบสัดส่วนได้จากตารางไซส์</p>
+                    <p class="text-xs uppercase tracking-[0.16em] text-brand-gray-light">Sizes S&ndash;XL</p>
+                    <p class="mt-2 text-sm text-brand-gray-dark">ไซส์ครอบคลุมตั้งแต่ S ถึง XL เทียบสัดส่วนได้จากตารางไซส์</p>
                 </div>
             </article>
             <article>
@@ -440,6 +448,10 @@
              LIGHTBOX (fullscreen image viewer) — inside x-data scope
         ============================================================ --}}
         <div x-show="lightboxOpen" x-cloak
+             role="dialog"
+             aria-modal="true"
+             aria-label="{{ app()->getLocale() === 'en' ? 'Product image viewer' : 'ตัวดูรูปสินค้า' }}"
+             x-trap="lightboxOpen"
              class="fixed inset-0 z-[90] flex items-center justify-center bg-black"
              x-transition.opacity
              @keydown.escape.window="closeLightbox()"

@@ -10,6 +10,10 @@
          @click.self="close()">
 
         <div class="relative flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden bg-white md:flex-row"
+             role="dialog"
+             aria-modal="true"
+             aria-label="{{ app()->getLocale() === 'en' ? 'Product quick view' : 'ดูสินค้าแบบย่อ' }}"
+             x-trap="isOpen"
              x-transition:enter="transition ease-out duration-200"
              x-transition:enter-start="opacity-0 translate-y-4"
              x-transition:enter-end="opacity-100 translate-y-0">
@@ -65,7 +69,7 @@
                             <h2 class="mt-2 font-serif text-2xl uppercase leading-tight" x-text="product.name"></h2>
 
                             <div class="mt-3">
-                                <span class="text-lg" x-text="'฿' + product.display_price.toLocaleString()"></span>
+                                <span class="text-lg" x-text="'฿' + (product.display_price ?? 0).toLocaleString()"></span>
                             </div>
                         </div>
 
@@ -102,7 +106,7 @@
                                     <template x-for="s in product.sizes" :key="s.size">
                                         <button type="button" @click="s.stock > 0 && (selectedSize = s.size)"
                                                 :disabled="s.stock === 0"
-                                                class="border py-2 text-xs uppercase"
+                                                class="min-h-[44px] border py-2 text-xs uppercase"
                                                 :class="[
                                                     selectedSize === s.size ? 'border-brand-black bg-brand-black text-white' : 'border-brand-gray-border',
                                                     s.stock === 0 ? 'opacity-40 line-through cursor-not-allowed' : 'hover:border-brand-black'

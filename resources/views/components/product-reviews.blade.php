@@ -29,9 +29,9 @@
                         <span class="text-5xl font-serif">{{ $avg }}</span>
                         <span class="text-sm text-brand-gray-medium">/ 5</span>
                     </div>
-                    <div class="mt-1 flex gap-0.5">
+                    <div class="mt-1 flex gap-0.5" role="img" aria-label="{{ $isEn ? "$avg out of 5 stars" : "$avg จาก 5 ดาว" }}">
                         @for($i = 1; $i <= 5; $i++)
-                            <svg class="h-4 w-4 {{ $i <= round($avg) ? 'fill-brand-black' : 'fill-brand-gray-border' }}" viewBox="0 0 20 20">
+                            <svg class="h-4 w-4 {{ $i <= round($avg) ? 'fill-brand-black' : 'fill-brand-gray-border' }}" viewBox="0 0 20 20" aria-hidden="true">
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.959a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.449a1 1 0 00-.363 1.118l1.287 3.959c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.175 0l-3.37 2.448c-.784.57-1.838-.197-1.539-1.118l1.287-3.959a1 1 0 00-.364-1.118L2.05 9.386c-.783-.57-.38-1.81.588-1.81h4.163a1 1 0 00.95-.69l1.286-3.959z"/>
                             </svg>
                         @endfor
@@ -77,20 +77,24 @@
                                         class="aspect-square overflow-hidden bg-brand-gray hover:opacity-80">
                                     <img src="{{ Storage::url($photo['path']) }}"
                                          alt="Customer photo"
+                                         width="160" height="160"
                                          class="w-full h-full object-cover"
                                          loading="lazy">
                                 </button>
                             @endforeach
                         </div>
                         <div x-show="lightbox" x-cloak
+                             role="dialog" aria-modal="true" aria-label="{{ $isEn ? 'Customer photo' : 'รูปจากลูกค้า' }}"
+                             x-trap="lightbox"
                              @click="lightbox = null"
                              @keydown.escape.window="lightbox = null"
                              class="fixed inset-0 z-[80] flex items-center justify-center bg-black/90 p-6"
                              x-transition.opacity>
                             <img :src="lightbox" alt="Customer photo" class="max-h-[90vh] max-w-[90vw] object-contain">
                             <button type="button" @click.stop="lightbox = null"
+                                    aria-label="{{ $isEn ? 'Close' : 'ปิด' }}"
                                     class="absolute right-4 top-4 text-white">
-                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                                 </svg>
                             </button>
@@ -102,9 +106,9 @@
                     <article class="border-b border-brand-gray-border py-5 first:pt-0">
                         <header class="flex items-start justify-between gap-4">
                             <div>
-                                <div class="flex gap-0.5">
+                                <div class="flex gap-0.5" role="img" aria-label="{{ $review->rating }} {{ $isEn ? 'out of 5' : 'จาก 5' }}">
                                     @for($i = 1; $i <= 5; $i++)
-                                        <svg class="h-3.5 w-3.5 {{ $i <= $review->rating ? 'fill-brand-black' : 'fill-brand-gray-border' }}" viewBox="0 0 20 20">
+                                        <svg class="h-3.5 w-3.5 {{ $i <= $review->rating ? 'fill-brand-black' : 'fill-brand-gray-border' }}" viewBox="0 0 20 20" aria-hidden="true">
                                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.959a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.449a1 1 0 00-.363 1.118l1.287 3.959c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.175 0l-3.37 2.448c-.784.57-1.838-.197-1.539-1.118l1.287-3.959a1 1 0 00-.364-1.118L2.05 9.386c-.783-.57-.38-1.81.588-1.81h4.163a1 1 0 00.95-.69l1.286-3.959z"/>
                                         </svg>
                                     @endfor
@@ -127,7 +131,7 @@
                                 @foreach($review->photos as $photo)
                                     <a href="{{ Storage::url($photo) }}" target="_blank" rel="noopener"
                                        class="w-20 h-20 overflow-hidden bg-brand-gray block">
-                                        <img src="{{ Storage::url($photo) }}" alt="" class="w-full h-full object-cover" loading="lazy">
+                                        <img src="{{ Storage::url($photo) }}" alt="" width="80" height="80" class="w-full h-full object-cover" loading="lazy">
                                     </a>
                                 @endforeach
                             </div>
@@ -136,7 +140,7 @@
                             {{ $review->name ?: ($isEn ? 'Customer' : 'ลูกค้า') }} · {{ $review->created_at->isoFormat('LL') }}
                         </footer>
                         @if($review->admin_response)
-                            <div class="mt-3 ml-4 border-l-2 border-brand-black pl-4 py-2 bg-brand-gray/30">
+                            <div class="mt-3 ml-4 pl-4 py-2 bg-brand-gray">
                                 <p class="text-[11px] uppercase tracking-[0.12em] text-brand-gray-light mb-1">{{ $isEn ? 'CHOMIN replied' : 'CHOMIN ตอบ' }}</p>
                                 <p class="text-sm text-brand-gray-dark">{{ $review->admin_response }}</p>
                             </div>
@@ -157,7 +161,10 @@
                         <label class="text-[11px] uppercase tracking-[0.14em] text-brand-gray-light">{{ $isEn ? 'Rating' : 'ให้คะแนน' }}</label>
                         <div class="mt-2 flex gap-2" x-data="{ rating: 5 }">
                             <template x-for="n in 5" :key="n">
-                                <button type="button" @click="rating = n" class="text-3xl" :class="n <= rating ? 'text-brand-black' : 'text-brand-gray-border'">★</button>
+                                <button type="button" @click="rating = n" class="text-3xl"
+                                        :aria-label="`{{ $isEn ? 'Rate' : 'ให้' }} ${n} {{ $isEn ? 'stars' : 'ดาว' }}`"
+                                        :aria-pressed="(n === rating).toString()"
+                                        :class="n <= rating ? 'text-brand-black' : 'text-brand-gray-border'">★</button>
                             </template>
                             <input type="hidden" name="rating" x-model="rating">
                         </div>

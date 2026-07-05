@@ -131,7 +131,7 @@
                                                 <button type="button"
                                                         @click="qty = Math.max(1, qty - 1)"
                                                         aria-label="ลดจำนวน {{ $item->product->localized_name }}"
-                                                        class="w-8 h-8 flex items-center justify-center text-brand-gray-dark hover:bg-brand-gray transition-colors duration-150">
+                                                        class="h-11 w-11 flex items-center justify-center text-brand-gray-dark hover:bg-brand-gray transition-colors duration-150">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" />
                                                     </svg>
@@ -140,18 +140,19 @@
                                                        x-model="qty"
                                                        min="1"
                                                        max="{{ $item->variant->stock }}"
-                                                       class="w-10 h-8 text-center border-x border-brand-gray-border text-sm text-brand-black focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none">
+                                                       aria-label="จำนวน {{ $item->product->localized_name }}"
+                                                       class="w-10 h-11 text-center border-x border-brand-gray-border text-sm text-brand-black focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none">
                                                 <button type="button"
                                                         @click="qty = Math.min({{ $item->variant->stock }}, qty + 1)"
                                                         aria-label="เพิ่มจำนวน {{ $item->product->localized_name }}"
-                                                        class="w-8 h-8 flex items-center justify-center text-brand-gray-dark hover:bg-brand-gray transition-colors duration-150">
+                                                        class="h-11 w-11 flex items-center justify-center text-brand-gray-dark hover:bg-brand-gray transition-colors duration-150">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                                                     </svg>
                                                 </button>
                                             </div>
                                             <button type="submit"
-                                                    class="ml-3 text-xs text-brand-gray-medium hover:text-brand-black underline transition-colors duration-200">
+                                                    class="ml-3 inline-flex items-center justify-center min-h-[44px] px-4 border border-brand-gray-border text-xs uppercase tracking-[0.12em] text-brand-gray-dark hover:bg-brand-black hover:text-white hover:border-brand-black transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-black focus:ring-offset-2">
                                                 อัปเดต
                                             </button>
                                         </form>
@@ -244,7 +245,7 @@
                              },
                          }">
 
-                        <h2 class="text-sm font-medium tracking-widest uppercase text-brand-black mb-6">
+                        <h2 class="text-sm font-medium uppercase text-brand-black mb-6">
                             สรุปคำสั่งซื้อ
                         </h2>
 
@@ -264,7 +265,7 @@
 
                         {{-- Coupon Code --}}
                         <div class="mb-5">
-                            <label class="block text-xs font-medium tracking-widest uppercase text-brand-gray-dark mb-2">
+                            <label class="block text-xs font-medium uppercase text-brand-gray-dark mb-2">
                                 รหัสคูปอง
                             </label>
                             <div class="flex gap-2">
@@ -276,21 +277,24 @@
                                 <button type="button"
                                         @click="validateCoupon()"
                                         :disabled="validatingCoupon || !couponCode.trim()"
+                                        :aria-busy="validatingCoupon"
                                         class="border border-brand-black px-4 py-2 text-xs uppercase tracking-[0.12em] text-brand-black disabled:cursor-not-allowed disabled:opacity-40 hover:bg-brand-black hover:text-white">
                                     <span x-show="!validatingCoupon">ใช้</span>
                                     <span x-show="validatingCoupon">...</span>
                                 </button>
                             </div>
                             <p x-show="couponMessage" x-cloak
+                               :role="couponStatus === 'error' ? 'alert' : 'status'"
+                               aria-live="polite"
                                class="mt-2 text-xs"
-                               :class="couponStatus === 'success' ? 'text-green-600' : 'text-red-600'"
+                               :class="couponStatus === 'success' ? 'text-brand-success' : 'text-brand-danger'"
                                x-text="couponMessage"></p>
                         </div>
 
                         {{-- Points --}}
                         @auth
                         <div class="mb-5">
-                            <label class="block text-xs font-medium tracking-widest uppercase text-brand-gray-dark mb-2">
+                            <label class="block text-xs font-medium uppercase text-brand-gray-dark mb-2">
                                 แต้มสะสม
                             </label>
                             <p class="text-xs text-brand-gray-medium mb-2">

@@ -131,7 +131,7 @@ class ProductController extends Controller
         $title = ($product->localized('seo_title') ?: $product->localized_name).' | CHOMIN';
         $description = $product->localized('seo_description')
             ?: $product->localized_description
-            ?: 'CHO.MIN — เชิ้ตดีไซน์ 50+ สี ไซส์ XS-6XL จัดส่งฟรีทั่วประเทศ';
+            ?: 'CHO.MIN — เชิ้ตดีไซน์ 50+ สี ไซส์ S-XL จัดส่งฟรีทั่วประเทศ';
         $ogImage = $product->primaryImage
             ? url(Storage::url($product->primaryImage->image_path))
             : null;

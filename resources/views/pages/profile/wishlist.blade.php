@@ -2,8 +2,11 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
 
+        <p class="text-xs font-medium tracking-widest uppercase text-brand-gray-light mb-2">
+            {{ app()->getLocale() === 'en' ? 'My Account' : 'บัญชีของฉัน' }}
+        </p>
         <h1 class="text-2xl md:text-3xl font-medium text-brand-black tracking-widest uppercase mb-8">
-            บัญชีของฉัน
+            {{ app()->getLocale() === 'en' ? 'Wishlist' : 'รายการโปรด' }}
         </h1>
 
         <div class="lg:grid lg:grid-cols-4 lg:gap-8">
@@ -17,7 +20,7 @@
             <div class="lg:col-span-3">
 
                 @if(session('success'))
-                    <div class="mb-6 px-4 py-3 bg-green-50 border border-green-200 text-green-700 text-sm">
+                    <div role="status" aria-live="polite" class="mb-6 px-4 py-3 bg-brand-success/10 border border-brand-success text-brand-success text-sm">
                         {{ session('success') }}
                     </div>
                 @endif
@@ -67,9 +70,10 @@
                                         @csrf
                                         <input type="hidden" name="product_id" value="{{ $item->product_id }}">
                                         <button type="submit"
-                                                title="นำออกจาก Wishlist"
-                                                class="w-7 h-7 flex items-center justify-center bg-white bg-opacity-90 text-red-400 hover:text-red-600 border border-brand-gray-border shadow-sm transition-colors duration-150">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                                                title="{{ app()->getLocale() === 'en' ? 'Remove from wishlist' : 'นำออกจาก Wishlist' }}"
+                                                aria-label="{{ app()->getLocale() === 'en' ? 'Remove from wishlist' : 'นำออกจาก Wishlist' }}"
+                                                class="w-11 h-11 flex items-center justify-center bg-white bg-opacity-90 text-brand-danger hover:text-brand-danger border border-brand-gray-border shadow-sm transition-colors duration-150">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                                 <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                             </svg>
                                         </button>
@@ -82,6 +86,7 @@
                                                 @if($item->product->primaryImage)
                                                     <img src="{{ \Illuminate\Support\Facades\Storage::url($item->product->primaryImage->image_path) }}"
                                                          alt="{{ $item->product->name }}"
+                                                         loading="lazy"
                                                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                                 @endif
                                             </div>

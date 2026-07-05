@@ -8,8 +8,11 @@
     @endphp
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        <h1 class="text-2xl md:text-3xl font-medium text-brand-black tracking-widest uppercase mb-8">
+        <p class="text-xs font-medium tracking-widest uppercase text-brand-gray-light mb-2">
             {{ $isEn ? 'My Account' : 'บัญชีของฉัน' }}
+        </p>
+        <h1 class="text-2xl md:text-3xl font-medium text-brand-black tracking-widest uppercase mb-8">
+            {{ $isEn ? 'Refer a Friend' : 'แนะนำเพื่อน' }}
         </h1>
 
         <div class="lg:grid lg:grid-cols-4 lg:gap-8">
@@ -79,25 +82,25 @@
                     <div class="mt-5 flex flex-col sm:flex-row gap-2">
                         <input type="text" readonly value="{{ $shareUrl }}"
                                x-ref="shareLink"
-                               class="flex-1 border border-brand-gray-border px-3 py-2 text-sm bg-brand-gray/40">
+                               class="flex-1 border border-brand-gray-border px-3 py-2 text-sm bg-brand-gray">
                         <button type="button"
                                 @click="navigator.clipboard.writeText($refs.shareLink.value); copied = true; setTimeout(() => copied = false, 2000)"
                                 class="bg-brand-black text-white px-5 py-2 text-xs uppercase tracking-[0.14em]">
                             <span x-show="!copied">{{ $isEn ? 'Copy link' : 'คัดลอกลิงก์' }}</span>
-                            <span x-show="copied" x-cloak>{{ $isEn ? 'Copied!' : 'คัดลอกแล้ว!' }}</span>
+                            <span x-show="copied" x-cloak role="status" aria-live="polite">{{ $isEn ? 'Copied!' : 'คัดลอกแล้ว!' }}</span>
                         </button>
                     </div>
 
                     <div class="mt-3 flex gap-2 text-xs">
                         <a href="https://line.me/R/msg/text/?{{ urlencode($isEn ? 'Get '.config('chomin.referral.referee_bonus_points').' CHOMIN points: '.$shareUrl : 'รับ '.config('chomin.referral.referee_bonus_points').' แต้มจาก CHOMIN: '.$shareUrl) }}"
                            target="_blank" rel="noopener"
-                           class="border border-brand-black px-3 py-1.5 uppercase tracking-[0.12em] hover:bg-brand-black hover:text-white">LINE</a>
+                           class="inline-flex items-center min-h-[44px] border border-brand-black px-3 py-1.5 uppercase tracking-[0.12em] hover:bg-brand-black hover:text-white">LINE</a>
                         <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode($shareUrl) }}"
                            target="_blank" rel="noopener"
-                           class="border border-brand-black px-3 py-1.5 uppercase tracking-[0.12em] hover:bg-brand-black hover:text-white">Facebook</a>
+                           class="inline-flex items-center min-h-[44px] border border-brand-black px-3 py-1.5 uppercase tracking-[0.12em] hover:bg-brand-black hover:text-white">Facebook</a>
                         <a href="https://twitter.com/intent/tweet?text={{ urlencode($isEn ? 'Get '.config('chomin.referral.referee_bonus_points').' CHOMIN points: ' : 'รับ '.config('chomin.referral.referee_bonus_points').' แต้มจาก CHOMIN: ') }}&url={{ urlencode($shareUrl) }}"
                            target="_blank" rel="noopener"
-                           class="border border-brand-black px-3 py-1.5 uppercase tracking-[0.12em] hover:bg-brand-black hover:text-white">X</a>
+                           class="inline-flex items-center min-h-[44px] border border-brand-black px-3 py-1.5 uppercase tracking-[0.12em] hover:bg-brand-black hover:text-white">X</a>
                     </div>
 
                     <div class="mt-6 grid grid-cols-2 gap-3">

@@ -55,7 +55,7 @@ class CollectionController extends Controller
         $categories = Category::active()->ordered()->with('translations')->get();
         $title = $collection->localized_name.' | CHOMIN';
         $description = $collection->localized_description
-            ?: 'CHO.MIN — เชิ้ตดีไซน์ 50+ สี ไซส์ XS-6XL จัดส่งฟรีทั่วประเทศ';
+            ?: 'CHO.MIN — เชิ้ตดีไซน์ 50+ สี ไซส์ S-XL จัดส่งฟรีทั่วประเทศ';
         $imagePath = $collection->banner_image ?: $collection->image;
         $ogImage = $imagePath ? url(Storage::url($imagePath)) : null;
 

@@ -180,7 +180,7 @@ class ProductSeeder extends Seeder
                     'image' => 'products/chomin-imagen/cm-classic.jpg',
                     'banner_image' => 'collections/banners/cm-classic-imagen-hero.jpg',
                 ],
-                'description' => "Design Your Own Shirt\n\nเลือกสีได้ 50+ สี ไซส์ XS-6XL และปรับรายละเอียดคอเสื้อ ปลายแขน กระเป๋า ให้เข้ากับการใช้งานจริง\n\nSimple. Comfortable. Your Style.",
+                'description' => "Design Your Own Shirt\n\nเลือกสีได้ 50+ สี ไซส์ S-XL และปรับรายละเอียดคอเสื้อ ปลายแขน กระเป๋า ให้เข้ากับการใช้งานจริง\n\nSimple. Comfortable. Your Style.",
                 'gallery' => [
                     'products/chomin-imagen/cm-classic.jpg',
                     'products/chomin-imagen/custom-details.jpg',
@@ -191,15 +191,15 @@ class ProductSeeder extends Seeder
                 'translations' => [
                     'th' => [
                         'name' => 'CM Classic Custom Shirt',
-                        'description' => "Design Your Own Shirt\n\nเชิ้ต CHO.MIN รุ่นหลักที่เลือกได้ครบ: 50+ สี, ไซส์ XS-6XL, คอเสื้อ, ปลายแขน และกระเป๋า\n\nโปรพิเศษ 999 บาท และ DuoDeal 2 ตัว 1,850 บาท สำหรับวันที่อยากเริ่มจากเชิ้ตดี ๆ สักตัว",
+                        'description' => "Design Your Own Shirt\n\nเชิ้ต CHO.MIN รุ่นหลักที่เลือกได้ครบ: 50+ สี, ไซส์ S-XL, คอเสื้อ, ปลายแขน และกระเป๋า\n\nโปรพิเศษ 999 บาท และ DuoDeal 2 ตัว 1,850 บาท สำหรับวันที่อยากเริ่มจากเชิ้ตดี ๆ สักตัว",
                         'seo_title' => 'CM Classic Custom Shirt',
                         'seo_description' => 'CHO.MIN เสื้อเชิ้ตเลือกสี ไซส์ คอเสื้อ ปลายแขน และกระเป๋าได้ โปรพิเศษ 999 บาท',
                     ],
                     'en' => [
                         'name' => 'CM Classic Custom Shirt',
-                        'description' => "Design Your Own Shirt\n\nChoose from 50+ colors, XS-6XL sizing, collar, cuff, and pocket details.\n\nSimple. Comfortable. Your Style.",
+                        'description' => "Design Your Own Shirt\n\nChoose from 50+ colors, S-XL sizing, collar, cuff, and pocket details.\n\nSimple. Comfortable. Your Style.",
                         'seo_title' => 'CM Classic Custom Shirt',
-                        'seo_description' => 'CHO.MIN custom shirt with 50+ colors, XS-6XL sizing, collar, cuff, and pocket options.',
+                        'seo_description' => 'CHO.MIN custom shirt with 50+ colors, S-XL sizing, collar, cuff, and pocket options.',
                     ],
                 ],
             ],

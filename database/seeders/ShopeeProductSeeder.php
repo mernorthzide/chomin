@@ -89,7 +89,7 @@ class ShopeeProductSeeder extends Seeder
                     'name' => "เสื้อเชิ้ตทรงสลิม สี {$fam['family']}",
                     'description' => $this->descTh($fam, $colorCount),
                     'seo_title' => "เสื้อเชิ้ตทรงสลิม สี {$fam['family']} | CHO.MIN",
-                    'seo_description' => "เสื้อเชิ้ต CHO.MIN สี {$fam['family']} ผ้า Premium Japanese Cotton เลือกได้ {$colorCount} เฉด ปรับดีเทลได้ ราคา ".number_format((float) $fam['price'])." บาท",
+                    'seo_description' => "เสื้อเชิ้ต CHO.MIN สี {$fam['family']} ผ้า Premium Japanese Cotton เลือกได้ {$colorCount} เฉด ปรับดีเทลได้ ราคา ".number_format((float) $fam['price']).' บาท',
                 ]);
                 $product->translations()->updateOrCreate(['locale' => 'en'], [
                     'name' => "{$fam['family_en']} Slim Shirt",
@@ -171,13 +171,13 @@ class ShopeeProductSeeder extends Seeder
     {
         return "เสื้อเชิ้ต CHO.MIN ทรงสลิม สี {$fam['family']}\n\n"
             ."ผลิตจากผ้า Premium Japanese Cotton เนื้อผ้าสัมผัสนุ่ม เบา ใส่สบาย ระบายอากาศดี ไม่ยับง่าย\n\n"
-            ."เลือกได้ {$colorCount} เฉดในชุดสีนี้ พร้อมปรับดีเทล ปกคอ สาบหน้า กระเป๋า และปลายแขนได้ตามสไตล์คุณ ไซส์ XS–6XL";
+            ."เลือกได้ {$colorCount} เฉดในชุดสีนี้ พร้อมปรับดีเทล ปกคอ สาบหน้า กระเป๋า และปลายแขนได้ตามสไตล์คุณ ไซส์ S–XL";
     }
 
     private function descEn(array $fam, int $colorCount): string
     {
         return "CHO.MIN slim-fit shirt in {$fam['family_en']}.\n\n"
             ."Crafted from Premium Japanese Cotton — soft, light, breathable, and wrinkle-resistant.\n\n"
-            ."Choose from {$colorCount} shades in this palette and customise the collar, placket, pocket, and cuff to your style. Sizes XS–6XL.";
+            ."Choose from {$colorCount} shades in this palette and customise the collar, placket, pocket, and cuff to your style. Sizes S–XL.";
     }
 }
