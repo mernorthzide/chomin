@@ -1,0 +1,4 @@
+{
+  "$comment": "Feature registry + work queue. status: queued | planned | in-progress | done | parked | blocked | needs-clarification. Entry shape: {id, title, status, priority: P1|P2|P3, queued_at: YYYY-MM-DD, source: user-interrupt|inbox|planner, reason?}. งานแทรกจาก user เข้าเป็น queued เสมอ. blocked/needs-clarification ต้องมี reason (สำหรับ needs-clarification ให้ reason เป็นคำถามที่ต้องการคำตอบ).",
+  "features": []
+}

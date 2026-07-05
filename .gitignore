@@ -38,6 +38,10 @@ Thumbs.db
 !storage/app/public/collections/banners/cm-classic-imagen-hero.jpg
 !storage/app/public/products/chomin-imagen/
 !storage/app/public/products/chomin-imagen/*.jpg
-.claude/
+# Claude Code — track shared agentic-loop harness (agents + hook settings), ignore machine-local
+.claude/*
+!.claude/agents/
+!.claude/settings.json
+.claude/settings.local.json
 .playwright-mcp/
 .serena/

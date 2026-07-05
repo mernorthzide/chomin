@@ -1,0 +1,24 @@
+{
+  "$comment": "Values chosen at harness install time. Source of truth when re-generating or re-tuning the harness. Humans edit this, then ask Claude to re-render the affected files.",
+  "installed": "2026-07-05",
+  "profile": "standard",
+  "desc": "Laravel 13 storefront + Filament 4 admin for the Thai fashion shop CHO.MIN (catalog, color-library, cart/checkout, PromptPay slip review, coupons, gift cards, points, wishlist, content pages, i18n th/en).",
+  "stack": "PHP 8.3 · Laravel 13 · Filament 4 · Alpine + Tailwind 3.4 (Vite 8) · PHPUnit 12 · Laravel Pint",
+  "verify": "./vendor/bin/pint --test --dirty && php artisan test && npm run build",
+  "run": "composer dev (php artisan serve http://127.0.0.1:8000 + queue:listen + pail + vite). Storefront: http://127.0.0.1:8000/th (locale prefix th|en required). Admin: http://127.0.0.1:8000/admin (first run: php artisan shield:super-admin --user=1; login admin@chomin.com / password).",
+  "base_branch": "main",
+  "e2e_mode": "playwright-mcp",
+  "ui_floor": "resources/views/pages/products/show.blade.php (Product Detail Page); runner-up resources/views/components/product-card.blade.php",
+  "doc_lang": "th (Thai narrative; code, paths, commands, and technical terms stay in English)",
+  "continuous": true,
+  "contract_size": "10-18",
+  "constraints": [
+    "Live payment and transactional email are frozen: keep MAIL_MAILER=log, keep Omise/Shippop/LINE-OA keys as commented placeholders in .env.example, add no live payment gateway — PromptPay manual slip review + COD are the only real payment paths; gift-card purchases and returns are recorded for manual admin/LINE fulfillment.",
+    "COD orders stay gated by config/chomin.php: reject any COD subtotal outside cod.min_order/cod.max_order (default 0-50000), always add cod.fee (default 30), set status awaiting_payment (PromptPay → pending). Never bypass these config-driven guards.",
+    "All storefront routes live under the /{locale} prefix constrained to th|en with SetLocaleFromRoute middleware (bare paths redirect to /th); APP_LOCALE/APP_FALLBACK_LOCALE stay th; every user-facing string is bilingual th/en — no locale-less routes, no hardcoded single-language copy.",
+    "Analytics/marketing/media tracking stays PDPA consent-gated: Google Consent Mode v2 defaults every storage type to denied until opt-in via the cookie-consent component; new tags/pixels must not fire before consent or default to granted.",
+    "Never inject the app's Tailwind-v3 app.css into the Filament v4 admin; custom admin pages use inline style attributes or <x-filament::*> components, never raw Tailwind utility classes.",
+    "Storefront chrome (head meta, navbar, footer, global modals, body classes) is edited in resources/views/components/layouts/shop.blade.php (<x-layouts.shop> resolves there); resources/views/layouts/shop.blade.php is dead duplicate code.",
+    "Product/hero/swatch images under storage/app/public/products/** are NOT in git; regenerate catalogue data only via the idempotent ShopeeProductSeeder/ProductSeeder (never run both — each deactivates the other's products). public/build/** Vite assets are committed intentionally; regenerate with npm run build, do not hand-edit hashed bundles."
+  ]
+}
